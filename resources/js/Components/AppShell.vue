@@ -1,41 +1,26 @@
 <script setup>
-import { ref, computed } from 'vue'
-import AppSidebar from './AppSidebar.vue'
-import AppTopbar from './AppTopbar.vue'
+import { computed } from 'vue'
+import AppNavbar from './AppNavbar.vue'
+import AppSidebarNav from './AppSidebarNav.vue'
 
 const props = defineProps({
   title: String
 })
 
-const mobileMenuOpen = ref(false)
-
 const currentRoute = computed(() => {
   return window.location.pathname
 })
-
-const toggleMobileMenu = () => {
-  mobileMenuOpen.value = !mobileMenuOpen.value
-}
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#FAFAF8]">
-    <AppSidebar :current-route="currentRoute" />
+  <div class="min-h-screen bg-[#F5F5F7]">
+    <AppSidebarNav :current-route="currentRoute" />
+    <AppNavbar :current-route="currentRoute" />
     
-    <div class="ml-64">
-      <AppTopbar @toggle-mobile-menu="toggleMobileMenu" />
-      
-      <main class="pt-16">
-        <div class="px-8 py-6">
-          <slot />
-        </div>
-      </main>
-    </div>
-
-    <div 
-      v-if="mobileMenuOpen"
-      class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-      @click="toggleMobileMenu"
-    ></div>
+    <main class="pt-16 pl-56">
+      <div class="px-6 py-8">
+        <slot />
+      </div>
+    </main>
   </div>
 </template>

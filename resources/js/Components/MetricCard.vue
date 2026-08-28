@@ -27,10 +27,12 @@ const props = defineProps({
 
 const colorClasses = computed(() => {
   const colors = {
-    blue: 'bg-blue-50 text-blue-600',
-    green: 'bg-green-50 text-green-600',
-    amber: 'bg-amber-50 text-amber-600',
-    red: 'bg-red-50 text-red-600',
+    blue: 'from-[#007AFF] to-[#5AC8FA]',
+    green: 'from-[#34C759] to-[#30D158]',
+    orange: 'from-[#FF9500] to-[#FF9F0A]',
+    red: 'from-[#FF3B30] to-[#FF453A]',
+    purple: 'from-[#AF52DE] to-[#BF5AF2]',
+    pink: 'from-[#FF2D55] to-[#FF375F]',
   }
   return colors[props.color] || colors.blue
 })
@@ -42,26 +44,25 @@ const trendIcon = computed(() => {
 
 const trendColor = computed(() => {
   if (!props.trend) return ''
-  return props.trend.direction === 'up' ? 'text-green-600' : 'text-red-600'
+  return props.trend.direction === 'up' ? 'text-[#34C759]' : 'text-[#FF3B30]'
 })
 </script>
 
 <template>
-  <div class="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
+  <div class="bg-white rounded-2xl p-4 hover:shadow-lg transition-all duration-300 border border-[#E5E5E5]">
     <div class="flex items-start justify-between">
-      <div class="flex-1">
-        <p class="text-sm font-medium text-gray-500">{{ title }}</p>
-        <p class="mt-2 text-3xl font-display font-bold text-gray-900">{{ value }}</p>
-        <p v-if="subtitle" class="mt-1 text-sm text-gray-500">{{ subtitle }}</p>
-        <div v-if="trend" class="mt-2 flex items-center">
-          <span :class="trendColor" class="text-sm font-medium">
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-medium text-[#8E8E93] truncate">{{ title }}</p>
+        <p class="mt-1 text-2xl font-display font-bold text-[#1D1D1F] truncate">{{ value }}</p>
+        <p v-if="subtitle" class="text-xs text-[#8E8E93] mt-0.5 truncate">{{ subtitle }}</p>
+        <div v-if="trend" class="mt-1.5 flex items-center">
+          <span :class="trendColor" class="text-xs font-semibold">
             {{ trendIcon }} {{ trend.value }}%
           </span>
-          <span class="ml-2 text-sm text-gray-500">vs período anterior</span>
         </div>
       </div>
-      <div :class="colorClasses" class="p-3 rounded-lg">
-        <component :is="icon" class="w-6 h-6" />
+      <div :class="colorClasses" class="p-2.5 rounded-xl bg-gradient-to-br shadow-sm flex-shrink-0 ml-3">
+        <component :is="icon" class="w-5 h-5 text-white" />
       </div>
     </div>
   </div>

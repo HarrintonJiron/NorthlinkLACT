@@ -3,8 +3,9 @@
 namespace App\Modules\Producers\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreProducerRequest extends FormRequest
+class UpdateProducerRequest extends FormRequest
 {
     public function authorize(): bool
     {

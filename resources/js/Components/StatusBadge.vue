@@ -14,24 +14,24 @@ const props = defineProps({
 
 const statusClasses = computed(() => {
   const classes = {
-    draft: 'bg-gray-100 text-gray-700',
-    pending: 'bg-amber-100 text-amber-700',
-    in_progress: 'bg-blue-100 text-blue-700',
-    approved: 'bg-green-100 text-green-700',
-    completed: 'bg-green-100 text-green-700',
-    rejected: 'bg-red-100 text-red-700',
-    blocked: 'bg-red-100 text-red-700',
-    cancelled: 'bg-gray-700 text-white',
-    warning: 'bg-orange-100 text-orange-700',
-    offline: 'bg-gray-100 text-gray-600',
-    conflict: 'bg-red-100 text-red-700',
+    draft: 'bg-[#F5F5F7] text-[#6E6E73]',
+    pending: 'bg-[#FFF4E5] text-[#FF9500]',
+    in_progress: 'bg-[#E5F1FF] text-[#007AFF]',
+    approved: 'bg-[#E8F8E8] text-[#34C759]',
+    completed: 'bg-[#E8F8E8] text-[#34C759]',
+    rejected: 'bg-[#FFE5E5] text-[#FF3B30]',
+    blocked: 'bg-[#FFE5E5] text-[#FF3B30]',
+    cancelled: 'bg-[#F5F5F7] text-[#8E8E93]',
+    warning: 'bg-[#FFF4E5] text-[#FF9500]',
+    offline: 'bg-[#F5F5F7] text-[#8E8E93]',
+    conflict: 'bg-[#FFE5E5] text-[#FF3B30]',
   }
   return classes[props.status] || classes.draft
 })
 </script>
 
 <template>
-  <span :class="statusClasses" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+  <span :class="statusClasses" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold">
     {{ label }}
   </span>
 </template>

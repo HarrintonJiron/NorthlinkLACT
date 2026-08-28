@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Modules\Producers\Controllers\RouteController;
 use App\Modules\Producers\Controllers\MilkCollectionController;
+use App\Modules\Producers\Controllers\ProducerController;
 
 Route::get('/', function () {
     return inertia('Admin/Dashboard');
@@ -29,11 +30,17 @@ Route::prefix('collections')->name('collections.')->group(function () {
     Route::get('/{collection}', [MilkCollectionController::class, 'show'])->name('show');
 });
 
-// Rutas en construcción - redirigen a página de "en construcción"
-Route::get('/producers', function () {
-    return inertia('UnderConstruction');
-})->name('producers.index');
+Route::prefix('producers')->name('producers.')->group(function () {
+    Route::get('/', [ProducerController::class, 'index'])->name('index');
+    Route::get('/create', [ProducerController::class, 'create'])->name('create');
+    Route::post('/', [ProducerController::class, 'store'])->name('store');
+    Route::get('/{producer}', [ProducerController::class, 'show'])->name('show');
+    Route::get('/{producer}/edit', [ProducerController::class, 'edit'])->name('edit');
+    Route::put('/{producer}', [ProducerController::class, 'update'])->name('update');
+    Route::delete('/{producer}', [ProducerController::class, 'destroy'])->name('destroy');
+});
 
+// Rutas en construcción - redirigen a página de "en construcción"
 Route::prefix('payment-sheets')->name('payment-sheets.')->group(function () {
     Route::get('/', function () {
         return inertia('UnderConstruction');
