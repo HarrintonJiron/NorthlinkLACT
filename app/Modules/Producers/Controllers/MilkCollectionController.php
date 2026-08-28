@@ -16,8 +16,8 @@ class MilkCollectionController extends Controller
 
     public function index()
     {
+        // Temporalmente sin filtro por usuario durante desarrollo
         $collections = MilkCollection::with(['producer', 'route', 'company', 'plant'])
-            ->whereHas('company', fn ($q) => $q->whereIn('id', request()->user()->companies->pluck('id')))
             ->orderBy('collection_date', 'desc')
             ->get();
 
@@ -46,7 +46,8 @@ class MilkCollectionController extends Controller
 
     public function show(MilkCollection $collection)
     {
-        $this->authorize('view', $collection);
+        // Temporalmente sin authorize durante desarrollo
+        // $this->authorize('view', $collection);
 
         $collection->load(['producer', 'route', 'company', 'plant', 'collectedBy', 'verifiedBy']);
 

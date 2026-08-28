@@ -16,9 +16,8 @@ class RouteController extends Controller
 
     public function index()
     {
-        $routes = Route::with(['company', 'plant'])
-            ->whereHas('company', fn ($q) => $q->whereIn('id', request()->user()->companies->pluck('id')))
-            ->get();
+        // Temporalmente sin filtro por usuario durante desarrollo
+        $routes = Route::with(['company', 'plant'])->get();
 
         return Inertia::render('Producers/Routes/Index', [
             'routes' => $routes,
@@ -40,7 +39,8 @@ class RouteController extends Controller
 
     public function show(Route $route)
     {
-        $this->authorize('view', $route);
+        // Temporalmente sin authorize durante desarrollo
+        // $this->authorize('view', $route);
 
         $route->load(['company', 'plant', 'assignments.producer']);
 
