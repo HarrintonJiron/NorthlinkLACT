@@ -28,4 +28,62 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', [MilkCollectionController::class, 'store'])->name('store');
         Route::get('/{collection}', [MilkCollectionController::class, 'show'])->name('show');
     });
+
+    // Rutas en construcción - redirigen a página de "en construcción"
+    Route::get('/producers', function () {
+        return inertia('UnderConstruction');
+    })->name('producers.index');
+
+    Route::prefix('payment-sheets')->name('payment-sheets.')->group(function () {
+        Route::get('/', function () {
+            return inertia('UnderConstruction');
+        })->name('index');
+    });
+
+    Route::prefix('payments')->name('payments.')->group(function () {
+        Route::get('/', function () {
+            return inertia('UnderConstruction');
+        })->name('index');
+    });
+
+    Route::prefix('production')->name('production.')->group(function () {
+        Route::get('/', function () {
+            return inertia('UnderConstruction');
+        })->name('index');
+    });
+
+    Route::prefix('inventory')->name('inventory.')->group(function () {
+        Route::get('/', function () {
+            return inertia('UnderConstruction');
+        })->name('index');
+    });
+
+    Route::prefix('employees')->name('employees.')->group(function () {
+        Route::get('/', function () {
+            return inertia('UnderConstruction');
+        })->name('index');
+    });
+
+    Route::prefix('payroll')->name('payroll.')->group(function () {
+        Route::get('/', function () {
+            return inertia('UnderConstruction');
+        })->name('index');
+    });
+
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', function () {
+            return inertia('UnderConstruction');
+        })->name('index');
+    });
+
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', function () {
+            return inertia('UnderConstruction');
+        })->name('index');
+    });
+
+    // Ruta catch-all para cualquier página no implementada
+    Route::get('/{any}', function () {
+        return inertia('UnderConstruction');
+    })->where('any', '.*');
 });
