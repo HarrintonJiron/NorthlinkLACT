@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Producers\Controllers\RouteController;
 use App\Modules\Producers\Controllers\MilkCollectionController;
 use App\Modules\Producers\Controllers\ProducerController;
+use App\Modules\Sumni\Controllers\SumniController;
+use App\Modules\Ruteros\Controllers\RuteroController;
 
 Route::get('/', function () {
     return inertia('Admin/Dashboard');
@@ -16,10 +18,27 @@ Route::prefix('admin')->name('admin.')->group(function () {
     })->name('dashboard');
 });
 
+Route::prefix('sumni')->name('sumni.')->group(function () {
+    Route::get('/', [SumniController::class, 'index'])->name('index');
+    Route::get('/{route}', [SumniController::class, 'show'])->name('show');
+    Route::post('/{route}', [SumniController::class, 'store'])->name('store');
+});
+
+Route::prefix('ruteros')->name('ruteros.')->group(function () {
+    Route::get('/', [RuteroController::class, 'index'])->name('index');
+    Route::post('/', [RuteroController::class, 'store'])->name('store');
+    Route::patch('/{rutero}/toggle', [RuteroController::class, 'toggle'])->name('toggle');
+    Route::put('/{rutero}', [RuteroController::class, 'update'])->name('update');
+    Route::get('/{rutero}', [RuteroController::class, 'show'])->name('show');
+});
+
 Route::prefix('routes')->name('routes.')->group(function () {
     Route::get('/', [RouteController::class, 'index'])->name('index');
     Route::get('/create', [RouteController::class, 'create'])->name('create');
     Route::post('/', [RouteController::class, 'store'])->name('store');
+    Route::patch('/{route}/toggle', [RouteController::class, 'toggle'])->name('toggle');
+    Route::post('/{route}/collections', [RouteController::class, 'storeCollection'])->name('collections.store');
+    Route::put('/{route}', [RouteController::class, 'update'])->name('update');
     Route::get('/{route}', [RouteController::class, 'show'])->name('show');
 });
 

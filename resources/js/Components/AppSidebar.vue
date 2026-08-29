@@ -2,7 +2,9 @@
 import { ref } from 'vue'
 import { 
   LayoutDashboard, 
-  MapPin, 
+  Droplets,
+  MapPin,
+  Truck,
   Users, 
   FileText, 
   Wallet, 
@@ -33,7 +35,9 @@ const navigation = [
     section: 'acopio',
     title: 'Acopio',
     items: [
+      { name: 'Sumni', href: '/sumni', icon: Droplets, current: props.currentRoute?.includes('sumni') },
       { name: 'Rutas', href: '/routes', icon: MapPin, current: props.currentRoute?.includes('routes') },
+      { name: 'Rutero', href: '/ruteros', icon: Truck, current: props.currentRoute?.includes('ruteros') },
       { name: 'Productores', href: '/producers', icon: Users, current: props.currentRoute?.includes('producers') },
     ]
   },

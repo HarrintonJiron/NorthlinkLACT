@@ -14,10 +14,22 @@ class UpdateProducerRequest extends FormRequest
 
     public function rules(): array
     {
+        $producer = $this->route('producer');
+
         return [
-            'code' => 'nullable|string|max:20',
+            'code' => [
+                'nullable',
+                'string',
+                'max:20',
+                Rule::unique('producers', 'code')->ignore($producer),
+            ],
             'full_name' => 'required|string|max:255',
-            'identity_number' => 'nullable|string|regex:/^\d{3}-\d{5}-\d{4}[A-Za-z]?$/',
+            'identity_number' => [
+                'required',
+                'string',
+                'regex:/^\d{3}-\d{5}-\d{4}[A-Za-z]?$/',
+                Rule::unique('producers', 'identity_number')->ignore($producer),
+            ],
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
             'community' => 'nullable|string|max:255',
@@ -26,7 +38,7 @@ class UpdateProducerRequest extends FormRequest
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'active' => 'boolean',
-            'route_id' => 'nullable|exists:routes,id',
+            'route_id' => ['required', Rule::exists('routes', 'id')->whereNull('deleted_at')],
             'payment_method' => 'nullable|in:cash,transfer,check',
         ];
     }
@@ -34,9 +46,12 @@ class UpdateProducerRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'identity_number.required' => 'La cédula es obligatoria.',
             'identity_number.regex' => 'El formato de la cédula debe ser XXX-XXXXX-XXXX (ejemplo: 001-12345-0001A)',
+            'identity_number.unique' => 'Ya existe un productor con esa cédula.',
             'latitude.between' => 'La latitud debe estar entre -90 y 90',
             'longitude.between' => 'La longitud debe estar entre -180 y 180',
+            'route_id.required' => 'Cada cliente debe pertenecer a una ruta',
             'payment_method.in' => 'El método de pago debe ser efectivo, transferencia o cheque',
         ];
     }

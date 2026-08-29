@@ -4,7 +4,7 @@ namespace App\Modules\Producers\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRouteRequest extends FormRequest
+class UpdateRouteRequest extends FormRequest
 {
     public function authorize(): bool
     {

@@ -2,10 +2,14 @@
 
 namespace App\Modules\Producers\Services;
 
-use App\Modules\Producers\Models\MilkCollection;
-use App\Modules\Producers\Requests\StoreMilkCollectionRequest;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use App\Modules\Audit\Models\AuditEvent;
+use App\Modules\Producers\Models\MilkCollection;
+use App\Modules\Producers\Models\Route;
+use App\Modules\Producers\Requests\StoreMilkCollectionRequest;
+use App\Modules\Producers\Requests\StoreRouteCollectionRequest;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class MilkCollectionService
 {
@@ -31,7 +35,7 @@ class MilkCollectionService
                 ->where('plant_id', $request->plant_id)
                 ->where('route_id', $request->route_id)
                 ->where('producer_id', $request->producer_id)
-                ->where('collection_date', $request->collection_date)
+                ->whereDate('collection_date', $request->collection_date)
                 ->lockForUpdate()
                 ->first();
 
@@ -43,10 +47,65 @@ class MilkCollectionService
         });
     }
 
+    public function record(Route $route, int $producerId, string $date, float $liters, $user = null): MilkCollection
+    {
+        $date = Carbon::parse($date)->toDateString();
+        $collectedBy = $user?->id ?: User::query()->value('id');
+
+        if (! $collectedBy) {
+            throw new \RuntimeException('No hay un usuario para registrar el acopio.');
+        }
+
+        return DB::transaction(function () use ($route, $producerId, $date, $liters, $collectedBy, $user) {
+            $collection = MilkCollection::query()
+                ->where('company_id', $route->company_id)
+                ->where('plant_id', $route->plant_id)
+                ->where('route_id', $route->id)
+                ->where('producer_id', $producerId)
+                ->whereDate('collection_date', $date)
+                ->lockForUpdate()
+                ->first();
+
+            if ($collection) {
+                $collection->update([
+                    'liters' => $liters,
+                    'collected_by' => $collectedBy,
+                ]);
+            } else {
+                $collection = MilkCollection::query()->create([
+                    'company_id' => $route->company_id,
+                    'plant_id' => $route->plant_id,
+                    'route_id' => $route->id,
+                    'producer_id' => $producerId,
+                    'collection_date' => $date,
+                    'liters' => $liters,
+                    'collected_by' => $collectedBy,
+                ]);
+            }
+
+            if ($user) {
+                $this->auditCreate($collection, $user);
+            }
+
+            return $collection->fresh();
+        });
+    }
+
+    public function recordForRoute(Route $route, StoreRouteCollectionRequest $request): MilkCollection
+    {
+        return $this->record(
+            $route,
+            (int) $request->validated('producer_id'),
+            $request->validated('collection_date'),
+            (float) $request->validated('liters'),
+            $request->user()
+        );
+    }
+
     protected function auditCreate(MilkCollection $collection, $user): void
     {
         AuditEvent::create([
-            'user_id' => $user->id,
+            'user_id' => $user?->id,
             'company_id' => $collection->company_id,
             'plant_id' => $collection->plant_id,
             'entity_type' => MilkCollection::class,

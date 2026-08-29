@@ -4,7 +4,7 @@ namespace App\Modules\Producers\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreRouteRequest extends FormRequest
+class StoreRouteCollectionRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,14 +14,9 @@ class StoreRouteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'name.required' => 'El nombre de la ruta es obligatorio.',
+            'producer_id' => 'required|exists:producers,id',
+            'collection_date' => 'required|date',
+            'liters' => 'required|numeric|min:0|max:10000',
         ];
     }
 }

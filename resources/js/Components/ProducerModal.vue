@@ -6,7 +6,15 @@ import { User, MapPin, Phone, Building, Check, CreditCard, Truck, X } from '@luc
 const props = defineProps({
   show: Boolean,
   routes: Array,
-  producer: Object
+  producer: Object,
+  defaultRouteId: {
+    type: [String, Number],
+    default: '',
+  },
+  returnTo: {
+    type: String,
+    default: '',
+  },
 })
 
 const emit = defineEmits(['close', 'submit'])
@@ -25,6 +33,7 @@ const form = useForm({
   active: true,
   route_id: '',
   payment_method: 'cash',
+  return_to: '',
 })
 
 watch(() => props.producer, (newProducer) => {
@@ -40,8 +49,18 @@ watch(() => props.producer, (newProducer) => {
     form.latitude = newProducer.latitude || ''
     form.longitude = newProducer.longitude || ''
     form.active = newProducer.active ?? true
-    form.route_id = newProducer.active_assignment?.route_id || ''
+    form.route_id = String(newProducer.active_assignment?.route_id || props.defaultRouteId || '')
     form.payment_method = newProducer.active_assignment?.payment_method || 'cash'
+    form.return_to = props.returnTo || ''
+  }
+})
+
+watch(() => props.show, (visible) => {
+  if (visible && !props.producer) {
+    form.reset()
+    form.clearErrors()
+    form.route_id = props.defaultRouteId ? String(props.defaultRouteId) : ''
+    form.return_to = props.returnTo || ''
   }
 })
 
@@ -65,6 +84,14 @@ const handleIdentityInput = (e) => {
 }
 
 const submit = () => {
+  if (!form.route_id) {
+    form.errors.route_id = 'Cada cliente debe pertenecer a una ruta'
+    return
+  }
+  if (!form.identity_number) {
+    form.errors.identity_number = 'La cédula es obligatoria.'
+    return
+  }
   if (!validateIdentityNumber(form.identity_number)) {
     form.errors.identity_number = 'El formato de la cédula debe ser XXX-XXXXX-XXXX (ejemplo: 001-12345-0001A)'
     return
@@ -236,19 +263,21 @@ const close = () => {
           </div>
 
           <div>
-            <label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Ruta</label>
+            <label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Ruta *</label>
             <div class="relative">
               <MapPin class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#8E8E93]" />
-              <select 
+              <select
                 v-model="form.route_id"
+                required
                 class="pl-10 w-full bg-[#F5F5F7] border-none rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 py-2.5 px-3 text-sm text-[#1D1D1F]"
               >
                 <option value="">Seleccionar ruta</option>
-                <option v-for="route in routes" :key="route.id" :value="route.id">
-                  {{ route.name }}
+                <option v-for="route in routes" :key="route.id" :value="String(route.id)">
+                  {{ route.code }} — {{ route.name }}
                 </option>
               </select>
             </div>
+            <p v-if="form.errors.route_id" class="text-xs text-[#FF3B30] mt-1">{{ form.errors.route_id }}</p>
           </div>
 
           <div>

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class AuditEvent extends Model
 {
+    public const UPDATED_AT = null;
+
     protected $fillable = [
         'user_id',
         'company_id',

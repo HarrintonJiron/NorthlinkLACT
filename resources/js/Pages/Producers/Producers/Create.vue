@@ -202,11 +202,12 @@ const submit = () => {
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Ruta</label>
+          <label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Ruta *</label>
           <div class="relative">
             <MapPin class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[#8E8E93]" />
-            <select 
+            <select
               v-model="form.route_id"
+              required
               class="pl-10 w-full bg-[#F5F5F7] border-none rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 py-2.5 px-3 text-sm text-[#1D1D1F]"
             >
               <option value="">Seleccionar ruta</option>

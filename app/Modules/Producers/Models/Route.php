@@ -40,8 +40,18 @@ class Route extends Model
         return $this->hasMany(ProducerRouteAssignment::class);
     }
 
+    public function activeAssignments()
+    {
+        return $this->hasMany(ProducerRouteAssignment::class)->whereNull('ended_at');
+    }
+
     public function collections()
     {
         return $this->hasMany(MilkCollection::class);
+    }
+
+    public function rutero()
+    {
+        return $this->hasOne(\App\Modules\Ruteros\Models\Rutero::class);
     }
 }

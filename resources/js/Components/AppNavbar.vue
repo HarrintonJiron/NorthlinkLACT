@@ -16,7 +16,9 @@ const navigation = [
     name: 'Acopio', 
     icon: null,
     children: [
+      { name: 'Sumni', href: '/sumni' },
       { name: 'Rutas', href: '/routes' },
+      { name: 'Rutero', href: '/ruteros' },
       { name: 'Productores', href: '/producers' },
     ]
   },

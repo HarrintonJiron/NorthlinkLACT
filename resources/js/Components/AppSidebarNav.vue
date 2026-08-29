@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Package, MapPin, Users, FileText, Wallet, Factory, UserCheck, Calculator, BarChart3, Settings } from '@lucide/vue'
+import { Package, Droplets, MapPin, Truck, Users, FileText, Wallet, Factory, UserCheck, Calculator, BarChart3, Settings } from '@lucide/vue'
 
 const props = defineProps({
   currentRoute: String
@@ -8,7 +8,9 @@ const props = defineProps({
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: Package, current: props.currentRoute === '/' },
+  { name: 'Sumni', href: '/sumni', icon: Droplets, current: props.currentRoute?.includes('sumni') },
   { name: 'Rutas', href: '/routes', icon: MapPin, current: props.currentRoute?.includes('routes') },
+  { name: 'Rutero', href: '/ruteros', icon: Truck, current: props.currentRoute?.includes('ruteros') },
   { name: 'Productores', href: '/producers', icon: Users, current: props.currentRoute?.includes('producers') },
   { name: 'Planillas', href: '/payment-sheets', icon: FileText },
   { name: 'Pagos', href: '/payments', icon: Wallet },
