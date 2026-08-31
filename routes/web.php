@@ -64,15 +64,23 @@ Route::prefix('producers')->name('producers.')->group(function () {
 });
 
 // Rutas en construcción - redirigen a página de "en construcción"
+Route::prefix('finanzas')->name('finanzas.')->group(function () {
+    Route::get('/', [\App\Modules\Finanzas\Controllers\FinanceTransactionController::class, 'index'])->name('index');
+    Route::post('/transactions', [\App\Modules\Finanzas\Controllers\FinanceTransactionController::class, 'store'])->name('transactions.store');
+    Route::put('/transactions/{transaction}', [\App\Modules\Finanzas\Controllers\FinanceTransactionController::class, 'update'])->name('transactions.update');
+    Route::patch('/transactions/{transaction}/toggle', [\App\Modules\Finanzas\Controllers\FinanceTransactionController::class, 'toggle'])->name('transactions.toggle');
+    Route::delete('/transactions/{transaction}', [\App\Modules\Finanzas\Controllers\FinanceTransactionController::class, 'destroy'])->name('transactions.destroy');
+});
+
 Route::prefix('payment-sheets')->name('payment-sheets.')->group(function () {
     Route::get('/', function () {
-        return inertia('UnderConstruction');
+        return redirect()->route('finanzas.index');
     })->name('index');
 });
 
 Route::prefix('payments')->name('payments.')->group(function () {
     Route::get('/', function () {
-        return inertia('UnderConstruction');
+        return redirect()->route('finanzas.index');
     })->name('index');
 });
 

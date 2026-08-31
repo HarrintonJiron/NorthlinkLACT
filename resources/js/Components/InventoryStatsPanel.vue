@@ -45,24 +45,37 @@ const active = computed(() => props.stats.active || 0)
 const inactive = computed(() => props.stats.inactive || 0)
 const lowStock = computed(() => props.stats.low_stock || 0)
 const nuevas = computed(() => props.stats.new_this_month || 0)
-const units = computed(() => props.stats.units || 0)
 
 const percent = (value) => {
   if (!total.value) return 0
   return Math.round((value / total.value) * 100)
 }
 
-const pie = computed(() => ({
-  activeOk: Math.max(active.value - lowStock.value, 0),
-  lowStock: lowStock.value,
-  inactive: inactive.value,
-}))
+const statusBars = computed(() => {
+  const items = [
+    { label: 'Activos', count: active.value, tone: 'low' },
+    { label: 'Inactivos', count: inactive.value, tone: 'medium' },
+    { label: 'Stock bajo', count: lowStock.value, tone: 'high' },
+  ]
 
-const circumference = 2 * Math.PI * 42
-const toDash = (value) => (total.value ? (value / total.value) * circumference : 0)
-const lowStockDash = computed(() => toDash(pie.value.lowStock))
-const activeOkDash = computed(() => toDash(pie.value.activeOk))
-const inactiveDash = computed(() => toDash(pie.value.inactive))
+  return items.map((item) => ({
+    ...item,
+    widthPct: total.value && item.count
+      ? Math.max(4, Math.round((item.count / total.value) * 100))
+      : 0,
+    barClass: item.tone === 'high'
+      ? 'bg-[#FF3B30]'
+      : item.tone === 'medium'
+        ? 'bg-[#FF9500]'
+        : 'bg-[#007AFF]',
+  }))
+})
+
+const statusLegend = computed(() => [
+  { label: 'Activos', value: active.value, pct: percent(active.value), dot: 'bg-[#007AFF]', valueClass: 'text-[#1D1D1F]' },
+  { label: 'Inactivos', value: inactive.value, pct: percent(inactive.value), dot: 'bg-[#FF9500]', valueClass: 'text-[#1D1D1F]' },
+  { label: 'Stock bajo', value: lowStock.value, pct: percent(lowStock.value), dot: 'bg-[#FF3B30]', valueClass: 'text-[#FF3B30]' },
+])
 
 const monthly = computed(() => props.stats.monthly || [])
 const altasSeries = computed(() => {
@@ -106,12 +119,6 @@ const chart = computed(() => {
 
   return { width, height, line, area, labels }
 })
-
-const topUnits = computed(() =>
-  (props.stats.by_unit || [])
-    .filter((unit) => unit.products > 0)
-    .slice(0, 4)
-)
 
 const metrics = computed(() => [
   {
@@ -160,9 +167,6 @@ const metrics = computed(() => [
             Inventario
           </h2>
           <p class="mt-1 text-sm text-[#8E8E93] capitalize">{{ dateLabel }}</p>
-          <p class="mt-1 text-xs text-[#8E8E93]">
-            {{ units }} unidades de medida disponibles
-          </p>
         </div>
         <div class="flex flex-col sm:flex-row gap-2 self-start">
           <button
@@ -220,94 +224,57 @@ const metrics = computed(() => [
             </button>
           </div>
 
-          <div class="flex flex-col sm:flex-row sm:items-center gap-5">
-            <div class="relative h-32 w-32 mx-auto sm:mx-0 shrink-0">
-              <svg viewBox="0 0 120 120" class="h-full w-full -rotate-90">
-                <circle cx="60" cy="60" r="42" fill="none" stroke="#E5E5E5" stroke-width="12" />
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="42"
-                  fill="none"
-                  stroke="#FF3B30"
-                  stroke-width="12"
-                  stroke-linecap="butt"
-                  :stroke-dasharray="`${lowStockDash} ${circumference}`"
-                />
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="42"
-                  fill="none"
-                  stroke="#007AFF"
-                  stroke-width="12"
-                  stroke-linecap="butt"
-                  :stroke-dasharray="`${activeOkDash} ${circumference}`"
-                  :stroke-dashoffset="-lowStockDash"
-                />
-                <circle
-                  cx="60"
-                  cy="60"
-                  r="42"
-                  fill="none"
-                  stroke="#8E8E93"
-                  stroke-width="12"
-                  stroke-linecap="butt"
-                  :stroke-dasharray="`${inactiveDash} ${circumference}`"
-                  :stroke-dashoffset="-(lowStockDash + activeOkDash)"
-                />
-              </svg>
-              <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <p class="text-[10px] tracking-[0.16em] text-[#8E8E93]">TOTAL</p>
-                <p class="text-xl font-display font-bold text-[#1D1D1F] tabular-nums">{{ total }}</p>
+          <div class="flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-5">
+            <div class="flex-1 min-w-0 rounded-2xl border border-[#E5E5E5] bg-[#FAFAFA] px-4 py-3">
+              <div class="flex items-center justify-between gap-3 mb-3">
+                <div class="min-w-0">
+                  <p class="text-[10px] font-medium uppercase tracking-wide text-[#8E8E93]">Total inventario</p>
+                  <p class="text-lg font-display font-bold text-[#1D1D1F] tabular-nums leading-tight">
+                    {{ total }} productos
+                  </p>
+                </div>
+                <div class="p-2 rounded-xl bg-gradient-to-br from-[#007AFF] to-[#0056CC] shadow-sm shrink-0">
+                  <Package class="w-4 h-4 text-white" />
+                </div>
+              </div>
+
+              <div class="space-y-2.5">
+                <div
+                  v-for="bar in statusBars"
+                  :key="bar.label"
+                  class="flex items-center gap-2.5 min-w-0"
+                >
+                  <span class="w-[4.5rem] shrink-0 text-[10px] text-[#8E8E93] truncate">{{ bar.label }}</span>
+                  <div class="flex-1 h-2.5 bg-[#E5E5E5] rounded-full overflow-hidden min-w-0">
+                    <div
+                      class="h-full rounded-full transition-all"
+                      :class="bar.barClass"
+                      :style="{ width: `${bar.widthPct}%` }"
+                    />
+                  </div>
+                  <span class="w-6 shrink-0 text-[11px] font-semibold tabular-nums text-[#1D1D1F] text-right">
+                    {{ bar.count }}
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div class="flex-1 space-y-2.5 w-full">
-              <div class="flex items-center justify-between gap-3 rounded-xl bg-white px-3 py-2.5 border border-[#E5E5E5]">
-                <div class="flex items-center gap-2 min-w-0">
-                  <span class="h-2.5 w-2.5 rounded-full bg-[#007AFF] shrink-0"></span>
-                  <span class="text-sm text-[#1D1D1F]">Activos</span>
-                </div>
-                <div class="flex items-center gap-3 shrink-0">
-                  <span class="text-sm font-semibold tabular-nums text-[#1D1D1F]">{{ active }}</span>
-                  <span class="text-xs text-[#8E8E93] w-9 text-right">{{ percent(active) }}%</span>
-                </div>
-              </div>
-              <div class="flex items-center justify-between gap-3 rounded-xl bg-white px-3 py-2.5 border border-[#E5E5E5]">
-                <div class="flex items-center gap-2 min-w-0">
-                  <span class="h-2.5 w-2.5 rounded-full bg-[#8E8E93] shrink-0"></span>
-                  <span class="text-sm text-[#1D1D1F]">Inactivos</span>
-                </div>
-                <div class="flex items-center gap-3 shrink-0">
-                  <span class="text-sm font-semibold tabular-nums text-[#1D1D1F]">{{ inactive }}</span>
-                  <span class="text-xs text-[#8E8E93] w-9 text-right">{{ percent(inactive) }}%</span>
-                </div>
-              </div>
-              <div class="flex items-center justify-between gap-3 rounded-xl bg-white px-3 py-2.5 border border-[#FFE5E5]">
-                <div class="flex items-center gap-2 min-w-0">
-                  <span class="h-2.5 w-2.5 rounded-full bg-[#FF3B30] shrink-0"></span>
-                  <span class="text-sm text-[#1D1D1F]">Stock bajo</span>
-                </div>
-                <div class="flex items-center gap-3 shrink-0">
-                  <span class="text-sm font-semibold tabular-nums text-[#FF3B30]">{{ lowStock }}</span>
-                  <span class="text-xs text-[#8E8E93] w-9 text-right">{{ percent(lowStock) }}%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div v-if="topUnits.length" class="mt-4 pt-4 border-t border-[#E5E5E5]">
-            <p class="text-[11px] tracking-[0.14em] uppercase text-[#8E8E93] mb-2">Por unidad de medida</p>
-            <div class="flex flex-wrap gap-2">
-              <span
-                v-for="unit in topUnits"
-                :key="unit.id"
-                class="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#E5E5E5] px-2.5 py-1 text-xs text-[#1D1D1F]"
+            <div class="lg:w-[9.5rem] shrink-0 grid grid-cols-3 lg:grid-cols-1 gap-2 lg:gap-2">
+              <div
+                v-for="item in statusLegend"
+                :key="item.label"
+                class="rounded-xl bg-white border px-2.5 py-2 text-center lg:text-right"
+                :class="item.label === 'Stock bajo' ? 'border-[#FFE5E5]' : 'border-[#E5E5E5]'"
               >
-                {{ unit.name }}
-                <span class="font-semibold tabular-nums text-[#007AFF]">{{ unit.products }}</span>
-              </span>
+                <div class="flex items-center justify-center lg:justify-end gap-1 mb-0.5">
+                  <span class="h-1.5 w-1.5 rounded-full shrink-0" :class="item.dot"></span>
+                  <span class="text-[10px] text-[#8E8E93] truncate">{{ item.label }}</span>
+                </div>
+                <p class="text-sm font-display font-bold tabular-nums leading-none" :class="item.valueClass">
+                  {{ item.value }}
+                </p>
+                <p class="text-[10px] text-[#8E8E93] tabular-nums mt-0.5">{{ item.pct }}%</p>
+              </div>
             </div>
           </div>
         </div>

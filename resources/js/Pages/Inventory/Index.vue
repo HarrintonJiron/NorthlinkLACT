@@ -11,7 +11,6 @@ import {
   Search,
   Pencil,
   Power,
-  Trash2,
   AlertTriangle,
   Ruler,
   Calendar,
@@ -136,12 +135,6 @@ const handleSubmit = (form) => {
 const toggleProduct = (product) => {
   router.patch(`/inventory/products/${product.id}/toggle`, {}, { preserveScroll: true })
 }
-
-const deleteProduct = (product) => {
-  if (!window.confirm(`¿Eliminar "${product.name}"? Esta acción no se puede deshacer.`)) return
-
-  router.delete(`/inventory/products/${product.id}`, { preserveScroll: true })
-}
 </script>
 
 <template>
@@ -255,18 +248,13 @@ const deleteProduct = (product) => {
                   <button
                     type="button"
                     @click="toggleProduct(product)"
-                    class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#F5F5F7] text-[#6E6E73] hover:bg-[#E5E5E5]"
-                    :title="product.active ? 'Desactivar' : 'Activar'"
+                    class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors"
+                    :class="product.active
+                      ? 'bg-[#F5F5F7] text-[#6E6E73] hover:bg-[#E5E5E5]'
+                      : 'bg-[#E8F8E8] text-[#1D7A32] hover:bg-[#DDF3DD]'"
                   >
-                    <Power class="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    @click="deleteProduct(product)"
-                    class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#FFE5E5] text-[#FF3B30] hover:bg-[#FFD1D1]"
-                    title="Eliminar"
-                  >
-                    <Trash2 class="w-3.5 h-3.5" />
+                    <Power class="w-3.5 h-3.5 mr-1" />
+                    {{ product.active ? 'Inhabilitar' : 'Habilitar' }}
                   </button>
                 </div>
               </td>

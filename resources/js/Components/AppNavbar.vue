@@ -26,8 +26,7 @@ const navigation = [
     name: 'Finanzas', 
     icon: null,
     children: [
-      { name: 'Planillas', href: '/payment-sheets' },
-      { name: 'Pagos', href: '/payments' },
+      { name: 'Movimientos', href: '/finanzas' },
     ]
   },
   { 
