@@ -9,6 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ruteros', function (Blueprint $table) {
+            $table->dropForeign(['route_id']);
             $table->dropUnique(['route_id']);
         });
 
@@ -18,12 +19,14 @@ return new class extends Migration
 
         Schema::table('ruteros', function (Blueprint $table) {
             $table->unique('route_id');
+            $table->foreign('route_id')->references('id')->on('routes')->cascadeOnDelete();
         });
     }
 
     public function down(): void
     {
         Schema::table('ruteros', function (Blueprint $table) {
+            $table->dropForeign(['route_id']);
             $table->dropUnique(['route_id']);
         });
 
@@ -33,6 +36,7 @@ return new class extends Migration
 
         Schema::table('ruteros', function (Blueprint $table) {
             $table->unique('route_id');
+            $table->foreign('route_id')->references('id')->on('routes')->cascadeOnDelete();
         });
     }
 };

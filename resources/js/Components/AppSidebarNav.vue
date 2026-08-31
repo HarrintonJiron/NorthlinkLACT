@@ -15,10 +15,10 @@ const navigation = [
   { name: 'Finanzas', href: '/finanzas', icon: Wallet, current: props.currentRoute?.includes('finanzas') || props.currentRoute?.includes('payment') },
   { name: 'Producción', href: '/production', icon: Factory },
   { name: 'Inventario', href: '/inventory', icon: Factory },
-  { name: 'Personal', href: '/employees', icon: UserCheck },
+  { name: 'Personal', href: '/employees', icon: UserCheck, current: props.currentRoute?.includes('employees') },
   { name: 'Nómina', href: '/payroll', icon: Calculator },
   { name: 'Reportes', href: '/reports', icon: BarChart3 },
-  { name: 'Configuración', href: '/settings', icon: Settings },
+  { name: 'Configuración', href: '/settings', icon: Settings, current: props.currentRoute?.includes('settings') },
 ]
 </script>
 

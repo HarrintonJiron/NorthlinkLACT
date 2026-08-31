@@ -1,11 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Modules\Producers\Controllers\RouteController;
+use App\Modules\Admin\Controllers\UserController;
+use App\Modules\Finanzas\Controllers\FinanceTransactionController;
+use App\Modules\Inventory\Controllers\InventoryProductController;
+use App\Modules\Personnel\Controllers\EmployeeController;
+use App\Modules\Personnel\Controllers\EmployeeRoleController;
 use App\Modules\Producers\Controllers\MilkCollectionController;
 use App\Modules\Producers\Controllers\ProducerController;
-use App\Modules\Sumni\Controllers\SumniController;
+use App\Modules\Producers\Controllers\RouteController;
 use App\Modules\Ruteros\Controllers\RuteroController;
+use App\Modules\Sumni\Controllers\SumniController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return inertia('Admin/Dashboard');
@@ -65,11 +70,11 @@ Route::prefix('producers')->name('producers.')->group(function () {
 
 // Rutas en construcción - redirigen a página de "en construcción"
 Route::prefix('finanzas')->name('finanzas.')->group(function () {
-    Route::get('/', [\App\Modules\Finanzas\Controllers\FinanceTransactionController::class, 'index'])->name('index');
-    Route::post('/transactions', [\App\Modules\Finanzas\Controllers\FinanceTransactionController::class, 'store'])->name('transactions.store');
-    Route::put('/transactions/{transaction}', [\App\Modules\Finanzas\Controllers\FinanceTransactionController::class, 'update'])->name('transactions.update');
-    Route::patch('/transactions/{transaction}/toggle', [\App\Modules\Finanzas\Controllers\FinanceTransactionController::class, 'toggle'])->name('transactions.toggle');
-    Route::delete('/transactions/{transaction}', [\App\Modules\Finanzas\Controllers\FinanceTransactionController::class, 'destroy'])->name('transactions.destroy');
+    Route::get('/', [FinanceTransactionController::class, 'index'])->name('index');
+    Route::post('/transactions', [FinanceTransactionController::class, 'store'])->name('transactions.store');
+    Route::put('/transactions/{transaction}', [FinanceTransactionController::class, 'update'])->name('transactions.update');
+    Route::patch('/transactions/{transaction}/toggle', [FinanceTransactionController::class, 'toggle'])->name('transactions.toggle');
+    Route::delete('/transactions/{transaction}', [FinanceTransactionController::class, 'destroy'])->name('transactions.destroy');
 });
 
 Route::prefix('payment-sheets')->name('payment-sheets.')->group(function () {
@@ -91,18 +96,22 @@ Route::prefix('production')->name('production.')->group(function () {
 });
 
 Route::prefix('inventory')->name('inventory.')->group(function () {
-    Route::get('/', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'index'])->name('index');
-    Route::post('/products', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'store'])->name('products.store');
-    Route::post('/products/bulk', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'storeBulk'])->name('products.bulk');
-    Route::put('/products/{product}', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'update'])->name('products.update');
-    Route::patch('/products/{product}/toggle', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'toggle'])->name('products.toggle');
-    Route::delete('/products/{product}', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'destroy'])->name('products.destroy');
+    Route::get('/', [InventoryProductController::class, 'index'])->name('index');
+    Route::post('/products', [InventoryProductController::class, 'store'])->name('products.store');
+    Route::post('/products/bulk', [InventoryProductController::class, 'storeBulk'])->name('products.bulk');
+    Route::put('/products/{product}', [InventoryProductController::class, 'update'])->name('products.update');
+    Route::patch('/products/{product}/toggle', [InventoryProductController::class, 'toggle'])->name('products.toggle');
+    Route::delete('/products/{product}', [InventoryProductController::class, 'destroy'])->name('products.destroy');
 });
 
 Route::prefix('employees')->name('employees.')->group(function () {
-    Route::get('/', function () {
-        return inertia('UnderConstruction');
-    })->name('index');
+    Route::get('/', [EmployeeController::class, 'index'])->name('index');
+    Route::post('/', [EmployeeController::class, 'store'])->name('store');
+    Route::put('/{employee}', [EmployeeController::class, 'update'])->name('update');
+    Route::patch('/{employee}/status', [EmployeeController::class, 'updateStatus'])->name('status.update');
+    Route::post('/roles', [EmployeeRoleController::class, 'store'])->name('roles.store');
+    Route::put('/roles/{employeeRole}', [EmployeeRoleController::class, 'update'])->name('roles.update');
+    Route::patch('/roles/{employeeRole}/status', [EmployeeRoleController::class, 'updateStatus'])->name('roles.status.update');
 });
 
 Route::prefix('payroll')->name('payroll.')->group(function () {
@@ -119,8 +128,13 @@ Route::prefix('reports')->name('reports.')->group(function () {
 
 Route::prefix('settings')->name('settings.')->group(function () {
     Route::get('/', function () {
-        return inertia('UnderConstruction');
+        return inertia('Settings/Index');
     })->name('index');
+
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::patch('/users/{user}/status', [UserController::class, 'updateStatus'])->name('users.status.update');
 });
 
 // Ruta catch-all para cualquier página no implementada

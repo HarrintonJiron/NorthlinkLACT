@@ -1,0 +1,11 @@
+.git
+.github
+.idea
+.vscode
+.env
+node_modules
+storage/logs/*.log
+database/*.sqlite
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
