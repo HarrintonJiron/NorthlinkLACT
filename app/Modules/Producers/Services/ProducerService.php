@@ -5,17 +5,22 @@ namespace App\Modules\Producers\Services;
 use App\Modules\Producers\Models\MilkCollection;
 use App\Modules\Producers\Models\MilkPrice;
 use App\Modules\Producers\Models\Producer;
+use App\Modules\Producers\Models\ProducerWeekAdjustment;
 use App\Modules\Producers\Models\Route;
 use Carbon\Carbon;
 
 class ProducerService
 {
-    public function stats(): array
+    public function stats(?string $week = null): array
     {
         $total = Producer::query()->count();
         $active = Producer::query()->where('active', true)->count();
         $inactive = Producer::query()->where('active', false)->count();
-        $withoutRoute = Producer::query()->whereDoesntHave('activeAssignment')->count();
+        $weekEnd = $this->weekRange($week)['end'];
+        $penalized = ProducerWeekAdjustment::query()
+            ->whereDate('week_end', $weekEnd)
+            ->whereNotNull('density_price')
+            ->count();
         $newThisMonth = Producer::query()
             ->where('created_at', '>=', now()->startOfMonth())
             ->count();
@@ -52,7 +57,7 @@ class ProducerService
             'total' => $total,
             'active' => $active,
             'inactive' => $inactive,
-            'without_route' => $withoutRoute,
+            'penalized' => $penalized,
             'new_this_month' => $newThisMonth,
             'monthly' => $monthly->values()->all(),
         ];
@@ -193,24 +198,42 @@ class ProducerService
             ->whereDate('collection_date', '>=', $range['start'])
             ->whereDate('collection_date', '<=', $range['end'])
             ->when($routeId, fn ($query) => $query->where('route_id', $routeId))
-            ->get(['producer_id', 'collection_date', 'liters'])
+            ->get(['producer_id', 'collection_date', 'liters', 'temperature'])
             ->groupBy('producer_id');
 
-        $rows = $producers->map(function (Producer $producer) use ($collections, $days, $price) {
+        $adjustments = ProducerWeekAdjustment::query()
+            ->whereDate('week_end', $range['end'])
+            ->whereIn('producer_id', $producers->pluck('id'))
+            ->get()
+            ->keyBy('producer_id');
+
+        $rows = $producers->map(function (Producer $producer) use ($collections, $days, $price, $adjustments) {
             $daily = [];
             foreach ($days as $day) {
                 $daily[$day['date']] = 0.0;
             }
 
+            $densities = [];
             foreach ($collections->get($producer->id, []) as $collection) {
                 $date = $collection->collection_date->toDateString();
                 if (array_key_exists($date, $daily)) {
                     $daily[$date] = round($daily[$date] + (float) $collection->liters, 2);
                 }
+                if ($collection->temperature !== null) {
+                    $densities[] = (float) $collection->temperature;
+                }
             }
 
             $weekLiters = round(array_sum($daily), 2);
             $daysCollected = collect($daily)->filter(fn ($value) => $value > 0)->count();
+            $adjustment = $adjustments->get($producer->id);
+            $densityPrice = $adjustment?->density_price !== null
+                ? (float) $adjustment->density_price
+                : null;
+            $appliedPrice = $densityPrice ?? $price;
+            $advance = $adjustment ? (float) $adjustment->advance_amount : 0.0;
+            $gross = round($weekLiters * $appliedPrice, 2);
+            $amount = round($gross - $advance, 2);
 
             return [
                 'id' => $producer->id,
@@ -218,6 +241,10 @@ class ProducerService
                 'full_name' => $producer->full_name,
                 'identity_number' => $producer->identity_number,
                 'phone' => $producer->phone,
+                'address' => $producer->address,
+                'community' => $producer->community,
+                'municipality' => $producer->municipality,
+                'department' => $producer->department,
                 'active' => $producer->active,
                 'route' => $producer->activeAssignment?->route
                     ? [
@@ -229,8 +256,17 @@ class ProducerService
                 'daily' => $daily,
                 'days' => $daysCollected,
                 'liters' => $weekLiters,
-                'price' => $price,
-                'amount' => round($weekLiters * $price, 2),
+                'base_price' => $price,
+                'density_price' => $densityPrice,
+                'price' => $appliedPrice,
+                'advance_amount' => $advance,
+                'gross_amount' => $gross,
+                'amount' => $amount,
+                'notes' => $adjustment?->notes,
+                'avg_density' => count($densities)
+                    ? round(array_sum($densities) / count($densities), 2)
+                    : null,
+                'densities' => $densities,
             ];
         })->values()->all();
 
@@ -249,7 +285,10 @@ class ProducerService
                 'days' => collect($rows)->sum('days'),
                 'daily' => $dailyTotals,
                 'liters' => round(collect($rows)->sum('liters'), 2),
+                'gross_amount' => round(collect($rows)->sum('gross_amount'), 2),
+                'advance_amount' => round(collect($rows)->sum('advance_amount'), 2),
                 'amount' => round(collect($rows)->sum('amount'), 2),
+                'penalized' => collect($rows)->whereNotNull('density_price')->count(),
             ],
         ];
     }

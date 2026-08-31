@@ -190,4 +190,80 @@ class ProducerModuleTest extends TestCase
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page->has('clients', 0));
     }
+
+    public function test_week_adjustment_applies_density_price_and_advance_to_payroll(): void
+    {
+        $this->createPrice(20);
+        $route = $this->createRoute();
+        $producer = $this->createProducer($route, ['full_name' => 'Con Multa']);
+        $this->collectMilk($producer, 10, now()->toDateString(), null, 23.5);
+
+        $weekEnd = app(\App\Modules\Producers\Services\ProducerService::class)
+            ->currentPayThursday()
+            ->toDateString();
+
+        $this->put('/producers/'.$producer->id.'/week-adjustment', [
+            'week_end' => $weekEnd,
+            'density_price' => 15,
+            'advance_amount' => 40,
+            'notes' => 'Multa por densidad baja',
+            'return_to' => '/producers?week='.$weekEnd,
+        ])
+            ->assertRedirect('/producers?week='.$weekEnd)
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseHas('producer_week_adjustments', [
+            'producer_id' => $producer->id,
+            'density_price' => 15,
+            'advance_amount' => 40,
+        ]);
+
+        $this->assertTrue(
+            \App\Modules\Producers\Models\ProducerWeekAdjustment::query()
+                ->where('producer_id', $producer->id)
+                ->whereDate('week_end', $weekEnd)
+                ->exists()
+        );
+
+        // 10 L * 15 = 150 bruto − 40 adelanto = 110
+        $this->get('/producers?week='.$weekEnd)
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('report.rows.0.full_name', 'Con Multa')
+                ->where('report.rows.0.density_price', 15)
+                ->where('report.rows.0.advance_amount', 40)
+                ->where('report.rows.0.gross_amount', 150)
+                ->where('report.rows.0.amount', 110)
+                ->where('report.totals.amount', 110)
+                ->where('report.totals.penalized', 1)
+                ->where('stats.penalized', 1)
+            );
+
+        $this->put('/producers/'.$producer->id.'/week-adjustment', [
+            'week_end' => $weekEnd,
+            'density_price' => 12,
+            'advance_amount' => 20,
+            'notes' => 'Actualización de penalización',
+            'return_to' => '/producers?week='.$weekEnd,
+        ])
+            ->assertRedirect('/producers?week='.$weekEnd)
+            ->assertSessionHas('success');
+
+        $this->assertSame(
+            1,
+            \App\Modules\Producers\Models\ProducerWeekAdjustment::query()
+                ->where('producer_id', $producer->id)
+                ->whereDate('week_end', $weekEnd)
+                ->count()
+        );
+
+        $this->get('/producers?week='.$weekEnd)
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('report.rows.0.density_price', 12)
+                ->where('report.rows.0.advance_amount', 20)
+                ->where('report.rows.0.gross_amount', 120)
+                ->where('report.rows.0.amount', 100)
+            );
+    }
 }

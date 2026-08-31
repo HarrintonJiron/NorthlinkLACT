@@ -56,6 +56,7 @@ Route::prefix('producers')->name('producers.')->group(function () {
     Route::get('/', [ProducerController::class, 'index'])->name('index');
     Route::get('/create', [ProducerController::class, 'create'])->name('create');
     Route::post('/', [ProducerController::class, 'store'])->name('store');
+    Route::put('/{producer}/week-adjustment', [ProducerController::class, 'storeWeekAdjustment'])->name('week-adjustment');
     Route::get('/{producer}', [ProducerController::class, 'show'])->name('show');
     Route::get('/{producer}/edit', [ProducerController::class, 'edit'])->name('edit');
     Route::put('/{producer}', [ProducerController::class, 'update'])->name('update');
@@ -82,9 +83,12 @@ Route::prefix('production')->name('production.')->group(function () {
 });
 
 Route::prefix('inventory')->name('inventory.')->group(function () {
-    Route::get('/', function () {
-        return inertia('UnderConstruction');
-    })->name('index');
+    Route::get('/', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'index'])->name('index');
+    Route::post('/products', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'store'])->name('products.store');
+    Route::post('/products/bulk', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'storeBulk'])->name('products.bulk');
+    Route::put('/products/{product}', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'update'])->name('products.update');
+    Route::patch('/products/{product}/toggle', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'toggle'])->name('products.toggle');
+    Route::delete('/products/{product}', [\App\Modules\Inventory\Controllers\InventoryProductController::class, 'destroy'])->name('products.destroy');
 });
 
 Route::prefix('employees')->name('employees.')->group(function () {

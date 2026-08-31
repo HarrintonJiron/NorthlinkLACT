@@ -1,19 +1,23 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { List, Plus, Users, UserCheck, UserX, AlertTriangle } from '@lucide/vue'
+import {
+  List,
+  Plus,
+  Package,
+  PackageCheck,
+  PackageX,
+  AlertTriangle,
+  Upload,
+} from '@lucide/vue'
 
 const props = defineProps({
   stats: {
     type: Object,
     required: true,
   },
-  penalized: {
-    type: Number,
-    default: null,
-  },
 })
 
-const emit = defineEmits(['registrar-cliente', 'ver-penalizados'])
+const emit = defineEmits(['agregar-producto', 'ver-stock-bajo', 'carga-masiva'])
 
 const now = ref(new Date())
 let timer = null
@@ -39,36 +43,25 @@ const dateLabel = computed(() =>
 const total = computed(() => props.stats.total || 0)
 const active = computed(() => props.stats.active || 0)
 const inactive = computed(() => props.stats.inactive || 0)
-const penalized = computed(() =>
-  props.penalized != null ? Number(props.penalized) : Number(props.stats.penalized || 0)
-)
+const lowStock = computed(() => props.stats.low_stock || 0)
 const nuevas = computed(() => props.stats.new_this_month || 0)
+const units = computed(() => props.stats.units || 0)
 
 const percent = (value) => {
   if (!total.value) return 0
   return Math.round((value / total.value) * 100)
 }
 
-const pie = computed(() => {
-  const punished = Math.min(penalized.value, total.value)
-  const rest = Math.max(total.value - punished, 0)
-  const activeShare = active.value + inactive.value > 0
-    ? active.value / (active.value + inactive.value)
-    : 1
-  const activeClean = Math.round(rest * activeShare)
-  const inactiveClean = Math.max(rest - activeClean, 0)
-
-  return {
-    penalized: punished,
-    active: activeClean,
-    inactive: inactiveClean,
-  }
-})
+const pie = computed(() => ({
+  activeOk: Math.max(active.value - lowStock.value, 0),
+  lowStock: lowStock.value,
+  inactive: inactive.value,
+}))
 
 const circumference = 2 * Math.PI * 42
-const toDash = (value) => (percent(value) / 100) * circumference
-const penalizedDash = computed(() => toDash(pie.value.penalized))
-const activeDash = computed(() => toDash(pie.value.active))
+const toDash = (value) => (total.value ? (value / total.value) * circumference : 0)
+const lowStockDash = computed(() => toDash(pie.value.lowStock))
+const activeOkDash = computed(() => toDash(pie.value.activeOk))
 const inactiveDash = computed(() => toDash(pie.value.inactive))
 
 const monthly = computed(() => props.stats.monthly || [])
@@ -114,32 +107,38 @@ const chart = computed(() => {
   return { width, height, line, area, labels }
 })
 
+const topUnits = computed(() =>
+  (props.stats.by_unit || [])
+    .filter((unit) => unit.products > 0)
+    .slice(0, 4)
+)
+
 const metrics = computed(() => [
   {
     key: 'total',
-    label: 'Clientes',
+    label: 'Productos',
     value: total.value,
-    icon: Users,
+    icon: Package,
     tone: 'text-[#007AFF] bg-[#E5F1FF]',
   },
   {
     key: 'active',
     label: 'Activos',
     value: active.value,
-    icon: UserCheck,
+    icon: PackageCheck,
     tone: 'text-[#1D7A32] bg-[#E8F8E8]',
   },
   {
     key: 'inactive',
     label: 'Inactivos',
     value: inactive.value,
-    icon: UserX,
+    icon: PackageX,
     tone: 'text-[#6E6E73] bg-[#F5F5F7]',
   },
   {
-    key: 'penalized',
-    label: 'Penalizados',
-    value: penalized.value,
+    key: 'low_stock',
+    label: 'Stock bajo',
+    value: lowStock.value,
     icon: AlertTriangle,
     tone: 'text-[#FF3B30] bg-[#FFE5E5]',
   },
@@ -154,26 +153,37 @@ const metrics = computed(() => [
     ></div>
 
     <div class="relative p-5 sm:p-6 lg:p-7 space-y-5">
-      <!-- Cabecera -->
       <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div class="min-w-0">
-          <p class="text-[11px] tracking-[0.22em] uppercase text-[#007AFF]">Acopio</p>
+          <p class="text-[11px] tracking-[0.22em] uppercase text-[#007AFF]">Operaciones</p>
           <h2 class="mt-1 text-3xl sm:text-4xl font-display font-bold text-[#1D1D1F] tracking-tight">
-            Productores
+            Inventario
           </h2>
           <p class="mt-1 text-sm text-[#8E8E93] capitalize">{{ dateLabel }}</p>
+          <p class="mt-1 text-xs text-[#8E8E93]">
+            {{ units }} unidades de medida disponibles
+          </p>
         </div>
-        <button
-          type="button"
-          @click="emit('registrar-cliente')"
-          class="inline-flex items-center justify-center gap-2 self-start rounded-xl bg-[#007AFF] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0056CC] transition-colors"
-        >
-          <Plus class="w-4 h-4" />
-          Registrar cliente
-        </button>
+        <div class="flex flex-col sm:flex-row gap-2 self-start">
+          <button
+            type="button"
+            @click="emit('carga-masiva')"
+            class="inline-flex items-center justify-center gap-2 rounded-xl border border-[#007AFF]/40 bg-[#E5F1FF] px-4 py-2.5 text-sm font-semibold text-[#007AFF] hover:bg-[#D6E9FF] transition-colors"
+          >
+            <Upload class="w-4 h-4" />
+            Carga masiva
+          </button>
+          <button
+            type="button"
+            @click="emit('agregar-producto')"
+            class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#007AFF] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#0056CC] transition-colors"
+          >
+            <Plus class="w-4 h-4" />
+            Agregar producto
+          </button>
+        </div>
       </div>
 
-      <!-- Métricas -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div
           v-for="metric in metrics"
@@ -192,21 +202,21 @@ const metrics = computed(() => [
         </div>
       </div>
 
-      <!-- Estado + Altas -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div class="rounded-2xl border border-[#E5E5E5] bg-[#FAFAFA]/80 p-4 sm:p-5">
           <div class="flex items-center justify-between gap-3 mb-4">
             <div>
               <p class="text-[11px] tracking-[0.18em] uppercase text-[#8E8E93]">Estado</p>
-              <p class="text-sm font-semibold text-[#1D1D1F] mt-0.5">Distribución de clientes</p>
+              <p class="text-sm font-semibold text-[#1D1D1F] mt-0.5">Distribución de productos</p>
             </div>
             <button
               type="button"
-              @click="emit('ver-penalizados')"
+              @click="emit('ver-stock-bajo')"
               class="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold bg-[#FFE5E5] text-[#FF3B30] hover:bg-[#FFD1D1] transition-colors shrink-0"
             >
               <List class="w-3.5 h-3.5" />
-              Ver lista
+              Stock bajo
+              <span class="tabular-nums">({{ lowStock }})</span>
             </button>
           </div>
 
@@ -222,7 +232,7 @@ const metrics = computed(() => [
                   stroke="#FF3B30"
                   stroke-width="12"
                   stroke-linecap="butt"
-                  :stroke-dasharray="`${penalizedDash} ${circumference}`"
+                  :stroke-dasharray="`${lowStockDash} ${circumference}`"
                 />
                 <circle
                   cx="60"
@@ -232,8 +242,8 @@ const metrics = computed(() => [
                   stroke="#007AFF"
                   stroke-width="12"
                   stroke-linecap="butt"
-                  :stroke-dasharray="`${activeDash} ${circumference}`"
-                  :stroke-dashoffset="-penalizedDash"
+                  :stroke-dasharray="`${activeOkDash} ${circumference}`"
+                  :stroke-dashoffset="-lowStockDash"
                 />
                 <circle
                   cx="60"
@@ -244,7 +254,7 @@ const metrics = computed(() => [
                   stroke-width="12"
                   stroke-linecap="butt"
                   :stroke-dasharray="`${inactiveDash} ${circumference}`"
-                  :stroke-dashoffset="-(penalizedDash + activeDash)"
+                  :stroke-dashoffset="-(lowStockDash + activeOkDash)"
                 />
               </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center">
@@ -277,13 +287,27 @@ const metrics = computed(() => [
               <div class="flex items-center justify-between gap-3 rounded-xl bg-white px-3 py-2.5 border border-[#FFE5E5]">
                 <div class="flex items-center gap-2 min-w-0">
                   <span class="h-2.5 w-2.5 rounded-full bg-[#FF3B30] shrink-0"></span>
-                  <span class="text-sm text-[#1D1D1F]">Penalizados</span>
+                  <span class="text-sm text-[#1D1D1F]">Stock bajo</span>
                 </div>
                 <div class="flex items-center gap-3 shrink-0">
-                  <span class="text-sm font-semibold tabular-nums text-[#FF3B30]">{{ penalized }}</span>
-                  <span class="text-xs text-[#8E8E93] w-9 text-right">{{ percent(penalized) }}%</span>
+                  <span class="text-sm font-semibold tabular-nums text-[#FF3B30]">{{ lowStock }}</span>
+                  <span class="text-xs text-[#8E8E93] w-9 text-right">{{ percent(lowStock) }}%</span>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div v-if="topUnits.length" class="mt-4 pt-4 border-t border-[#E5E5E5]">
+            <p class="text-[11px] tracking-[0.14em] uppercase text-[#8E8E93] mb-2">Por unidad de medida</p>
+            <div class="flex flex-wrap gap-2">
+              <span
+                v-for="unit in topUnits"
+                :key="unit.id"
+                class="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#E5E5E5] px-2.5 py-1 text-xs text-[#1D1D1F]"
+              >
+                {{ unit.name }}
+                <span class="font-semibold tabular-nums text-[#007AFF]">{{ unit.products }}</span>
+              </span>
             </div>
           </div>
         </div>
@@ -292,25 +316,26 @@ const metrics = computed(() => [
           <div class="flex items-start justify-between gap-3 mb-1">
             <div>
               <p class="text-[11px] tracking-[0.18em] uppercase text-[#8E8E93]">Altas</p>
-              <p class="text-sm font-semibold text-[#1D1D1F] mt-0.5">Crecimiento de clientes</p>
+              <p class="text-sm font-semibold text-[#1D1D1F] mt-0.5">Productos registrados</p>
             </div>
             <span class="inline-flex items-center rounded-full bg-[#E8F8E8] px-2.5 py-1 text-xs font-semibold text-[#1D7A32] tabular-nums">
               {{ altasDelta }} este mes
             </span>
           </div>
           <p class="text-xs text-[#8E8E93] mb-4">
-            Acumulado en 12 meses: <span class="font-semibold text-[#1D1D1F] tabular-nums">{{ acumulado }}</span>
+            Acumulado en 12 meses:
+            <span class="font-semibold text-[#1D1D1F] tabular-nums">{{ acumulado }}</span>
           </p>
           <div class="flex-1 flex flex-col justify-end">
             <svg :viewBox="`0 0 ${chart.width} ${chart.height}`" class="w-full h-24">
               <defs>
-                <linearGradient id="producerAltasFill" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id="inventoryAltasFill" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stop-color="#007AFF" stop-opacity="0.28" />
                   <stop offset="100%" stop-color="#007AFF" stop-opacity="0" />
                 </linearGradient>
               </defs>
               <line v-for="y in [18, 48, 78]" :key="y" x1="0" :y1="y" :x2="chart.width" :y2="y" stroke="#EFEFF4" />
-              <polygon :points="chart.area" fill="url(#producerAltasFill)" />
+              <polygon :points="chart.area" fill="url(#inventoryAltasFill)" />
               <polyline
                 :points="chart.line"
                 fill="none"

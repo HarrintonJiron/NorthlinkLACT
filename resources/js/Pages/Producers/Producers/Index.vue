@@ -2,9 +2,12 @@
 import { computed, ref } from 'vue'
 import AppShell from '../../../Components/AppShell.vue'
 import { router } from '@inertiajs/vue3'
-import { Search, Printer } from '@lucide/vue'
+import { Search, Printer, Pencil, Eye } from '@lucide/vue'
 import ProducerModal from '../../../Components/ProducerModal.vue'
+import ProducerWeekAdjustmentModal from '../../../Components/ProducerWeekAdjustmentModal.vue'
+import ProducerWeekDetailModal from '../../../Components/ProducerWeekDetailModal.vue'
 import ProducerStatsPanel from '../../../Components/ProducerStatsPanel.vue'
+import ProducerPenalizedModal from '../../../Components/ProducerPenalizedModal.vue'
 
 const props = defineProps({
   routes: Array,
@@ -15,6 +18,7 @@ const props = defineProps({
       active: 0,
       inactive: 0,
       without_route: 0,
+      penalized: 0,
       new_this_month: 0,
       monthly: [],
     }),
@@ -34,13 +38,17 @@ const props = defineProps({
       days: [],
       price: 0,
       rows: [],
-      totals: { producers: 0, days: 0, daily: {}, liters: 0, amount: 0 },
+      totals: { producers: 0, days: 0, daily: {}, liters: 0, amount: 0, penalized: 0 },
     }),
   },
 })
 
 const searchQuery = ref('')
 const showCreateModal = ref(false)
+const showDetailModal = ref(false)
+const showAdjustmentModal = ref(false)
+const showPenalizedModal = ref(false)
+const selectedProducer = ref(null)
 const routeFilter = ref(props.filters.route_id ? String(props.filters.route_id) : '')
 const weekFilter = ref(props.filters.week || '')
 
@@ -67,6 +75,34 @@ const filteredRows = computed(() => {
   )
 })
 
+const adjustmentReturnTo = computed(() => {
+  const params = new URLSearchParams()
+  if (routeFilter.value) params.set('route_id', routeFilter.value)
+  if (weekFilter.value) params.set('week', weekFilter.value)
+  const query = params.toString()
+  return query ? `/producers?${query}` : '/producers'
+})
+
+const penalizedCount = computed(() => {
+  if (props.report?.totals?.penalized != null) {
+    return Number(props.report.totals.penalized)
+  }
+
+  return (props.report?.rows || []).filter((row) => row.density_price != null).length
+})
+
+const penalizedProducers = computed(() =>
+  (props.report?.rows || [])
+    .filter((row) => row.density_price != null)
+    .slice()
+    .sort((a, b) => {
+      const routeA = a.route?.code || ''
+      const routeB = b.route?.code || ''
+      if (routeA !== routeB) return routeA.localeCompare(routeB, 'es')
+      return String(a.full_name || '').localeCompare(String(b.full_name || ''), 'es')
+    })
+)
+
 const applyFilters = () => {
   router.get('/producers', {
     route_id: routeFilter.value || undefined,
@@ -86,6 +122,31 @@ const closeCreateModal = () => {
   showCreateModal.value = false
 }
 
+const openDetailModal = (row) => {
+  selectedProducer.value = row
+  showDetailModal.value = true
+}
+
+const closeDetailModal = () => {
+  showDetailModal.value = false
+  selectedProducer.value = null
+}
+
+const openAdjustmentModal = (row) => {
+  selectedProducer.value = row
+  showDetailModal.value = false
+  showAdjustmentModal.value = true
+}
+
+const closeAdjustmentModal = () => {
+  showAdjustmentModal.value = false
+  selectedProducer.value = null
+}
+
+const openAdjustmentFromDetail = (row) => {
+  openAdjustmentModal(row)
+}
+
 const handleCreate = (form) => {
   form.post('/producers', {
     onSuccess: () => {
@@ -103,8 +164,25 @@ const printReport = () => {
   <AppShell>
     <ProducerStatsPanel
       :stats="stats"
+      :penalized="penalizedCount"
       @registrar-cliente="openCreateModal"
+      @ver-penalizados="showPenalizedModal = true"
     />
+
+    <ProducerPenalizedModal
+      :show="showPenalizedModal"
+      :producers="penalizedProducers"
+      :week="report.week"
+      :base-price="report.price"
+      @close="showPenalizedModal = false"
+    />
+
+    <div
+      v-if="$page.props.flash?.success"
+      class="bg-[#E8F8E8] border border-[#34C759] text-[#1D7A32] px-4 py-3 rounded-xl mb-4 print:hidden"
+    >
+      {{ $page.props.flash.success }}
+    </div>
 
     <div class="rounded-[28px] border border-[#E5E5E5] bg-white overflow-hidden shadow-sm print:shadow-none print:border-0">
       <div class="p-4 border-b border-[#E5E5E5] flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between print:hidden">
@@ -156,7 +234,7 @@ const printReport = () => {
           </p>
         </div>
         <p class="text-xs text-[#8E8E93]">
-          Precio: {{ money(report.price) }} / L
+          Precio base: {{ money(report.price) }} / L
         </p>
       </div>
 
@@ -175,14 +253,38 @@ const printReport = () => {
                 <span class="block normal-case font-normal text-[10px]">{{ day.day }}</span>
               </th>
               <th class="px-3 py-3 font-semibold text-right">Total L</th>
-              <th class="px-4 py-3 font-semibold text-right">Pago jueves</th>
+              <th class="px-3 py-3 font-semibold text-right">Pago jueves</th>
+              <th class="px-3 py-3 font-semibold text-center print:hidden">Ajuste</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-[#E5E5E5]">
-            <tr v-for="row in filteredRows" :key="row.id" class="hover:bg-[#F5F5F7]">
+            <tr
+              v-for="row in filteredRows"
+              :key="row.id"
+              class="hover:bg-[#F5F5F7] cursor-pointer"
+              @click="openDetailModal(row)"
+            >
               <td class="px-4 py-3 sticky left-0 bg-white">
-                <p class="font-medium text-[#1D1D1F]">{{ row.full_name }}</p>
-                <p class="text-xs text-[#8E8E93]">{{ row.identity_number || row.phone || '—' }}</p>
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0">
+                    <span class="block font-medium text-[#007AFF] hover:underline underline-offset-2">
+                      {{ row.full_name }}
+                    </span>
+                    <span class="block text-xs text-[#8E8E93]">{{ row.identity_number || row.phone || '—' }}</span>
+                    <span
+                      v-if="row.density_price != null || row.advance_amount > 0"
+                      class="block text-[11px] text-[#007AFF] mt-0.5"
+                    >
+                      <span v-if="row.density_price != null">Precio {{ money(row.price) }}/L</span>
+                      <span v-if="row.density_price != null && row.advance_amount > 0"> · </span>
+                      <span v-if="row.advance_amount > 0">Adelanto {{ money(row.advance_amount) }}</span>
+                    </span>
+                  </div>
+                  <span class="inline-flex items-center px-2 py-1 rounded-lg text-[10px] font-semibold bg-[#E5F1FF] text-[#007AFF] shrink-0 print:hidden">
+                    <Eye class="w-3 h-3 mr-1" />
+                    Ver
+                  </span>
+                </div>
               </td>
               <td class="px-3 py-3 text-[#6E6E73] whitespace-nowrap">
                 {{ row.route ? row.route.code : '—' }}
@@ -196,10 +298,20 @@ const printReport = () => {
                 {{ dayLiters(row.daily?.[day.date]) }}
               </td>
               <td class="px-3 py-3 text-right tabular-nums font-medium text-[#1D1D1F]">{{ liters(row.liters) }}</td>
-              <td class="px-4 py-3 text-right tabular-nums font-semibold text-[#1D1D1F]">{{ money(row.amount) }}</td>
+              <td class="px-3 py-3 text-right tabular-nums font-semibold text-[#1D1D1F]">{{ money(row.amount) }}</td>
+              <td class="px-3 py-3 text-center print:hidden" @click.stop>
+                <button
+                  type="button"
+                  @click="openAdjustmentModal(row)"
+                  class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#E5F1FF] text-[#007AFF] hover:bg-[#D6E9FF]"
+                >
+                  <Pencil class="w-3.5 h-3.5 mr-1" />
+                  Editar
+                </button>
+              </td>
             </tr>
             <tr v-if="!filteredRows.length">
-              <td :colspan="4 + (report.days?.length || 0)" class="px-4 py-10 text-center text-[#8E8E93]">
+              <td :colspan="5 + (report.days?.length || 0)" class="px-4 py-10 text-center text-[#8E8E93]">
                 No hay productores en esta ruta para la semana seleccionada.
               </td>
             </tr>
@@ -217,7 +329,8 @@ const printReport = () => {
                 {{ dayLiters(report.totals.daily?.[day.date]) }}
               </td>
               <td class="px-3 py-3 text-right tabular-nums">{{ liters(report.totals.liters) }}</td>
-              <td class="px-4 py-3 text-right tabular-nums">{{ money(report.totals.amount) }}</td>
+              <td class="px-3 py-3 text-right tabular-nums">{{ money(report.totals.amount) }}</td>
+              <td class="px-3 py-3 print:hidden" />
             </tr>
           </tfoot>
         </table>
@@ -230,6 +343,25 @@ const printReport = () => {
       :default-route-id="routeFilter"
       @close="closeCreateModal"
       @submit="handleCreate"
+    />
+
+    <ProducerWeekDetailModal
+      :show="showDetailModal"
+      :producer="selectedProducer"
+      :week="report.week"
+      :days="report.days"
+      :base-price="report.price"
+      @close="closeDetailModal"
+      @edit-adjustment="openAdjustmentFromDetail"
+    />
+
+    <ProducerWeekAdjustmentModal
+      :show="showAdjustmentModal"
+      :producer="selectedProducer"
+      :week-end="report.week.end || weekFilter"
+      :base-price="report.price"
+      :return-to="adjustmentReturnTo"
+      @close="closeAdjustmentModal"
     />
   </AppShell>
 </template>
