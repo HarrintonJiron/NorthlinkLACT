@@ -3,14 +3,10 @@ import { computed, ref } from 'vue'
 import AppShell from '../../Components/AppShell.vue'
 import RuteroModal from '../../Components/RuteroModal.vue'
 import { Link } from '@inertiajs/vue3'
-import { Truck, Plus, Search, User, Phone, MapPin } from '@lucide/vue'
+import { Truck, Plus, Search, MapPin, UserCog } from '@lucide/vue'
 
 const props = defineProps({
   ruteros: {
-    type: Array,
-    default: () => [],
-  },
-  availableRoutes: {
     type: Array,
     default: () => [],
   },
@@ -30,10 +26,14 @@ const filteredRuteros = computed(() => {
 
   return list.filter((rutero) =>
     [
-      rutero.full_name,
-      rutero.identity_number,
-      rutero.phone,
+      rutero.owner_name,
+      rutero.driver_name,
+      rutero.owner_identity_number,
+      rutero.driver_identity_number,
+      rutero.owner_phone,
+      rutero.driver_phone,
       rutero.vehicle_plate,
+      rutero.vehicle_description,
       rutero.route?.code,
       rutero.route?.name,
     ]
@@ -58,7 +58,7 @@ const handleCreate = (form) => {
         <p class="text-[11px] tracking-[0.22em] uppercase text-[#007AFF]">Acopio</p>
         <h1 class="text-4xl font-display font-bold text-[#1D1D1F] mt-1">Ruteros</h1>
         <p class="text-sm text-[#8E8E93] mt-1">
-          Propietarios de cada trayecto · {{ stats.total }} registrados
+          Propietarios y encargados de cada trayecto · {{ stats.total }} registrados
         </p>
       </div>
       <button
@@ -101,21 +101,18 @@ const handleCreate = (form) => {
               </div>
               <div>
                 <Link :href="`/ruteros/${rutero.id}`" class="font-medium text-[#1D1D1F] hover:text-[#007AFF]">
-                  {{ rutero.full_name }}
+                  {{ rutero.owner_name }}
                 </Link>
                 <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#8E8E93] mt-1">
                   <span class="inline-flex items-center">
-                    <User class="w-3.5 h-3.5 mr-1" />
-                    {{ rutero.identity_number }}
-                  </span>
-                  <span class="inline-flex items-center">
-                    <Phone class="w-3.5 h-3.5 mr-1" />
-                    {{ rutero.phone }}
+                    <UserCog class="w-3.5 h-3.5 mr-1" />
+                    Encargado: {{ rutero.driver_name }}
                   </span>
                   <span class="inline-flex items-center">
                     <MapPin class="w-3.5 h-3.5 mr-1" />
                     {{ rutero.route ? `${rutero.route.code} — ${rutero.route.name}` : 'Sin ruta' }}
                   </span>
+                  <span>{{ rutero.vehicle_description }} · {{ rutero.vehicle_plate }}</span>
                 </div>
               </div>
             </div>
@@ -138,7 +135,7 @@ const handleCreate = (form) => {
         <Truck class="w-12 h-12 text-[#007AFF]/40 mx-auto mb-3" />
         <p class="text-[#1D1D1F] font-medium mb-1">{{ searchQuery ? 'Sin resultados' : 'No hay ruteros' }}</p>
         <p class="text-sm text-[#8E8E93] mb-4">
-          {{ searchQuery ? 'No encontramos ruteros que coincidan.' : 'Primero crea el trayecto en Rutas y luego registra al propietario.' }}
+          {{ searchQuery ? 'No encontramos ruteros que coincidan.' : 'Registra propietarios y encargados; luego asígnalos desde cada ruta.' }}
         </p>
         <button
           v-if="!searchQuery"
@@ -154,7 +151,6 @@ const handleCreate = (form) => {
 
     <RuteroModal
       :show="showCreateModal"
-      :routes="availableRoutes"
       @close="showCreateModal = false"
       @submit="handleCreate"
     />

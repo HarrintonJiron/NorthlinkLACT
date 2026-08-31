@@ -1,74 +1,20 @@
 <script setup>
 import AppShell from '../../Components/AppShell.vue'
-import MetricCard from '../../Components/MetricCard.vue'
+import MorningOperationsPanel from '../../Components/MorningOperationsPanel.vue'
 import StatusBadge from '../../Components/StatusBadge.vue'
-import EmptyState from '../../Components/EmptyState.vue'
 import RouteMap from '../../Components/RouteMap.vue'
 import { 
   Droplets, 
-  Users, 
-  MapPin, 
   DollarSign, 
   Package, 
   AlertTriangle,
-  TrendingUp,
   CheckCircle,
   Clock,
   AlertCircle,
   FileText,
-  ArrowUpRight,
-  ArrowDownRight,
-  Calendar,
+  MapPin,
   Thermometer,
-  Truck
 } from '@lucide/vue'
-
-const metrics = [
-  {
-    title: 'Litros acopiados hoy',
-    value: '12,450',
-    subtitle: 'de 15,000 programados',
-    trend: { direction: 'up', value: 8.5 },
-    icon: Droplets,
-    color: 'blue'
-  },
-  {
-    title: 'Productores atendidos',
-    value: '87',
-    subtitle: 'de 95 programados',
-    trend: { direction: 'up', value: 3.2 },
-    icon: Users,
-    color: 'green'
-  },
-  {
-    title: 'Rutas completadas',
-    value: '8/12',
-    subtitle: '4 en proceso',
-    icon: MapPin,
-    color: 'orange'
-  },
-  {
-    title: 'Pagos estimados semana',
-    value: 'C$ 450,000',
-    subtitle: 'C$ 38,000 pendientes',
-    icon: DollarSign,
-    color: 'purple'
-  },
-  {
-    title: 'Producción diaria',
-    value: '11,200 L',
-    subtitle: 'queso, crema, suero',
-    icon: Package,
-    color: 'green'
-  },
-  {
-    title: 'Alertas operativas',
-    value: '3',
-    subtitle: 'requieren atención',
-    icon: AlertTriangle,
-    color: 'red'
-  }
-]
 
 const routesStatus = [
   { name: 'Ruta Matagalpa', status: 'completed', liters: 2850, producers: 12, progress: 100 },
@@ -132,24 +78,7 @@ const qualityMetrics = [
 
 <template>
   <AppShell>
-    <div class="mb-6">
-      <h1 class="text-3xl font-display font-bold text-[#1D1D1F]">Dashboard</h1>
-      <p class="text-[#6E6E73] mt-1">Resumen de operaciones de hoy</p>
-    </div>
-
-    <!-- Metrics Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
-      <MetricCard
-        v-for="metric in metrics"
-        :key="metric.title"
-        :title="metric.title"
-        :value="metric.value"
-        :subtitle="metric.subtitle"
-        :trend="metric.trend"
-        :icon="metric.icon"
-        :color="metric.color"
-      />
-    </div>
+    <MorningOperationsPanel />
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
       <!-- Route Map -->

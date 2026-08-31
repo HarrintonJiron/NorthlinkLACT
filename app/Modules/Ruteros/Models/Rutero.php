@@ -12,10 +12,14 @@ class Rutero extends Model
 
     protected $fillable = [
         'route_id',
-        'full_name',
-        'identity_number',
-        'phone',
+        'owner_name',
+        'owner_identity_number',
+        'owner_phone',
+        'vehicle_description',
         'vehicle_plate',
+        'driver_name',
+        'driver_identity_number',
+        'driver_phone',
         'active',
     ];
 

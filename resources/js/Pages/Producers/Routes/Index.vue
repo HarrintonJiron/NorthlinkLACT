@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 import AppShell from '../../../Components/AppShell.vue'
 import RouteModal from '../../../Components/RouteModal.vue'
-import ProducerModal from '../../../Components/ProducerModal.vue'
 import RouteStatsPanel from '../../../Components/RouteStatsPanel.vue'
 import { Link } from '@inertiajs/vue3'
 import { MapPin, Plus, Search, Filter, Truck } from '@lucide/vue'
@@ -24,8 +23,6 @@ const props = defineProps({
 })
 
 const showCreateModal = ref(false)
-const showProducerModal = ref(false)
-const defaultRouteId = ref('')
 const searchQuery = ref('')
 
 const filteredRoutes = computed(() => {
@@ -36,7 +33,8 @@ const filteredRoutes = computed(() => {
     return [
       route.code,
       route.name,
-      route.rutero?.full_name,
+      route.rutero?.owner_name,
+      route.rutero?.driver_name,
     ]
       .filter(Boolean)
       .some((value) => String(value).toLowerCase().includes(query))
@@ -55,24 +53,6 @@ const handleCreate = (form) => {
   form.post('/routes', {
     onSuccess: () => {
       closeCreateModal()
-    },
-  })
-}
-
-const openProducerModal = (routeId) => {
-  defaultRouteId.value = String(routeId)
-  showProducerModal.value = true
-}
-
-const closeProducerModal = () => {
-  showProducerModal.value = false
-  defaultRouteId.value = ''
-}
-
-const handleCreateProducer = (form) => {
-  form.post('/producers', {
-    onSuccess: () => {
-      closeProducerModal()
     },
   })
 }
@@ -126,7 +106,7 @@ const handleCreateProducer = (form) => {
                 <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#8E8E93] mt-1">
                   <span v-if="route.rutero" class="inline-flex items-center">
                     <Truck class="w-3.5 h-3.5 mr-1" />
-                    Rutero: {{ route.rutero.full_name }}
+                    Prop: {{ route.rutero.owner_name }} · Enc: {{ route.rutero.driver_name }}
                   </span>
                   <span v-else>Sin rutero asignado</span>
                 </div>
@@ -139,14 +119,13 @@ const handleCreateProducer = (form) => {
               >
                 {{ route.active ? 'Activa' : 'Inactiva' }}
               </span>
-              <button
-                type="button"
-                @click="openProducerModal(route.id)"
+              <Link
+                :href="`/routes/${route.id}`"
                 class="inline-flex items-center text-sm font-medium text-[#007AFF] hover:text-[#0056CC]"
               >
-                <Plus class="w-4 h-4 mr-1" />
-                Agregar productor
-              </button>
+                <Truck class="w-4 h-4 mr-1" />
+                {{ route.rutero ? 'Cambiar rutero' : 'Asignar rutero' }}
+              </Link>
               <Link :href="`/routes/${route.id}`" class="text-[#007AFF] hover:text-[#0056CC] font-medium">
                 Ver detalles →
               </Link>
@@ -178,15 +157,6 @@ const handleCreateProducer = (form) => {
       :next-code="nextCode"
       @close="closeCreateModal"
       @submit="handleCreate"
-    />
-
-    <ProducerModal
-      :show="showProducerModal"
-      :routes="routes"
-      :default-route-id="defaultRouteId"
-      :return-to="defaultRouteId ? `/routes/${defaultRouteId}` : '/routes'"
-      @close="closeProducerModal"
-      @submit="handleCreateProducer"
     />
   </AppShell>
 </template>

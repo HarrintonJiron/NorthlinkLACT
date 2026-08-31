@@ -3,7 +3,6 @@
 namespace App\Modules\Ruteros\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Producers\Models\Route;
 use App\Modules\Ruteros\Models\Rutero;
 use App\Modules\Ruteros\Requests\StoreRuteroRequest;
 use App\Modules\Ruteros\Requests\UpdateRuteroRequest;
@@ -18,7 +17,6 @@ class RuteroController extends Controller
                 ->with('route:id,code,name')
                 ->latest()
                 ->get(),
-            'availableRoutes' => $this->availableRoutes(),
             'stats' => [
                 'total' => Rutero::query()->count(),
                 'active' => Rutero::query()->where('active', true)->count(),
@@ -42,15 +40,26 @@ class RuteroController extends Controller
     {
         $rutero->load('route:id,code,name,active');
 
+        $returnTo = request()->query('return_to');
+        if (! is_string($returnTo) || ! str_starts_with($returnTo, '/')) {
+            $returnTo = null;
+        }
+
         return Inertia::render('Ruteros/Show', [
             'rutero' => $rutero,
-            'availableRoutes' => $this->availableRoutes($rutero),
+            'returnTo' => $returnTo,
         ]);
     }
 
     public function update(UpdateRuteroRequest $request, Rutero $rutero)
     {
         $rutero->update($request->validated());
+
+        $returnTo = $request->input('return_to');
+        if (is_string($returnTo) && str_starts_with($returnTo, '/')) {
+            return redirect($returnTo)
+                ->with('success', 'Rutero actualizado exitosamente.');
+        }
 
         return redirect()->route('ruteros.show', $rutero)
             ->with('success', 'Rutero actualizado exitosamente.');
@@ -63,20 +72,5 @@ class RuteroController extends Controller
 
         return redirect()->back()
             ->with('success', "Rutero {$status} exitosamente.");
-    }
-
-    protected function availableRoutes(?Rutero $rutero = null)
-    {
-        return Route::query()
-            ->where('active', true)
-            ->where(function ($query) use ($rutero) {
-                $query->whereDoesntHave('rutero');
-
-                if ($rutero) {
-                    $query->orWhere('id', $rutero->route_id);
-                }
-            })
-            ->orderBy('name')
-            ->get(['id', 'code', 'name']);
     }
 }

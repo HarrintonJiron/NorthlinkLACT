@@ -62,17 +62,25 @@ class AcopioDemoSeeder extends Seeder
         ]);
 
         $this->rutero($norte, [
-            'full_name' => 'Mario Palacios',
-            'identity_number' => '441-01010-0001A',
-            'phone' => '8888-1010',
+            'owner_name' => 'Mario Palacios',
+            'owner_identity_number' => '441-01010-0001A',
+            'owner_phone' => '8888-1010',
+            'vehicle_description' => 'Isuzu NPR',
             'vehicle_plate' => 'M-1010',
+            'driver_name' => 'Carlos Rivas',
+            'driver_identity_number' => '441-01011-0001B',
+            'driver_phone' => '8855-1010',
         ]);
 
         $this->rutero($sur, [
-            'full_name' => 'Yadira Cano',
-            'identity_number' => '441-02020-0002B',
-            'phone' => '8777-2020',
+            'owner_name' => 'Yadira Cano',
+            'owner_identity_number' => '441-02020-0002B',
+            'owner_phone' => '8777-2020',
+            'vehicle_description' => 'Hino 300',
             'vehicle_plate' => 'JI-2020',
+            'driver_name' => 'Luis Mejía',
+            'driver_identity_number' => '441-02021-0002C',
+            'driver_phone' => '8844-2020',
         ]);
 
         $maria = $this->producer($norte, $user, [
@@ -141,45 +149,83 @@ class AcopioDemoSeeder extends Seeder
             ? now()->startOfDay()->copy()
             : now()->startOfDay()->copy()->previous(Carbon::FRIDAY);
         $this->collectWeek($service, $maria, $norte, $user, $friday, [
-            0 => 42.5,
-            1 => 40.0,
-            2 => 38.5,
-            3 => 41.0,
+            0 => [42.5, 25.0],
+            1 => [40.0, 24.5],
+            2 => [38.5, 25.0],
+            3 => [41.0, 26.0],
         ]);
 
         $this->collectWeek($service, $jose, $norte, $user, $friday, [
-            0 => 28.0,
-            2 => 26.5,
-            3 => 27.0,
+            0 => [28.0, 25.0],
+            2 => [26.5, 23.0],
+            3 => [27.0, 25.0],
         ]);
 
         $this->collectWeek($service, $ana, $norte, $user, $friday, [
-            1 => 19.5,
+            1 => [19.5, 25.0],
         ]);
 
         $this->collectWeek($service, $carlos, $sur, $user, $friday, [
-            0 => 33.0,
-            1 => 31.5,
-            2 => 32.0,
+            0 => [33.0, 25.0],
+            1 => [31.5, 25.5],
+            2 => [32.0, 24.0],
         ]);
 
         $this->collectWeek($service, $rosa, $sur, $user, $friday, [
-            0 => 22.0,
-            1 => 23.5,
-            2 => 21.0,
-            3 => 24.0,
-            4 => 22.5,
+            0 => [22.0, 25.0],
+            1 => [23.5, 25.0],
+            2 => [21.0, 26.5],
+            3 => [24.0, 25.0],
+            4 => [22.5, 23.5],
         ]);
+
+        // Entrega de hoy con densidades variadas para baucher / Sumni
+        $todayOffset = $friday->diffInDays(now()->startOfDay());
+        if ($todayOffset >= 0 && $todayOffset <= 6) {
+            $service->record($norte, $maria->id, now()->toDateString(), 45.0, $user, temperature: 25.0);
+            $service->record($norte, $jose->id, now()->toDateString(), 29.0, $user, temperature: 23.0);
+            $service->record($sur, $rosa->id, now()->toDateString(), 21.5, $user, temperature: 26.0);
+        }
+
+        $this->producer($norte, $user, [
+            'code' => 'PRO-0007',
+            'full_name' => 'Cliente Sin Cédula (Sumni)',
+            'identity_number' => null,
+            'phone' => '8799-7700',
+            'community' => 'Campo Libre',
+            'municipality' => 'Matagalpa',
+            'department' => 'Matagalpa',
+        ]);
+
+        $libre = $this->route($company, $plant, 'RUT-0003', [
+            'name' => 'Ruta Libre sin rutero',
+        ]);
+
+        Rutero::withTrashed()->updateOrCreate(
+            ['owner_identity_number' => '441-03030-0003C'],
+            [
+                'route_id' => null,
+                'owner_name' => 'Rutero Disponible',
+                'owner_phone' => '8666-3030',
+                'vehicle_description' => 'Mitsubishi Canter',
+                'vehicle_plate' => 'M-3030',
+                'driver_name' => 'Encargado Libre',
+                'driver_identity_number' => '441-03031-0003D',
+                'driver_phone' => '8655-3031',
+                'active' => true,
+                'deleted_at' => null,
+            ]
+        );
 
         $previousFriday = $friday->copy()->subWeek();
         $this->collectWeek($service, $maria, $norte, $user, $previousFriday, [
-            0 => 39.0,
-            1 => 37.5,
-            2 => 40.0,
-            3 => 38.0,
-            4 => 36.5,
-            5 => 41.0,
-            6 => 39.5,
+            0 => [39.0, 25.0],
+            1 => [37.5, 25.0],
+            2 => [40.0, 24.0],
+            3 => [38.0, 25.0],
+            4 => [36.5, 25.0],
+            5 => [41.0, 26.0],
+            6 => [39.5, 25.0],
         ]);
     }
 
@@ -199,7 +245,7 @@ class AcopioDemoSeeder extends Seeder
     protected function rutero(Route $route, array $attributes): Rutero
     {
         return Rutero::withTrashed()->updateOrCreate(
-            ['identity_number' => $attributes['identity_number']],
+            ['owner_identity_number' => $attributes['owner_identity_number']],
             array_merge([
                 'route_id' => $route->id,
                 'active' => true,
@@ -251,9 +297,11 @@ class AcopioDemoSeeder extends Seeder
         Carbon $friday,
         array $litersByOffset
     ): void {
-        foreach ($litersByOffset as $offset => $liters) {
+        foreach ($litersByOffset as $offset => $payload) {
             $date = $friday->copy()->addDays($offset)->toDateString();
-            $service->record($route, $producer->id, $date, (float) $liters, $user);
+            $liters = is_array($payload) ? (float) $payload[0] : (float) $payload;
+            $temperature = is_array($payload) ? (float) ($payload[1] ?? 25) : 25.0;
+            $service->record($route, $producer->id, $date, $liters, $user, temperature: $temperature);
         }
     }
 }

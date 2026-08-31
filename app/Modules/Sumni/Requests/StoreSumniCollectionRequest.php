@@ -22,6 +22,7 @@ class StoreSumniCollectionRequest extends FormRequest
                     ->whereNull('deleted_at')),
             ],
             'liters' => 'required|numeric|min:0.1|max:10000',
+            'temperature' => 'required|numeric|min:0|max:50',
         ];
     }
 
@@ -32,6 +33,9 @@ class StoreSumniCollectionRequest extends FormRequest
             'producer_id.exists' => 'El cliente no está activo o no existe.',
             'liters.required' => 'Digita los litros recolectados',
             'liters.min' => 'Los litros deben ser mayores a 0',
+            'temperature.required' => 'Digita la densidad de la leche en °C',
+            'temperature.min' => 'La densidad debe ser un valor válido en °C',
+            'temperature.max' => 'La densidad debe ser un valor válido en °C',
         ];
     }
 }

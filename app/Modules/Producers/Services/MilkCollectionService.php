@@ -47,7 +47,7 @@ class MilkCollectionService
         });
     }
 
-    public function record(Route $route, int $producerId, string $date, float $liters, $user = null): MilkCollection
+    public function record(Route $route, int $producerId, string $date, float $liters, $user = null, bool $immutable = false, ?float $temperature = null): MilkCollection
     {
         $date = Carbon::parse($date)->toDateString();
         $collectedBy = $user?->id ?: User::query()->value('id');
@@ -56,7 +56,7 @@ class MilkCollectionService
             throw new \RuntimeException('No hay un usuario para registrar el acopio.');
         }
 
-        return DB::transaction(function () use ($route, $producerId, $date, $liters, $collectedBy, $user) {
+        return DB::transaction(function () use ($route, $producerId, $date, $liters, $collectedBy, $user, $immutable, $temperature) {
             $collection = MilkCollection::query()
                 ->where('company_id', $route->company_id)
                 ->where('plant_id', $route->plant_id)
@@ -67,8 +67,13 @@ class MilkCollectionService
                 ->first();
 
             if ($collection) {
+                if ($immutable) {
+                    throw new \RuntimeException('Este cliente ya tiene litros registrados hoy.');
+                }
+
                 $collection->update([
                     'liters' => $liters,
+                    'temperature' => $temperature,
                     'collected_by' => $collectedBy,
                 ]);
             } else {
@@ -79,6 +84,7 @@ class MilkCollectionService
                     'producer_id' => $producerId,
                     'collection_date' => $date,
                     'liters' => $liters,
+                    'temperature' => $temperature,
                     'collected_by' => $collectedBy,
                 ]);
             }

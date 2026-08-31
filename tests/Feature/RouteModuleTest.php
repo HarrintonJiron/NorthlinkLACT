@@ -52,21 +52,18 @@ class RouteModuleTest extends TestCase
         $this->assertNull($route->rutero);
     }
 
-    public function test_show_route_includes_assigned_producers_and_today_liters(): void
+    public function test_show_route_includes_available_ruteros(): void
     {
         $route = $this->createRoute(['name' => 'Ruta Show']);
-        $producer = $this->createProducer($route, ['full_name' => 'Cliente de show']);
-        $this->collectMilk($producer, 14.25);
+        $this->createRutero(null, ['owner_name' => 'Rutero Libre']);
 
         $this->get('/routes/'.$route->id)
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Producers/Routes/Show')
-                ->where('today', now()->toDateString())
-                ->has('route.active_assignments', 1)
+                ->where('route.name', 'Ruta Show')
+                ->has('availableRuteros', 1)
             );
-
-        $this->assertEquals(14.25, MilkCollection::query()->where('producer_id', $producer->id)->value('liters'));
     }
 
     public function test_update_and_toggle_route(): void
@@ -112,5 +109,50 @@ class RouteModuleTest extends TestCase
                 ->component('Sumni/Show')
                 ->where('clients.0.today_liters', 16)
             );
+    }
+
+    public function test_route_show_lists_available_ruteros_and_assigns_one_to_the_route(): void
+    {
+        $route = $this->createRoute(['name' => 'Ruta Asignable']);
+        $assigned = $this->createRutero(null, ['owner_name' => 'Mario Palacios']);
+        $this->createRutero(null, ['owner_name' => 'Yadira Cano']);
+
+        $this->get('/routes/'.$route->id)
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Producers/Routes/Show')
+                ->has('availableRuteros', 2)
+            );
+
+        $this->post('/routes/'.$route->id.'/assign-rutero', [
+            'rutero_id' => $assigned->id,
+        ])->assertRedirect(route('routes.show', $route))->assertSessionHas('success');
+
+        $this->assertSame($route->id, $assigned->fresh()->route_id);
+    }
+
+    public function test_route_rejects_assigning_rutero_already_on_another_route(): void
+    {
+        $norte = $this->createRoute(['name' => 'Norte']);
+        $sur = $this->createRoute(['name' => 'Sur']);
+        $rutero = $this->createRutero($norte);
+
+        $this->from('/routes/'.$sur->id)->post('/routes/'.$sur->id.'/assign-rutero', [
+            'rutero_id' => $rutero->id,
+        ])->assertRedirect('/routes/'.$sur->id)->assertSessionHas('error');
+
+        $this->assertSame($norte->id, $rutero->fresh()->route_id);
+    }
+
+    public function test_route_can_unassign_rutero(): void
+    {
+        $route = $this->createRoute();
+        $rutero = $this->createRutero($route);
+
+        $this->delete('/routes/'.$route->id.'/rutero')
+            ->assertRedirect(route('routes.show', $route))
+            ->assertSessionHas('success');
+
+        $this->assertNull($rutero->fresh()->route_id);
     }
 }

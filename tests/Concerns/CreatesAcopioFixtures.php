@@ -54,16 +54,21 @@ trait CreatesAcopioFixtures
         ], $overrides));
     }
 
-    protected function createRutero(Route $route, array $overrides = []): Rutero
+    protected function createRutero(?Route $route = null, array $overrides = []): Rutero
     {
+        $suffix = $route?->code ?? strtoupper(Str::random(4));
+
         return Rutero::query()->create(array_merge([
-            'route_id' => $route->id,
-            'full_name' => 'Dueño '.$route->code,
-            'identity_number' => sprintf('001-%05d-0001A', random_int(10000, 99999)),
-            'phone' => '8888-0000',
-            'vehicle_plate' => 'M-'.$route->id,
+            'owner_name' => 'Dueño '.$suffix,
+            'owner_identity_number' => sprintf('001-%05d-0001A', random_int(10000, 99999)),
+            'owner_phone' => '8888-0000',
+            'vehicle_description' => 'Camión cisterna',
+            'vehicle_plate' => 'M-'.($route?->id ?? random_int(100, 999)),
+            'driver_name' => 'Encargado '.$suffix,
+            'driver_identity_number' => sprintf('441-%05d-0002B', random_int(10000, 99999)),
+            'driver_phone' => '8777-0000',
             'active' => true,
-        ], $overrides));
+        ], $route ? ['route_id' => $route->id] : [], $overrides));
     }
 
     protected function createProducer(?Route $route = null, array $overrides = []): Producer
@@ -106,7 +111,7 @@ trait CreatesAcopioFixtures
         ]);
     }
 
-    protected function collectMilk(Producer $producer, float $liters, ?string $date = null, ?Route $route = null): MilkCollection
+    protected function collectMilk(Producer $producer, float $liters, ?string $date = null, ?Route $route = null, ?float $temperature = 25): MilkCollection
     {
         $route ??= $producer->activeAssignment?->route;
 
@@ -115,7 +120,8 @@ trait CreatesAcopioFixtures
             $producer->id,
             $date ?? now()->toDateString(),
             $liters,
-            $this->user
+            $this->user,
+            temperature: $temperature,
         );
     }
 }

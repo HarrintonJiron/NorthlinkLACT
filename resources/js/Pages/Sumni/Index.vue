@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import AppShell from '../../Components/AppShell.vue'
 import { Link } from '@inertiajs/vue3'
-import { Search, MapPin, User, Phone, Truck, Droplets } from '@lucide/vue'
+import { Search, MapPin, User, Truck, Droplets, UserCog } from '@lucide/vue'
 
 const props = defineProps({
   today: String,
@@ -20,7 +20,7 @@ const filteredRoutes = computed(() => {
   if (!query) return list
 
   return list.filter((route) =>
-    [route.code, route.name, route.owner_name, route.owner_phone, route.vehicle_plate]
+    [route.code, route.name, route.owner_name, route.driver_name, route.owner_phone, route.driver_phone, route.vehicle_plate, route.vehicle_description]
       .filter(Boolean)
       .some((value) => String(value).toLowerCase().includes(query))
   )
@@ -46,7 +46,7 @@ const filteredRoutes = computed(() => {
               type="text"
               v-model="searchQuery"
               autofocus
-              placeholder="Buscar ruta, propietario o placa..."
+              placeholder="Buscar ruta, propietario, encargado o placa..."
               class="w-full pl-12 pr-4 py-3.5 bg-[#F5F5F7] border-none rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 text-base text-[#1D1D1F] placeholder-[#8E8E93]"
             />
           </div>
@@ -69,15 +69,15 @@ const filteredRoutes = computed(() => {
                   <p class="font-display font-bold text-[#1D1D1F]">{{ route.name }}</p>
                   <p class="mt-1 text-sm text-[#1D1D1F] flex items-center gap-1.5">
                     <User class="w-3.5 h-3.5 text-[#8E8E93]" />
-                    {{ route.owner_name || 'Sin propietario' }}
+                    Prop: {{ route.owner_name || 'Sin propietario' }}
                   </p>
-                  <p v-if="route.owner_phone" class="text-xs text-[#8E8E93] flex items-center gap-1.5 mt-0.5">
-                    <Phone class="w-3 h-3" />
-                    {{ route.owner_phone }}
+                  <p class="text-xs text-[#8E8E93] flex items-center gap-1.5 mt-0.5">
+                    <UserCog class="w-3 h-3" />
+                    Enc: {{ route.driver_name || 'Sin encargado' }}
                   </p>
-                  <p v-if="route.vehicle_plate" class="text-xs text-[#8E8E93] flex items-center gap-1.5 mt-0.5">
+                  <p v-if="route.vehicle_description || route.vehicle_plate" class="text-xs text-[#8E8E93] flex items-center gap-1.5 mt-0.5">
                     <Truck class="w-3 h-3" />
-                    {{ route.vehicle_plate }}
+                    {{ route.vehicle_description }} · {{ route.vehicle_plate }}
                   </p>
                 </div>
               </div>

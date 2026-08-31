@@ -25,7 +25,7 @@ class SumniModuleTest extends TestCase
         $norte = $this->createRoute([
             'name' => 'Ruta Norte',
         ]);
-        $this->createRutero($norte, ['full_name' => 'Mario Palacios']);
+        $this->createRutero($norte, ['owner_name' => 'Mario Palacios']);
         $this->createRoute([
             'name' => 'Ruta Inactiva',
             'active' => false,
@@ -51,9 +51,9 @@ class SumniModuleTest extends TestCase
     public function test_sumni_show_lists_only_clients_of_that_route(): void
     {
         $norte = $this->createRoute(['name' => 'Ruta Norte']);
-        $this->createRutero($norte, ['full_name' => 'Mario Palacios']);
+        $this->createRutero($norte, ['owner_name' => 'Mario Palacios']);
         $sur = $this->createRoute(['name' => 'Ruta Sur']);
-        $this->createRutero($sur, ['full_name' => 'Yadira Cano']);
+        $this->createRutero($sur, ['owner_name' => 'Yadira Cano']);
         $visible = $this->createProducer($norte, ['full_name' => 'Ana Visible']);
         $this->createProducer($sur, ['full_name' => 'Carlos Sur']);
         $this->createProducer($norte, ['full_name' => 'Pedro Inactivo', 'active' => false]);
@@ -69,6 +69,7 @@ class SumniModuleTest extends TestCase
                 ->has('clients', 1)
                 ->where('clients.0.full_name', 'Ana Visible')
                 ->where('clients.0.today_liters', 12.5)
+                ->where('clients.0.today_density', 25)
             );
     }
 
@@ -88,8 +89,9 @@ class SumniModuleTest extends TestCase
         $this->post('/sumni/'.$route->id, [
             'producer_id' => $producer->id,
             'liters' => 18.5,
+            'temperature' => 25,
         ])
-            ->assertRedirect(route('sumni.show', $route))
+            ->assertRedirect('/sumni/'.$route->id.'?voucher='.$producer->id)
             ->assertSessionHas('success');
 
         $this->assertTrue(
@@ -98,6 +100,7 @@ class SumniModuleTest extends TestCase
                 ->where('route_id', $route->id)
                 ->whereDate('collection_date', now()->toDateString())
                 ->where('liters', 18.5)
+                ->where('temperature', 25)
                 ->exists()
         );
 
@@ -119,24 +122,77 @@ class SumniModuleTest extends TestCase
         $this->from('/sumni/'.$norte->id)->post('/sumni/'.$norte->id, [
             'producer_id' => $foreign->id,
             'liters' => 10,
+            'temperature' => 25,
         ])->assertRedirect('/sumni/'.$norte->id)->assertSessionHas('error');
 
         $this->assertSame(0, MilkCollection::query()->count());
     }
 
-    public function test_sumni_replaces_existing_liters_for_the_same_day(): void
+    public function test_sumni_rejects_editing_liters_already_recorded_today(): void
     {
         $route = $this->createRoute();
         $producer = $this->createProducer($route);
         $this->collectMilk($producer, 10);
 
-        $this->post('/sumni/'.$route->id, [
+        $this->from('/sumni/'.$route->id)->post('/sumni/'.$route->id, [
             'producer_id' => $producer->id,
             'liters' => 25,
-        ])->assertRedirect(route('sumni.show', $route));
+            'temperature' => 26,
+        ])->assertRedirect('/sumni/'.$route->id)->assertSessionHas('error');
 
-        $this->assertSame(1, MilkCollection::query()->where('producer_id', $producer->id)->count());
-        $this->assertEquals(25, MilkCollection::query()->where('producer_id', $producer->id)->value('liters'));
+        $this->assertEquals(10, MilkCollection::query()->where('producer_id', $producer->id)->value('liters'));
+    }
+
+    public function test_sumni_creates_producer_on_route_and_opens_for_liters(): void
+    {
+        $route = $this->createRoute(['name' => 'Ruta Norte']);
+
+        $response = $this->post('/sumni/'.$route->id.'/producers', [
+            'full_name' => 'Cliente Nuevo',
+            'identity_number' => '441-99999-0009Z',
+            'phone' => '8888-9999',
+        ]);
+
+        $response->assertSessionHas('success');
+
+        $producer = \App\Modules\Producers\Models\Producer::query()
+            ->where('full_name', 'Cliente Nuevo')
+            ->first();
+
+        $response->assertRedirect('/sumni/'.$route->id.'?select='.$producer->id);
+
+        $this->assertDatabaseHas('producer_route_assignments', [
+            'route_id' => $route->id,
+            'producer_id' => $producer->id,
+        ]);
+
+        $this->get('/sumni/'.$route->id.'?select='.$producer->id)
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('clients', 1)
+                ->where('clients.0.full_name', 'Cliente Nuevo')
+                ->where('clients.0.recorded_today', false)
+                ->where('selectProducerId', $producer->id)
+            );
+
+        $report = app(ProducerService::class)->weeklyPayroll($route->id);
+        $this->assertSame('Cliente Nuevo', collect($report['rows'])->first()['full_name']);
+    }
+
+    public function test_sumni_creates_producer_without_identity_number(): void
+    {
+        $route = $this->createRoute();
+
+        $this->post('/sumni/'.$route->id.'/producers', [
+            'full_name' => 'Cliente Sin Cédula',
+            'phone' => '8777-0000',
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $this->assertDatabaseHas('producers', [
+            'full_name' => 'Cliente Sin Cédula',
+            'identity_number' => null,
+            'phone' => '8777-0000',
+        ]);
     }
 
     public function test_sumni_rejects_zero_negative_and_excessive_liters(): void
@@ -148,16 +204,19 @@ class SumniModuleTest extends TestCase
         $this->from($url)->post($url, [
             'producer_id' => $producer->id,
             'liters' => 0,
+            'temperature' => 25,
         ])->assertRedirect($url)->assertSessionHasErrors('liters');
 
         $this->from($url)->post($url, [
             'producer_id' => $producer->id,
             'liters' => -3,
+            'temperature' => 25,
         ])->assertRedirect($url)->assertSessionHasErrors('liters');
 
         $this->from($url)->post($url, [
             'producer_id' => $producer->id,
             'liters' => 10001,
+            'temperature' => 25,
         ])->assertRedirect($url)->assertSessionHasErrors('liters');
     }
 
@@ -171,16 +230,19 @@ class SumniModuleTest extends TestCase
         $this->from($url)->post($url, [
             'producer_id' => $inactive->id,
             'liters' => 10,
+            'temperature' => 25,
         ])->assertRedirect($url)->assertSessionHasErrors('producer_id');
 
         $this->from($url)->post($url, [
             'producer_id' => $unassigned->id,
             'liters' => 10,
+            'temperature' => 25,
         ])->assertRedirect($url)->assertSessionHas('error');
 
         $this->from($url)->post($url, [
             'producer_id' => 999999,
             'liters' => 10,
+            'temperature' => 25,
         ])->assertRedirect($url)->assertSessionHasErrors('producer_id');
     }
 
@@ -194,16 +256,60 @@ class SumniModuleTest extends TestCase
         $this->from($url)->post($url, [
             'producer_id' => $producer->id,
             'liters' => 10,
+            'temperature' => 25,
         ])->assertRedirect($url)->assertSessionHasErrors('producer_id');
     }
 
-    public function test_sumni_requires_producer_and_liters(): void
+    public function test_sumni_requires_producer_liters_and_density(): void
     {
         $route = $this->createRoute();
         $url = '/sumni/'.$route->id;
 
         $this->from($url)->post($url, [])
             ->assertRedirect($url)
-            ->assertSessionHasErrors(['producer_id', 'liters']);
+            ->assertSessionHasErrors(['producer_id', 'liters', 'temperature']);
+    }
+
+    public function test_sumni_stores_density_with_collection(): void
+    {
+        $route = $this->createRoute();
+        $producer = $this->createProducer($route);
+
+        $this->post('/sumni/'.$route->id, [
+            'producer_id' => $producer->id,
+            'liters' => 14,
+            'temperature' => 23.5,
+        ])->assertRedirect('/sumni/'.$route->id.'?voucher='.$producer->id);
+
+        $this->assertSame('23.50', MilkCollection::query()->where('producer_id', $producer->id)->value('temperature'));
+
+        $this->get('/sumni/'.$route->id.'?voucher='.$producer->id)
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('clients.0.today_density', 23.5)
+                ->where('lastRecordedProducerId', $producer->id)
+                ->where('clients.0.recorded_today', true)
+            );
+    }
+
+    public function test_sumni_boundary_density_values_are_accepted(): void
+    {
+        $route = $this->createRoute();
+        $low = $this->createProducer($route, ['full_name' => 'Densidad Baja']);
+        $high = $this->createProducer($route, ['full_name' => 'Densidad Alta']);
+
+        $this->post('/sumni/'.$route->id, [
+            'producer_id' => $low->id,
+            'liters' => 10,
+            'temperature' => 0,
+        ])->assertRedirect('/sumni/'.$route->id.'?voucher='.$low->id);
+
+        $this->post('/sumni/'.$route->id, [
+            'producer_id' => $high->id,
+            'liters' => 11,
+            'temperature' => 50,
+        ])->assertRedirect('/sumni/'.$route->id.'?voucher='.$high->id);
+
+        $this->assertEquals(0, (float) MilkCollection::query()->where('producer_id', $low->id)->value('temperature'));
+        $this->assertEquals(50, (float) MilkCollection::query()->where('producer_id', $high->id)->value('temperature'));
     }
 }

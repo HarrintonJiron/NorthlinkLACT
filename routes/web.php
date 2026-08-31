@@ -21,6 +21,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 Route::prefix('sumni')->name('sumni.')->group(function () {
     Route::get('/', [SumniController::class, 'index'])->name('index');
     Route::get('/{route}', [SumniController::class, 'show'])->name('show');
+    Route::post('/{route}/producers', [SumniController::class, 'storeProducer'])->name('producers.store');
     Route::post('/{route}', [SumniController::class, 'store'])->name('store');
 });
 
@@ -38,6 +39,8 @@ Route::prefix('routes')->name('routes.')->group(function () {
     Route::post('/', [RouteController::class, 'store'])->name('store');
     Route::patch('/{route}/toggle', [RouteController::class, 'toggle'])->name('toggle');
     Route::post('/{route}/collections', [RouteController::class, 'storeCollection'])->name('collections.store');
+    Route::post('/{route}/assign-rutero', [RouteController::class, 'assignRutero'])->name('rutero.assign');
+    Route::delete('/{route}/rutero', [RouteController::class, 'unassignRutero'])->name('rutero.unassign');
     Route::put('/{route}', [RouteController::class, 'update'])->name('update');
     Route::get('/{route}', [RouteController::class, 'show'])->name('show');
 });
