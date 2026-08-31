@@ -33,7 +33,7 @@ class StoreUserRequest extends FormRequest
             'employee_id' => [
                 'required',
                 'integer',
-                Rule::exists(Employee::class, 'id')->where('active', true),
+                Rule::exists(Employee::class, 'id')->where('status', 'activo'),
                 Rule::unique(User::class, 'employee_id'),
             ],
             'username' => [

@@ -26,10 +26,12 @@ class UserControllerTest extends TestCase
     {
         $role = EmployeeRole::factory()->create(['name' => 'Ruta']);
         $linkedEmployee = Employee::factory()->for($role, 'role')->create([
-            'full_name' => 'María López',
+            'first_name' => 'María',
+            'last_name' => 'López',
         ]);
         $availableEmployee = Employee::factory()->for($role, 'role')->create([
-            'full_name' => 'Carlos Pérez',
+            'first_name' => 'Carlos',
+            'last_name' => 'Pérez',
         ]);
         User::factory()->create([
             'employee_id' => $linkedEmployee->id,
@@ -59,7 +61,8 @@ class UserControllerTest extends TestCase
     {
         $role = EmployeeRole::factory()->create(['name' => 'Administrativo']);
         $employee = Employee::factory()->for($role, 'role')->create([
-            'full_name' => 'Ana Martínez',
+            'first_name' => 'Ana',
+            'last_name' => 'Martínez',
             'email' => 'ana@example.com',
             'phone' => '8888-7777',
         ]);
@@ -107,7 +110,7 @@ class UserControllerTest extends TestCase
 
     public function test_rejects_inactive_or_already_assigned_collaborators(): void
     {
-        $inactiveEmployee = Employee::factory()->create(['active' => false]);
+        $inactiveEmployee = Employee::factory()->create(['status' => 'retirado']);
         $assignedEmployee = Employee::factory()->create();
         User::factory()->create(['employee_id' => $assignedEmployee->id]);
 
