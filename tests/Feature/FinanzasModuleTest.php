@@ -64,6 +64,8 @@ class FinanzasModuleTest extends TestCase
 
     public function test_store_payment_and_income_types(): void
     {
+        $this->travelTo('2026-08-31 12:00:00');
+
         $this->get('/finanzas')->assertOk();
         $pagoCategory = FinanceCategory::query()->where('code', 'PROD')->firstOrFail();
         $ingresoCategory = FinanceCategory::query()->where('code', 'VENT')->firstOrFail();
