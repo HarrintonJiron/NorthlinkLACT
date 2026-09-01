@@ -19,7 +19,7 @@ class UserController extends Controller
         $users = User::query()
             ->select(['id', 'employee_id', 'username', 'name', 'email', 'phone', 'active', 'created_at'])
             ->with([
-                'employee:id,employee_role_id,full_name,email,phone',
+                'employee:id,employee_role_id,first_name,last_name,email,phone',
                 'employee.role:id,name',
             ])
             ->latest('id')
@@ -27,12 +27,20 @@ class UserController extends Controller
             ->withQueryString();
 
         $availableEmployees = Employee::query()
-            ->select(['id', 'employee_role_id', 'full_name', 'email', 'phone'])
-            ->where('active', true)
+            ->select(['id', 'employee_role_id', 'first_name', 'last_name', 'email', 'phone'])
+            ->where('status', 'activo')
             ->doesntHave('user')
             ->with('role:id,name')
-            ->orderBy('full_name')
-            ->get();
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->get()
+            ->map(fn (Employee $employee) => [
+                'id' => $employee->id,
+                'full_name' => $employee->full_name,
+                'email' => $employee->email,
+                'phone' => $employee->phone,
+                'role' => $employee->role,
+            ]);
 
         return Inertia::render('Settings/Users/Index', [
             'users' => $users,

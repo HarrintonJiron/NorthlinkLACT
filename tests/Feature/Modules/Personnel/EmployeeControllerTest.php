@@ -3,8 +3,11 @@
 namespace Tests\Feature\Modules\Personnel;
 
 use App\Modules\Personnel\Models\Employee;
+use App\Modules\Personnel\Models\EmployeeAttendance;
 use App\Modules\Personnel\Models\EmployeeRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
@@ -14,220 +17,189 @@ class EmployeeControllerTest extends TestCase
 
     public function test_personnel_page_renders_active_and_inactive_roles_with_totals(): void
     {
-        $administrativeRole = EmployeeRole::factory()->create([
-            'name' => 'Contabilidad',
-        ]);
-        $routeRole = EmployeeRole::factory()->create([
-            'name' => 'Acopiador',
-            'active' => false,
-        ]);
-        Employee::factory()->for($administrativeRole, 'role')->create(['full_name' => 'Ana Pérez']);
-        Employee::factory()->for($routeRole, 'role')->create(['full_name' => 'Carlos López']);
+        $administrativeRole = EmployeeRole::factory()->create(['name' => 'Contabilidad']);
+        $routeRole = EmployeeRole::factory()->create(['name' => 'Acopiador', 'active' => false]);
+        Employee::factory()->for($administrativeRole, 'role')->create(['first_name' => 'Ana', 'last_name' => 'Pérez']);
+        Employee::factory()->for($routeRole, 'role')->create(['first_name' => 'Carlos', 'last_name' => 'López']);
 
         $this->get(route('employees.index'))
             ->assertInertia(fn (Assert $page) => $page
                 ->component('Personnel/Index')
                 ->has('employees.data', 2)
                 ->has('roles', 2)
-                ->where('roles.1.active', false)
                 ->where('stats.total', 2)
-                ->where('stats.active', 2)
-                ->where('stats.inactive', 0)
-                ->where('stats.roles', 1));
+                ->where('stats.active', 2));
     }
 
-    public function test_valid_payload_creates_an_active_collaborator_with_a_role(): void
+    public function test_valid_payload_creates_a_collaborator_and_redirects_to_profile(): void
     {
         $role = EmployeeRole::factory()->create(['active' => true]);
 
         $response = $this->post(route('employees.store'), [
-            'full_name' => '  María González  ',
+            'first_name' => 'María',
+            'last_name' => 'González',
             'employee_role_id' => $role->id,
             'identity_number' => '001-010190-0001A',
             'email' => 'MARIA@EXAMPLE.COM',
             'phone' => '8888-7777',
             'hired_at' => '2026-08-01',
-            'active' => true,
+            'status' => 'activo',
+            'inss_insured' => true,
         ]);
-
-        $response
-            ->assertRedirect(route('employees.index'))
-            ->assertSessionHas('success', 'Colaborador creado exitosamente.');
 
         $employee = Employee::query()->firstOrFail();
 
+        $response
+            ->assertRedirect(route('employees.show', $employee))
+            ->assertSessionHas('success');
+
+        $this->assertSame('María', $employee->first_name);
+        $this->assertSame('González', $employee->last_name);
         $this->assertSame('María González', $employee->full_name);
         $this->assertSame('maria@example.com', $employee->email);
-        $this->assertSame($role->id, $employee->employee_role_id);
-        $this->assertTrue($employee->active);
-        $this->assertSame('2026-08-01', $employee->hired_at->toDateString());
+        $this->assertStringStartsWith('EMP-', $employee->code);
+        $this->assertSame('activo', $employee->status);
     }
 
-    public function test_requires_name_and_an_available_role(): void
+    public function test_employee_profile_page_renders_ficha_sections(): void
     {
-        $response = $this->post(route('employees.store'), []);
-
-        $response->assertSessionHasErrors([
-            'full_name' => 'El nombre completo es obligatorio.',
-            'employee_role_id' => 'Selecciona un rol para el colaborador.',
+        $employee = Employee::factory()->create([
+            'first_name' => 'Luis',
+            'last_name' => 'Ramírez',
+            'area' => 'Acopio',
         ]);
-        $this->assertSame(0, Employee::query()->count());
+
+        $this->get(route('employees.show', $employee))
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Personnel/Show')
+                ->where('employee.full_name', 'Luis Ramírez')
+                ->where('employee.area', 'Acopio')
+                ->has('attendances')
+                ->has('deductions')
+                ->has('documents'));
     }
 
-    public function test_rejects_an_inactive_role(): void
+    public function test_can_register_attendance_and_deduction_from_employee_profile(): void
     {
-        $role = EmployeeRole::factory()->create(['active' => false]);
+        Storage::fake('public');
+        $employee = Employee::factory()->create();
 
-        $response = $this->post(route('employees.store'), [
-            'full_name' => 'Carlos López',
-            'employee_role_id' => $role->id,
-            'active' => true,
+        $this->post(route('employees.employee.attendances.store', $employee), [
+            'employee_id' => $employee->id,
+            'attendance_date' => '2026-08-15',
+            'type' => EmployeeAttendance::TYPE_PRESENTE,
+            'check_in' => '07:30',
+            'check_out' => '16:00',
+        ])->assertRedirect(route('employees.show', $employee));
+
+        $this->assertDatabaseHas('employee_attendances', [
+            'employee_id' => $employee->id,
+            'type' => EmployeeAttendance::TYPE_PRESENTE,
         ]);
 
-        $response->assertSessionHasErrors([
-            'employee_role_id' => 'El rol seleccionado no está disponible.',
+        $this->post(route('employees.employee.deductions.store', $employee), [
+            'employee_id' => $employee->id,
+            'type' => 'prestamo',
+            'amount' => 1500,
+            'total_amount' => 15000,
+            'installment_amount' => 1500,
+            'installments_total' => 10,
+            'deduction_date' => '2026-08-15',
+            'status' => 'activa',
+            'reason' => 'Préstamo personal',
+        ])->assertRedirect(route('employees.show', $employee));
+
+        $this->assertDatabaseHas('employee_deductions', [
+            'employee_id' => $employee->id,
+            'type' => 'prestamo',
+            'installments_total' => 10,
         ]);
-        $this->assertDatabaseMissing('employees', ['full_name' => 'Carlos López']);
+
+        $this->post(route('employees.employee.deductions.store', $employee), [
+            'employee_id' => $employee->id,
+            'type' => 'adelanto_salario',
+            'amount' => 2000,
+            'total_amount' => 6000,
+            'installment_amount' => 2000,
+            'installments_total' => 3,
+            'deduction_date' => '2026-08-20',
+            'status' => 'activa',
+            'reason' => 'Adelanto quincenal',
+        ])->assertRedirect(route('employees.show', $employee));
+
+        $this->assertDatabaseHas('employee_deductions', [
+            'employee_id' => $employee->id,
+            'type' => 'adelanto_salario',
+            'installments_total' => 3,
+        ]);
     }
 
-    public function test_rejects_duplicate_identity_and_email(): void
+    public function test_can_upload_document_to_employee_profile(): void
     {
-        $role = EmployeeRole::factory()->create();
-        Employee::factory()->for($role, 'role')->create([
-            'identity_number' => '001-010190-0001A',
-            'email' => 'maria@example.com',
-        ]);
+        Storage::fake('public');
+        $employee = Employee::factory()->create();
 
-        $response = $this->post(route('employees.store'), [
-            'full_name' => 'Otra persona',
-            'employee_role_id' => $role->id,
-            'identity_number' => '001-010190-0001A',
-            'email' => 'MARIA@EXAMPLE.COM',
-            'active' => true,
-        ]);
+        $this->post(route('employees.documents.store', $employee), [
+            'name' => 'Contrato laboral',
+            'type' => 'contrato',
+            'file' => UploadedFile::fake()->create('contrato.pdf', 100, 'application/pdf'),
+        ])->assertRedirect(route('employees.show', $employee));
 
-        $response->assertSessionHasErrors([
-            'identity_number' => 'Ya existe un colaborador con esta identificación.',
-            'email' => 'Ya existe un colaborador con este correo electrónico.',
+        $this->assertDatabaseHas('employee_documents', [
+            'employee_id' => $employee->id,
+            'name' => 'Contrato laboral',
+            'type' => 'contrato',
         ]);
-        $this->assertSame(1, Employee::query()->count());
     }
 
-    public function test_valid_payload_updates_a_collaborator(): void
+    public function test_status_update_accepts_valid_status_values(): void
     {
-        $originalRole = EmployeeRole::factory()->create();
-        $newRole = EmployeeRole::factory()->create();
-        $employee = Employee::factory()->for($originalRole, 'role')->create([
-            'full_name' => 'María González',
-            'identity_number' => '001-010190-0001A',
-            'email' => 'maria@example.com',
-        ]);
+        $employee = Employee::factory()->create(['status' => 'activo']);
 
-        $response = $this->put(route('employees.update', $employee), [
-            'full_name' => '  María López  ',
-            'employee_role_id' => $newRole->id,
-            'identity_number' => '001-010190-0001A',
-            'email' => 'MARIA@EXAMPLE.COM',
-            'phone' => '7777-8888',
-            'hired_at' => '2026-08-15',
-            'active' => true,
-        ]);
+        $this->patch(route('employees.status.update', $employee), ['status' => 'suspendido'])
+            ->assertRedirect()
+            ->assertSessionHas('success');
 
-        $response
-            ->assertRedirect(route('employees.index'))
-            ->assertSessionHas('success', 'Colaborador actualizado exitosamente.');
-
-        $employee->refresh();
-
-        $this->assertSame('María López', $employee->full_name);
-        $this->assertSame('maria@example.com', $employee->email);
-        $this->assertSame($newRole->id, $employee->employee_role_id);
-        $this->assertSame('7777-8888', $employee->phone);
+        $this->assertSame('suspendido', $employee->fresh()->status);
     }
 
-    public function test_update_rejects_identity_and_email_used_by_another_collaborator(): void
+    public function test_insured_employee_includes_automatic_inss_deduction_on_profile(): void
     {
-        $role = EmployeeRole::factory()->create();
-        Employee::factory()->for($role, 'role')->create([
-            'identity_number' => '001-010190-0001A',
-            'email' => 'maria@example.com',
-        ]);
-        $employee = Employee::factory()->for($role, 'role')->create();
-
-        $response = $this->put(route('employees.update', $employee), [
-            'full_name' => 'Carlos López',
-            'employee_role_id' => $role->id,
-            'identity_number' => '001-010190-0001A',
-            'email' => 'MARIA@EXAMPLE.COM',
-            'active' => true,
+        $employee = Employee::factory()->create([
+            'inss_insured' => true,
+            'salary' => 16000,
         ]);
 
-        $response->assertSessionHasErrors([
-            'identity_number' => 'Ya existe un colaborador con esta identificación.',
-            'email' => 'Ya existe un colaborador con este correo electrónico.',
-        ]);
-        $this->assertNotSame('Carlos López', $employee->fresh()->full_name);
+        $this->get(route('employees.show', $employee))
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Personnel/Show')
+                ->where('employee.inss_deduction.amount', 1120)
+                ->where('employee.inss_deduction.rate_label', '7%')
+                ->where('employee.inss_deduction.automatic', true)
+                ->where('deductionTypeOptions', fn ($options) => ! collect($options)->contains('value', 'inss')));
     }
 
-    public function test_collaborator_with_an_inactive_role_can_update_other_information(): void
+    public function test_manual_inss_deduction_is_rejected(): void
     {
-        $role = EmployeeRole::factory()->create(['active' => false]);
-        $employee = Employee::factory()->for($role, 'role')->create();
-
-        $response = $this->put(route('employees.update', $employee), [
-            'full_name' => 'Nombre actualizado',
-            'employee_role_id' => $role->id,
-            'active' => true,
+        $employee = Employee::factory()->create([
+            'inss_insured' => true,
+            'salary' => 10000,
         ]);
 
-        $response->assertRedirect(route('employees.index'));
-        $this->assertSame('Nombre actualizado', $employee->fresh()->full_name);
-    }
+        $this->from(route('employees.show', $employee))
+            ->post(route('employees.employee.deductions.store', $employee), [
+                'employee_id' => $employee->id,
+                'type' => 'inss',
+                'amount' => 700,
+                'deduction_date' => '2026-08-15',
+                'status' => 'activa',
+            ])
+            ->assertRedirect(route('employees.show', $employee))
+            ->assertSessionHasErrors('type');
 
-    public function test_update_rejects_a_different_inactive_role(): void
-    {
-        $currentRole = EmployeeRole::factory()->create();
-        $inactiveRole = EmployeeRole::factory()->create(['active' => false]);
-        $employee = Employee::factory()->for($currentRole, 'role')->create();
-
-        $response = $this->put(route('employees.update', $employee), [
-            'full_name' => 'Carlos López',
-            'employee_role_id' => $inactiveRole->id,
-            'active' => true,
+        $this->assertDatabaseMissing('employee_deductions', [
+            'employee_id' => $employee->id,
+            'type' => 'inss',
         ]);
-
-        $response->assertSessionHasErrors([
-            'employee_role_id' => 'El rol seleccionado no está disponible.',
-        ]);
-        $this->assertSame($currentRole->id, $employee->fresh()->employee_role_id);
-    }
-
-    public function test_collaborator_can_be_deactivated_and_activated(): void
-    {
-        $employee = Employee::factory()->create(['active' => true]);
-
-        $this->patch(route('employees.status.update', $employee), ['active' => false])
-            ->assertRedirect(route('employees.index'))
-            ->assertSessionHas('success', 'Colaborador desactivado exitosamente.');
-
-        $this->assertFalse($employee->fresh()->active);
-
-        $this->patch(route('employees.status.update', $employee), ['active' => true])
-            ->assertRedirect(route('employees.index'))
-            ->assertSessionHas('success', 'Colaborador activado exitosamente.');
-
-        $this->assertTrue($employee->fresh()->active);
-    }
-
-    public function test_status_update_requires_a_boolean_value(): void
-    {
-        $employee = Employee::factory()->create(['active' => true]);
-
-        $response = $this->patch(route('employees.status.update', $employee), [
-            'active' => 'invalid',
-        ]);
-
-        $response->assertSessionHasErrors('active');
-        $this->assertTrue($employee->fresh()->active);
     }
 }

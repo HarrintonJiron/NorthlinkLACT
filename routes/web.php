@@ -3,7 +3,10 @@
 use App\Modules\Admin\Controllers\UserController;
 use App\Modules\Finanzas\Controllers\FinanceTransactionController;
 use App\Modules\Inventory\Controllers\InventoryProductController;
+use App\Modules\Personnel\Controllers\EmployeeAttendanceController;
 use App\Modules\Personnel\Controllers\EmployeeController;
+use App\Modules\Personnel\Controllers\EmployeeDeductionController;
+use App\Modules\Personnel\Controllers\EmployeeDocumentController;
 use App\Modules\Personnel\Controllers\EmployeeRoleController;
 use App\Modules\Producers\Controllers\MilkCollectionController;
 use App\Modules\Producers\Controllers\ProducerController;
@@ -107,8 +110,18 @@ Route::prefix('inventory')->name('inventory.')->group(function () {
 Route::prefix('employees')->name('employees.')->group(function () {
     Route::get('/', [EmployeeController::class, 'index'])->name('index');
     Route::post('/', [EmployeeController::class, 'store'])->name('store');
+    Route::get('/{employee}', [EmployeeController::class, 'show'])->name('show');
     Route::put('/{employee}', [EmployeeController::class, 'update'])->name('update');
     Route::patch('/{employee}/status', [EmployeeController::class, 'updateStatus'])->name('status.update');
+    Route::post('/attendances', [EmployeeAttendanceController::class, 'store'])->name('attendances.store');
+    Route::post('/{employee}/attendances', [EmployeeAttendanceController::class, 'store'])->name('employee.attendances.store');
+    Route::delete('/{employee}/attendances/{attendance}', [EmployeeAttendanceController::class, 'destroy'])->name('attendances.destroy');
+    Route::post('/deductions', [EmployeeDeductionController::class, 'store'])->name('deductions.store');
+    Route::post('/{employee}/deductions', [EmployeeDeductionController::class, 'store'])->name('employee.deductions.store');
+    Route::delete('/{employee}/deductions/{deduction}', [EmployeeDeductionController::class, 'destroy'])->name('deductions.destroy');
+    Route::post('/{employee}/documents', [EmployeeDocumentController::class, 'store'])->name('documents.store');
+    Route::get('/{employee}/documents/{document}/download', [EmployeeDocumentController::class, 'download'])->name('documents.download');
+    Route::delete('/{employee}/documents/{document}', [EmployeeDocumentController::class, 'destroy'])->name('documents.destroy');
     Route::post('/roles', [EmployeeRoleController::class, 'store'])->name('roles.store');
     Route::put('/roles/{employeeRole}', [EmployeeRoleController::class, 'update'])->name('roles.update');
     Route::patch('/roles/{employeeRole}/status', [EmployeeRoleController::class, 'updateStatus'])->name('roles.status.update');
