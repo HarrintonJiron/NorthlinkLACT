@@ -17,6 +17,9 @@ RUN apt-get update && apt-get install -y \
 # Install PHP extensions
 RUN docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd zip
 
+# Custom php.ini overrides (applies to both php-fpm and the CLI)
+COPY docker/php/local.ini /usr/local/etc/php/conf.d/local.ini
+
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

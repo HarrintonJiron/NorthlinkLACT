@@ -3,8 +3,20 @@
 use App\Modules\Admin\Controllers\UserController;
 use App\Modules\Finanzas\Controllers\FinanceTransactionController;
 use App\Modules\Inventory\Controllers\InventoryProductController;
+use App\Modules\Personnel\Controllers\AbsenceController;
+use App\Modules\Personnel\Controllers\AguinaldoController;
+use App\Modules\Personnel\Controllers\BonusController;
+use App\Modules\Personnel\Controllers\DeductionController;
 use App\Modules\Personnel\Controllers\EmployeeController;
+use App\Modules\Personnel\Controllers\EmployeeHistoryController;
 use App\Modules\Personnel\Controllers\EmployeeRoleController;
+use App\Modules\Personnel\Controllers\LeaveController;
+use App\Modules\Personnel\Controllers\LoanController;
+use App\Modules\Personnel\Controllers\PayrollController;
+use App\Modules\Personnel\Controllers\PayrollExportController;
+use App\Modules\Personnel\Controllers\SettlementController;
+use App\Modules\Personnel\Controllers\TaxPolicyController;
+use App\Modules\Personnel\Controllers\VacationController;
 use App\Modules\Producers\Controllers\MilkCollectionController;
 use App\Modules\Producers\Controllers\ProducerController;
 use App\Modules\Producers\Controllers\RouteController;
@@ -109,15 +121,70 @@ Route::prefix('employees')->name('employees.')->group(function () {
     Route::post('/', [EmployeeController::class, 'store'])->name('store');
     Route::put('/{employee}', [EmployeeController::class, 'update'])->name('update');
     Route::patch('/{employee}/status', [EmployeeController::class, 'updateStatus'])->name('status.update');
+    Route::get('/{employee}', [EmployeeController::class, 'show'])->name('show');
+    Route::get('/{employee}/history', [EmployeeHistoryController::class, 'show'])->name('history');
     Route::post('/roles', [EmployeeRoleController::class, 'store'])->name('roles.store');
     Route::put('/roles/{employeeRole}', [EmployeeRoleController::class, 'update'])->name('roles.update');
     Route::patch('/roles/{employeeRole}/status', [EmployeeRoleController::class, 'updateStatus'])->name('roles.status.update');
+
+    Route::post('/{employee}/vacations', [VacationController::class, 'store'])->name('vacations.store');
+    Route::put('/{employee}/vacations/{vacation}', [VacationController::class, 'update'])->name('vacations.update');
+    Route::patch('/{employee}/vacations/{vacation}/status', [VacationController::class, 'updateStatus'])->name('vacations.status.update');
+    Route::delete('/{employee}/vacations/{vacation}', [VacationController::class, 'destroy'])->name('vacations.destroy');
+
+    Route::post('/{employee}/bonuses', [BonusController::class, 'store'])->name('bonuses.store');
+    Route::put('/{employee}/bonuses/{bonus}', [BonusController::class, 'update'])->name('bonuses.update');
+    Route::delete('/{employee}/bonuses/{bonus}', [BonusController::class, 'destroy'])->name('bonuses.destroy');
+
+    Route::post('/{employee}/loans', [LoanController::class, 'store'])->name('loans.store');
+    Route::put('/{employee}/loans/{loan}', [LoanController::class, 'update'])->name('loans.update');
+    Route::delete('/{employee}/loans/{loan}', [LoanController::class, 'destroy'])->name('loans.destroy');
+
+    Route::post('/{employee}/deductions', [DeductionController::class, 'store'])->name('deductions.store');
+    Route::put('/{employee}/deductions/{deduction}', [DeductionController::class, 'update'])->name('deductions.update');
+    Route::delete('/{employee}/deductions/{deduction}', [DeductionController::class, 'destroy'])->name('deductions.destroy');
+
+    Route::post('/{employee}/leaves', [LeaveController::class, 'store'])->name('leaves.store');
+    Route::put('/{employee}/leaves/{leave}', [LeaveController::class, 'update'])->name('leaves.update');
+    Route::patch('/{employee}/leaves/{leave}/status', [LeaveController::class, 'updateStatus'])->name('leaves.status.update');
+    Route::delete('/{employee}/leaves/{leave}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
+
+    Route::post('/{employee}/absences', [AbsenceController::class, 'store'])->name('absences.store');
+    Route::delete('/{employee}/absences/{absence}', [AbsenceController::class, 'destroy'])->name('absences.destroy');
 });
 
 Route::prefix('payroll')->name('payroll.')->group(function () {
-    Route::get('/', function () {
-        return inertia('UnderConstruction');
-    })->name('index');
+    Route::get('/', [PayrollController::class, 'index'])->name('index');
+    Route::post('/', [PayrollController::class, 'store'])->name('store');
+    Route::get('/{payrollPeriod}', [PayrollController::class, 'show'])->name('show');
+    Route::put('/{payrollPeriod}/items/{item}', [PayrollController::class, 'updateItem'])->name('items.update');
+    Route::patch('/{payrollPeriod}/approve', [PayrollController::class, 'approve'])->name('approve');
+    Route::patch('/{payrollPeriod}/pay', [PayrollController::class, 'markPaid'])->name('pay');
+    Route::delete('/{payrollPeriod}', [PayrollController::class, 'destroy'])->name('destroy');
+    Route::get('/{payrollPeriod}/export', [PayrollExportController::class, 'exportPlanilla'])->name('print');
+});
+
+Route::post('/tax-policies', [TaxPolicyController::class, 'store'])->name('tax-policies.store');
+
+Route::prefix('aguinaldo')->name('aguinaldo.')->group(function () {
+    Route::post('/', [AguinaldoController::class, 'store'])->name('store');
+    Route::get('/{aguinaldoPeriod}', [AguinaldoController::class, 'show'])->name('show');
+    Route::patch('/{aguinaldoPeriod}/approve', [AguinaldoController::class, 'approve'])->name('approve');
+    Route::patch('/{aguinaldoPeriod}/pay', [AguinaldoController::class, 'markPaid'])->name('pay');
+    Route::delete('/{aguinaldoPeriod}', [AguinaldoController::class, 'destroy'])->name('destroy');
+    Route::get('/{aguinaldoPeriod}/export', [PayrollExportController::class, 'exportAguinaldo'])->name('print');
+});
+
+Route::get('/payroll-export/{section}', [PayrollExportController::class, 'export'])->name('payroll.export');
+
+Route::prefix('settlements')->name('settlements.')->group(function () {
+    Route::post('/', [SettlementController::class, 'store'])->name('store');
+    Route::get('/{settlement}', [SettlementController::class, 'show'])->name('show');
+    Route::put('/{settlement}', [SettlementController::class, 'update'])->name('update');
+    Route::patch('/{settlement}/approve', [SettlementController::class, 'approve'])->name('approve');
+    Route::patch('/{settlement}/pay', [SettlementController::class, 'markPaid'])->name('pay');
+    Route::delete('/{settlement}', [SettlementController::class, 'destroy'])->name('destroy');
+    Route::get('/{settlement}/export', [PayrollExportController::class, 'exportSettlement'])->name('print');
 });
 
 Route::prefix('reports')->name('reports.')->group(function () {

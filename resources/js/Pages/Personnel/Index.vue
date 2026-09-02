@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { Head, Link, router, useForm } from '@inertiajs/vue3'
-import { BadgeCheck, BriefcaseBusiness, CalendarDays, Check, ClipboardPlus, Mail, Pencil, Phone, Plus, Power, PowerOff, Search, UserRound, UsersRound, X } from '@lucide/vue'
+import { BadgeCheck, BriefcaseBusiness, CalendarDays, Check, ClipboardPlus, Eye, Mail, Pencil, Phone, Plus, Power, PowerOff, Search, UserRound, UsersRound, Wallet, X } from '@lucide/vue'
 import AppShell from '../../Components/AppShell.vue'
 
 const props = defineProps({ employees: Object, roles: Array, stats: Object })
@@ -18,7 +18,7 @@ const pendingEmployeeId = ref(null)
 
 const employeeForm = useForm({
   full_name: '', employee_role_id: '', identity_number: '', email: '',
-  phone: '', hired_at: '', active: true,
+  phone: '', hired_at: '', active: true, base_salary: '', pay_frequency: 'monthly',
 })
 const roleForm = useForm({ name: '', description: '' })
 const assignableRoles = computed(() => props.roles.filter((role) =>
@@ -47,6 +47,8 @@ const openEmployee = (employee = null) => {
   employeeForm.phone = employee?.phone ?? ''
   employeeForm.hired_at = employee?.hired_at?.slice(0, 10) ?? ''
   employeeForm.active = employee?.active ?? true
+  employeeForm.base_salary = employee?.base_salary ?? ''
+  employeeForm.pay_frequency = employee?.pay_frequency ?? 'monthly'
   showEmployee.value = true
 }
 const closeEmployee = () => {
@@ -141,6 +143,14 @@ const initials = (name) => name.split(' ').slice(0, 2).map((part) => part[0]).jo
 const dateLabel = (value) => value
   ? new Intl.DateTimeFormat('es-NI', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(value))
   : 'Sin fecha'
+const tenureLabel = (days) => {
+  if (!days) return 'Sin antigüedad'
+  const years = Math.floor(days / 365)
+  const months = Math.floor((days % 365) / 30)
+  if (years > 0) return `${years} año${years > 1 ? 's' : ''}${months > 0 ? `, ${months}m` : ''}`
+  if (months > 0) return `${months} mes${months > 1 ? 'es' : ''}`
+  return `${days} día${days === 1 ? '' : 's'}`
+}
 </script>
 
 <template>
@@ -215,16 +225,18 @@ const dateLabel = (value) => value
         </div>
 
         <div v-if="filteredEmployees.length" class="divide-y divide-[#EFEFF1]">
-          <article v-for="employee in filteredEmployees" :key="employee.id" class="grid gap-3 p-4 hover:bg-[#F8FAFF] md:grid-cols-[minmax(13rem,1.5fr)_1fr_1fr_auto] md:items-center">
-            <div class="flex min-w-0 items-center gap-3">
+          <article v-for="employee in filteredEmployees" :key="employee.id" class="grid gap-3 p-4 hover:bg-[#F8FAFF] md:grid-cols-[minmax(13rem,1.5fr)_1fr_1fr_1fr_auto] md:items-center">
+            <Link :href="`/employees/${employee.id}`" class="flex min-w-0 items-center gap-3">
               <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#007AFF] text-xs font-bold text-white">{{ initials(employee.full_name) }}</div>
-              <div class="min-w-0"><p class="truncate text-sm font-semibold">{{ employee.full_name }}</p><p class="truncate text-xs text-[#8E8E93]">{{ employee.identity_number || 'Sin identificación' }}</p></div>
-            </div>
+              <div class="min-w-0"><p class="truncate text-sm font-semibold hover:text-[#007AFF]">{{ employee.full_name }}</p><p class="truncate text-xs text-[#8E8E93]">{{ employee.identity_number || 'Sin identificación' }}</p></div>
+            </Link>
             <div><p class="text-sm font-medium">{{ employee.role?.name }}</p><p class="text-xs text-[#8E8E93]">Rol asignado</p></div>
-            <div><p class="truncate text-xs text-[#6E6E73]">{{ employee.email || employee.phone || 'Sin contacto' }}</p><p class="text-xs text-[#8E8E93]">{{ dateLabel(employee.hired_at) }}</p></div>
+            <div><p class="text-sm font-medium">{{ tenureLabel(employee.tenure_days) }}</p><p class="text-xs text-[#8E8E93]">Ingresó {{ dateLabel(employee.hired_at) }}</p></div>
+            <div><p class="text-sm font-medium">{{ employee.days_worked_this_month }} días</p><p class="text-xs text-[#8E8E93]">Trabajados este mes</p></div>
             <div class="flex items-center justify-between gap-2 md:justify-end">
               <span :class="['w-fit rounded-full px-2.5 py-1 text-xs font-semibold', employee.active ? 'bg-[#E9F8EE] text-[#187A31]' : 'bg-[#F2F2F7] text-[#6E6E73]']">{{ employee.active ? 'Activo' : 'Inactivo' }}</span>
               <span class="flex gap-1">
+                <Link :href="`/employees/${employee.id}`" class="rounded-lg border border-[#E5E5E5] p-1.5 text-[#6E6E73] hover:bg-white hover:text-[#007AFF]" :aria-label="`Ver ficha de ${employee.full_name}`" title="Ver ficha completa"><Eye class="size-3.5" /></Link>
                 <button type="button" class="rounded-lg border border-[#E5E5E5] p-1.5 text-[#6E6E73] hover:bg-white hover:text-[#007AFF]" :aria-label="`Editar a ${employee.full_name}`" title="Editar colaborador" @click="openEmployee(employee)"><Pencil class="size-3.5" /></button>
                 <button type="button" :disabled="pendingEmployeeId === employee.id" :class="['rounded-lg border border-[#E5E5E5] p-1.5 hover:bg-white disabled:opacity-40', employee.active ? 'text-[#D70015]' : 'text-[#187A31]']" :aria-label="`${employee.active ? 'Desactivar' : 'Activar'} a ${employee.full_name}`" :title="employee.active ? 'Desactivar colaborador' : 'Activar colaborador'" @click="toggleEmployee(employee)"><PowerOff v-if="employee.active" class="size-3.5" /><Power v-else class="size-3.5" /></button>
               </span>
@@ -258,6 +270,10 @@ const dateLabel = (value) => value
           <div class="grid gap-3 sm:grid-cols-2">
             <div><label class="mb-1 block text-xs font-semibold">Rol</label><select v-model="employeeForm.employee_role_id" class="h-10 w-full rounded-xl border-0 bg-[#F5F5F7] px-3 text-sm"><option value="">Seleccionar</option><option v-for="role in assignableRoles" :key="role.id" :value="role.id">{{ role.name }}{{ role.active ? '' : ' (inactivo)' }}</option></select><p v-if="employeeForm.errors.employee_role_id" class="mt-1 text-xs text-[#D70015]">{{ employeeForm.errors.employee_role_id }}</p></div>
             <div><label class="mb-1 block text-xs font-semibold">Fecha de ingreso</label><div class="relative"><CalendarDays class="absolute left-3 top-3 size-4 text-[#8E8E93]" /><input v-model="employeeForm.hired_at" type="date" class="h-10 w-full rounded-xl border-0 bg-[#F5F5F7] pl-9 pr-3 text-sm"></div><p v-if="employeeForm.errors.hired_at" class="mt-1 text-xs text-[#D70015]">{{ employeeForm.errors.hired_at }}</p></div>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <div><label class="mb-1 block text-xs font-semibold">Sueldo base</label><div class="relative"><Wallet class="absolute left-3 top-3 size-4 text-[#8E8E93]" /><input v-model="employeeForm.base_salary" type="number" step="0.01" min="0" class="h-10 w-full rounded-xl border-0 bg-[#F5F5F7] pl-9 pr-3 text-sm" placeholder="Opcional"></div><p v-if="employeeForm.errors.base_salary" class="mt-1 text-xs text-[#D70015]">{{ employeeForm.errors.base_salary }}</p></div>
+            <div><label class="mb-1 block text-xs font-semibold">Frecuencia de pago</label><select v-model="employeeForm.pay_frequency" class="h-10 w-full rounded-xl border-0 bg-[#F5F5F7] px-3 text-sm"><option value="weekly">Semanal</option><option value="biweekly">Quincenal</option><option value="monthly">Mensual</option></select><p v-if="employeeForm.errors.pay_frequency" class="mt-1 text-xs text-[#D70015]">{{ employeeForm.errors.pay_frequency }}</p></div>
           </div>
           <button type="button" class="text-xs font-semibold text-[#007AFF]" @click="closeEmployee(); openRole()">¿No aparece el rol? Créalo aquí</button>
           <div class="flex items-center justify-between rounded-xl bg-[#F5F5F7] p-3"><div><p class="text-sm font-semibold">Colaborador activo</p><p class="text-xs text-[#8E8E93]">Disponible para asignaciones.</p></div><button type="button" :class="['relative h-6 w-11 rounded-full', employeeForm.active ? 'bg-[#34C759]' : 'bg-[#C7C7CC]']" @click="employeeForm.active = !employeeForm.active"><span :class="['absolute top-0.5 size-5 rounded-full bg-white shadow', employeeForm.active ? 'left-5.5' : 'left-0.5']" /></button></div>

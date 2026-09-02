@@ -14,6 +14,11 @@ while ! nc -z redis 6379; do
 done
 echo "Redis is ready!"
 
+# Install PHP dependencies into the fast container-native vendor volume
+if [ ! -f vendor/autoload.php ]; then
+  composer install --no-interaction --prefer-dist
+fi
+
 # Run migrations
 php artisan migrate --force --no-interaction
 

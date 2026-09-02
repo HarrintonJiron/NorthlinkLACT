@@ -24,6 +24,8 @@ class StoreEmployeeRequest extends FormRequest
             'hired_at' => $this->filled('hired_at') ? $this->input('hired_at') : null,
             'employee_role_id' => $this->filled('employee_role_id') ? $this->integer('employee_role_id') : null,
             'active' => $this->boolean('active'),
+            'base_salary' => $this->filled('base_salary') ? $this->input('base_salary') : null,
+            'pay_frequency' => $this->filled('pay_frequency') ? $this->input('pay_frequency') : Employee::FREQ_MONTHLY,
         ]);
     }
 
@@ -44,6 +46,12 @@ class StoreEmployeeRequest extends FormRequest
             'phone' => ['nullable', 'string', 'max:50'],
             'hired_at' => ['nullable', 'date', 'before_or_equal:today'],
             'active' => ['required', 'boolean'],
+            'base_salary' => ['nullable', 'numeric', 'min:0', 'max:9999999.99'],
+            'pay_frequency' => ['required', Rule::in([
+                Employee::FREQ_WEEKLY,
+                Employee::FREQ_BIWEEKLY,
+                Employee::FREQ_MONTHLY,
+            ])],
         ];
     }
 
@@ -61,6 +69,10 @@ class StoreEmployeeRequest extends FormRequest
             'email.unique' => 'Ya existe un colaborador con este correo electrónico.',
             'hired_at.date' => 'Ingresa una fecha de ingreso válida.',
             'hired_at.before_or_equal' => 'La fecha de ingreso no puede estar en el futuro.',
+            'base_salary.numeric' => 'El sueldo debe ser un número válido.',
+            'base_salary.min' => 'El sueldo no puede ser negativo.',
+            'pay_frequency.required' => 'Selecciona la frecuencia de pago.',
+            'pay_frequency.in' => 'La frecuencia de pago no es válida.',
         ];
     }
 }
