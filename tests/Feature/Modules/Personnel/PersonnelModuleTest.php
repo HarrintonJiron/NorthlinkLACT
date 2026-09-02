@@ -18,6 +18,13 @@ class PersonnelModuleTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->authenticate();
+    }
+
     public function test_employee_update_persists_profile_changes(): void
     {
         $role = EmployeeRole::factory()->create(['active' => true]);

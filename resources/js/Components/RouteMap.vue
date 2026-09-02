@@ -1,102 +1,87 @@
 <script setup>
-import { MapPin, Navigation, Truck } from '@lucide/vue'
+import { MapPin, Truck } from '@lucide/vue'
 
-const props = defineProps({
-  routes: Array,
-  collections: Array
+defineProps({
+  routes: {
+    type: Array,
+    required: true,
+  },
 })
 
-const mockRoutes = [
-  { id: 1, name: 'Ruta Matagalpa', status: 'completed', liters: 2850, points: 12 },
-  { id: 2, name: 'Ruta Estelí', status: 'in_progress', liters: 1920, points: 8 },
-  { id: 3, name: 'Ruta Jinotega', status: 'pending', liters: 0, points: 15 },
-  { id: 4, name: 'Ruta Sébaco', status: 'completed', liters: 3100, points: 18 },
-]
+const numberFormatter = new Intl.NumberFormat('es-NI', { maximumFractionDigits: 2 })
+
+const positionFor = (index, total) => {
+  const columns = Math.max(1, Math.ceil(Math.sqrt(total)))
+  const row = Math.floor(index / columns)
+  const column = index % columns
+  const rows = Math.max(1, Math.ceil(total / columns))
+
+  return {
+    left: `${((column + 1) / (columns + 1)) * 100}%`,
+    top: `${((row + 1) / (rows + 1)) * 100}%`,
+  }
+}
 </script>
 
 <template>
-  <div class="bg-white rounded-2xl border border-[#E5E5E5] p-6 shadow-sm">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-display font-semibold text-[#1D1D1F]">Mapa de Rutas</h3>
-      <div class="flex items-center space-x-2 text-xs">
-        <div class="flex items-center">
-          <div class="w-3 h-3 bg-[#34C759] rounded-full mr-1"></div>
-          <span class="text-[#6E6E73]">Completada</span>
-        </div>
-        <div class="flex items-center">
-          <div class="w-3 h-3 bg-[#007AFF] rounded-full mr-1"></div>
-          <span class="text-[#6E6E73]">En proceso</span>
-        </div>
-        <div class="flex items-center">
-          <div class="w-3 h-3 bg-[#8E8E93] rounded-full mr-1"></div>
-          <span class="text-[#6E6E73]">Pendiente</span>
-        </div>
+  <div class="rounded-2xl border border-[#E5E5E5] bg-white p-6 shadow-sm">
+    <div class="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+      <div>
+        <h3 class="font-display text-lg font-semibold text-[#1D1D1F]">Rutas de acopio</h3>
+        <p class="text-xs text-[#8E8E93]">Vista operativa del estado de hoy</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 text-xs">
+        <span class="flex items-center gap-1 text-[#6E6E73]"><i class="size-3 rounded-full bg-[#34C759]" />Completada</span>
+        <span class="flex items-center gap-1 text-[#6E6E73]"><i class="size-3 rounded-full bg-[#007AFF]" />En proceso</span>
+        <span class="flex items-center gap-1 text-[#6E6E73]"><i class="size-3 rounded-full bg-[#8E8E93]" />Pendiente</span>
       </div>
     </div>
-    
-    <div class="relative h-80 bg-gradient-to-br from-[#E5F1FF] to-[#F5F5F7] rounded-xl overflow-hidden">
-      <!-- Simulated Map Background -->
+
+    <div v-if="routes.length" class="relative h-80 overflow-hidden rounded-xl bg-gradient-to-br from-[#E5F1FF] to-[#F5F5F7]">
       <div class="absolute inset-0 opacity-30">
-        <svg viewBox="0 0 400 300" class="w-full h-full">
-          <path d="M50,150 Q100,50 200,100 T350,150" stroke="#007AFF" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
-          <path d="M80,200 Q150,150 250,180 T380,220" stroke="#34C759" stroke-width="2" fill="none"/>
-          <path d="M30,100 Q100,80 180,120 T300,90" stroke="#8E8E93" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+        <svg viewBox="0 0 400 300" class="size-full" aria-hidden="true">
+          <path d="M30,80 Q120,20 205,95 T380,80" stroke="#007AFF" stroke-width="2" fill="none" stroke-dasharray="5,5" />
+          <path d="M25,210 Q115,135 225,195 T390,205" stroke="#34C759" stroke-width="2" fill="none" />
+          <path d="M45,145 Q130,105 210,150 T350,135" stroke="#8E8E93" stroke-width="2" fill="none" stroke-dasharray="5,5" />
         </svg>
       </div>
-      
-      <!-- Route Points -->
-      <div class="absolute inset-0">
-        <div 
-          v-for="route in mockRoutes" 
-          :key="route.id"
-          class="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group"
-          :style="{
-            left: `${20 + route.id * 20}%`,
-            top: `${30 + route.id * 15}%`
-          }"
+
+      <div
+        v-for="(route, index) in routes"
+        :key="route.id"
+        class="group absolute -translate-x-1/2 -translate-y-1/2"
+        :style="positionFor(index, routes.length)"
+      >
+        <div
+          class="flex size-8 items-center justify-center rounded-full shadow-lg transition-transform duration-200 group-hover:scale-110"
+          :class="route.status === 'completed' ? 'bg-[#34C759]' : route.status === 'in_progress' ? 'bg-[#007AFF]' : 'bg-[#8E8E93]'"
         >
-          <div 
-            :class="[
-              'w-8 h-8 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 group-hover:scale-110',
-              route.status === 'completed' ? 'bg-[#34C759]' : route.status === 'in_progress' ? 'bg-[#007AFF]' : 'bg-[#8E8E93]'
-            ]"
-          >
-            <MapPin class="w-4 h-4 text-white" />
-          </div>
-          
-          <!-- Tooltip -->
-          <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-[#1D1D1F] text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-            <p class="font-medium">{{ route.name }}</p>
-            <p class="text-[#8E8E93]">{{ route.liters }}L • {{ route.points }} puntos</p>
-          </div>
+          <MapPin class="size-4 text-white" />
+        </div>
+        <div class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-[#1D1D1F] px-3 py-2 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
+          <p class="font-medium">{{ route.name }}</p>
+          <p class="text-[#D1D1D6]">{{ numberFormatter.format(route.liters) }} L · {{ route.attended }}/{{ route.producers }} productores</p>
         </div>
       </div>
-      
-      <!-- Truck Animation -->
-      <div class="absolute top-[45%] left-[40%] animate-pulse">
-        <div class="bg-[#007AFF] p-2 rounded-full shadow-lg">
-          <Truck class="w-5 h-5 text-white" />
-        </div>
+
+      <div v-if="routes.some((route) => route.status === 'in_progress')" class="absolute left-[46%] top-[46%] animate-pulse rounded-full bg-[#007AFF] p-2 shadow-lg">
+        <Truck class="size-5 text-white" />
       </div>
     </div>
-    
-    <!-- Route List -->
-    <div class="mt-4 grid grid-cols-2 gap-2">
-      <div 
-        v-for="route in mockRoutes"
-        :key="route.id"
-        class="flex items-center justify-between p-2 bg-[#F5F5F7] rounded-lg"
-      >
-        <div class="flex items-center">
-          <div 
-            :class="[
-              'w-2 h-2 rounded-full mr-2',
-              route.status === 'completed' ? 'bg-[#34C759]' : route.status === 'in_progress' ? 'bg-[#007AFF]' : 'bg-[#8E8E93]'
-            ]"
-          ></div>
-          <span class="text-sm text-[#1D1D1F]">{{ route.name }}</span>
+
+    <div v-else class="flex h-80 flex-col items-center justify-center gap-2 rounded-xl bg-[#F5F5F7] text-center">
+      <MapPin class="size-8 text-[#8E8E93]" />
+      <p class="font-medium text-[#1D1D1F]">No hay rutas activas</p>
+      <p class="text-sm text-[#8E8E93]">Activa o registra una ruta para verla aquí.</p>
+    </div>
+
+    <div v-if="routes.length" class="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+      <div v-for="route in routes" :key="route.id" class="flex items-center justify-between rounded-lg bg-[#F5F5F7] p-2">
+        <div class="flex min-w-0 items-center gap-2">
+          <span class="size-2 shrink-0 rounded-full" :class="route.status === 'completed' ? 'bg-[#34C759]' : route.status === 'in_progress' ? 'bg-[#007AFF]' : 'bg-[#8E8E93]'" />
+          <span class="truncate text-sm text-[#1D1D1F]">{{ route.name }}</span>
         </div>
-        <span class="text-xs text-[#6E6E73]">{{ route.liters }}L</span>
+        <span class="shrink-0 text-xs text-[#6E6E73]">{{ numberFormatter.format(route.liters) }} L</span>
       </div>
     </div>
   </div>

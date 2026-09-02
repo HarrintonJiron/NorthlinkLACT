@@ -12,6 +12,13 @@ class FinanzasModuleTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->authenticate();
+    }
+
     public function test_finanzas_index_seeds_categories_and_lists_transactions(): void
     {
         $this->get('/finanzas')

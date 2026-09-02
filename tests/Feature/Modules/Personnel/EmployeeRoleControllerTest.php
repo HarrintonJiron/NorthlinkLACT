@@ -10,6 +10,13 @@ class EmployeeRoleControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->authenticate();
+    }
+
     public function test_valid_payload_creates_a_role(): void
     {
         $response = $this->post(route('employees.roles.store'), [

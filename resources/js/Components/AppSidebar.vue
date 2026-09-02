@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { Link } from '@inertiajs/vue3'
 import { 
   LayoutDashboard, 
   Droplets,
@@ -125,7 +126,7 @@ const isExpanded = (section) => {
           v-show="!group.title || isExpanded(group.section)"
           class="mt-1 space-y-0.5"
         >
-          <a
+          <Link
             v-for="item in group.items"
             :key="item.name"
             :href="item.href"
@@ -138,7 +139,7 @@ const isExpanded = (section) => {
           >
             <component :is="item.icon" class="w-5 h-5 mr-3" />
             {{ item.name }}
-          </a>
+          </Link>
         </div>
       </div>
     </nav>

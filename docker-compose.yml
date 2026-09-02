@@ -36,11 +36,13 @@ services:
     working_dir: /var/www/html
     volumes:
       - .:/var/www/html
+      - vendor_data:/var/www/html/vendor
     ports:
       - "8000:8000"
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      USE_VITE_DEV_SERVER: "false"
     depends_on:
       postgres:
         condition: service_healthy
@@ -50,3 +52,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  vendor_data:

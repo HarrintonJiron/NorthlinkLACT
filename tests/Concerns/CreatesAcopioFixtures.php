@@ -24,7 +24,8 @@ trait CreatesAcopioFixtures
 
     protected function setUpAcopio(): void
     {
-        $this->user = User::factory()->create();
+        $this->user = User::factory()->create(['is_admin' => true]);
+        $this->actingAs($this->user);
 
         $this->company = Company::query()->create([
             'name' => 'Northlink LACT',

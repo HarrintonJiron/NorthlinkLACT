@@ -12,6 +12,13 @@ class InventoryModuleTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->authenticate();
+    }
+
     public function test_inventory_index_seeds_units_and_lists_products(): void
     {
         $this->get('/inventory')

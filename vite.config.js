@@ -13,6 +13,10 @@ export default defineConfig({
         vue(),
     ],
     server: {
+        hmr: {
+            host: 'localhost',
+            clientPort: 5173,
+        },
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },

@@ -1,244 +1,194 @@
 <script setup>
+import { computed } from 'vue'
+import { Head, Link } from '@inertiajs/vue3'
+import { Activity, AlertCircle, Clock, Droplets, FileText, FlaskConical, Package, Thermometer } from '@lucide/vue'
 import AppShell from '../../Components/AppShell.vue'
 import MorningOperationsPanel from '../../Components/MorningOperationsPanel.vue'
-import StatusBadge from '../../Components/StatusBadge.vue'
 import RouteMap from '../../Components/RouteMap.vue'
-import { 
-  Droplets, 
-  DollarSign, 
-  Package, 
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  AlertCircle,
-  FileText,
-  MapPin,
-  Thermometer,
-} from '@lucide/vue'
+import StatusBadge from '../../Components/StatusBadge.vue'
 
-const routesStatus = [
-  { name: 'Ruta Matagalpa', status: 'completed', liters: 2850, producers: 12, progress: 100 },
-  { name: 'Ruta Estelí', status: 'in_progress', liters: 1920, producers: 8, progress: 65 },
-  { name: 'Ruta Jinotega', status: 'pending', liters: 0, producers: 15, progress: 0 },
-  { name: 'Ruta Sébaco', status: 'completed', liters: 3100, producers: 18, progress: 100 },
-]
-
-const pendingOperations = [
-  { 
-    type: 'Planilla pendiente', 
-    description: 'Ruta Matagalpa - 28/08/2026',
-    priority: 'high',
-    responsible: 'María González',
-    date: 'Hoy',
-    action: 'Aprobar'
+const props = defineProps({
+  userName: { type: String, default: 'Usuario' },
+  overview: {
+    type: Object,
+    default: () => ({
+      liters_today: 0,
+      liters_yesterday: 0,
+      liters_trend_percent: null,
+      producers_attended: 0,
+      producers_scheduled: 0,
+      routes_completed: 0,
+      routes_in_progress: 0,
+      routes_pending: 0,
+      routes_total: 0,
+      finance: { income: 0, outflow: 0, movements: 0 },
+      inventory: { active: 0, low_stock: 0, zero_stock: 0 },
+      alerts: { total: 0, items: [] },
+      liters_trend: [],
+    }),
   },
-  { 
-    type: 'Anticipo sin rendir', 
-    description: 'Juan Pérez - C$ 5,000',
-    priority: 'medium',
-    responsible: 'Carlos Rodríguez',
-    date: 'Hace 2 días',
-    action: 'Revisar'
-  },
-  { 
-    type: 'Inventario bajo', 
-    description: 'Leche cruda - 500L mínimo',
-    priority: 'high',
-    responsible: 'Ana López',
-    date: 'Hoy',
-    action: 'Reabastecer'
-  },
-]
+  routesStatus: { type: Array, default: () => [] },
+  weeklyData: { type: Array, default: () => [] },
+  qualityMetrics: { type: Array, default: () => [] },
+  pendingOperations: { type: Array, default: () => [] },
+  recentActivity: { type: Array, default: () => [] },
+})
 
-const recentActivity = [
-  { event: 'Acopio registrado', details: 'Ruta Estelí - 2,450 litros', time: 'Hace 10 min', icon: Droplets },
-  { event: 'Planilla aprobada', details: 'Ruta Matagalpa - C$ 28,500', time: 'Hace 25 min', icon: CheckCircle },
-  { event: 'Pago ejecutado', details: 'Productor José Martínez - C$ 4,200', time: 'Hace 1 hora', icon: DollarSign },
-  { event: 'Ajuste de inventario', details: 'Leche cruda - +200 litros', time: 'Hace 2 horas', icon: Package },
-  { event: 'Nueva ruta creada', details: 'Ruta Boaco - 12 productores', time: 'Hace 3 horas', icon: MapPin },
-]
+const numberFormatter = new Intl.NumberFormat('es-NI', { maximumFractionDigits: 2 })
+const chartMaximum = computed(() => Math.max(1, ...props.weeklyData.map((item) => item.liters)))
+const weekTotal = computed(() => props.weeklyData.reduce((sum, item) => sum + item.liters, 0))
 
-const weeklyData = [
-  { day: 'Lun', liters: 10500, target: 12000 },
-  { day: 'Mar', liters: 11200, target: 12000 },
-  { day: 'Mié', liters: 9800, target: 12000 },
-  { day: 'Jue', liters: 12450, target: 12000 },
-  { day: 'Vie', liters: 11800, target: 12000 },
-  { day: 'Sáb', liters: 8500, target: 10000 },
-  { day: 'Dom', liters: 6200, target: 8000 },
-]
+const qualityIcon = {
+  temperature: Thermometer,
+  acidity: FlaskConical,
+  fat: Droplets,
+  coverage: FileText,
+}
 
-const qualityMetrics = [
-  { metric: 'Temperatura promedio', value: '4.2°C', status: 'good', icon: Thermometer },
-  { metric: 'Acidez promedio', value: '6.8°D', status: 'good', icon: FileText },
-  { metric: 'Grasa promedio', value: '3.5%', status: 'good', icon: Package },
-  { metric: 'Rechazos', value: '0.5%', status: 'warning', icon: AlertTriangle },
-]
+const statusLabel = {
+  completed: 'Completada',
+  in_progress: 'En proceso',
+  pending: 'Pendiente',
+}
+
+const relativeTime = (value) => {
+  if (!value) return ''
+  const seconds = Math.round((new Date(value).getTime() - Date.now()) / 1000)
+  const formatter = new Intl.RelativeTimeFormat('es', { numeric: 'auto' })
+
+  if (Math.abs(seconds) < 60) return formatter.format(seconds, 'second')
+  const minutes = Math.round(seconds / 60)
+  if (Math.abs(minutes) < 60) return formatter.format(minutes, 'minute')
+  const hours = Math.round(minutes / 60)
+  if (Math.abs(hours) < 24) return formatter.format(hours, 'hour')
+  return formatter.format(Math.round(hours / 24), 'day')
+}
 </script>
 
 <template>
   <AppShell>
-    <MorningOperationsPanel />
+    <Head title="Dashboard" />
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-      <!-- Route Map -->
+    <MorningOperationsPanel :overview="overview" :user-name="userName" />
+
+    <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
       <div class="lg:col-span-2">
-        <RouteMap />
+        <RouteMap :routes="routesStatus" />
       </div>
 
-      <!-- Route Status -->
-      <div class="bg-white rounded-2xl border border-[#E5E5E5] p-5 shadow-sm">
-        <h2 class="text-base font-display font-semibold text-[#1D1D1F] mb-4">Estado de Rutas</h2>
-        <div class="space-y-3">
-          <div 
-            v-for="route in routesStatus"
-            :key="route.name"
-            class="p-3 bg-[#F5F5F7] rounded-xl"
-          >
-            <div class="flex items-center justify-between mb-2">
-              <p class="font-medium text-[#1D1D1F] text-sm">{{ route.name }}</p>
-              <StatusBadge 
-                :status="route.status"
-                :label="route.status === 'completed' ? 'Completada' : route.status === 'in_progress' ? 'En proceso' : 'Pendiente'"
-              />
+      <section class="rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm">
+        <h2 class="mb-4 font-display text-base font-semibold text-[#1D1D1F]">Estado de rutas</h2>
+        <div v-if="routesStatus.length" class="flex flex-col gap-3">
+          <div v-for="route in routesStatus" :key="route.id" class="rounded-xl bg-[#F5F5F7] p-3">
+            <div class="mb-2 flex items-center justify-between gap-2">
+              <p class="truncate text-sm font-medium text-[#1D1D1F]">{{ route.name }}</p>
+              <StatusBadge :status="route.status" :label="statusLabel[route.status]" />
             </div>
             <div class="flex items-center justify-between text-xs">
-              <span class="text-[#8E8E93]">{{ route.producers }} productores</span>
-              <span class="text-[#6E6E73]">{{ route.liters }} L</span>
+              <span class="text-[#8E8E93]">{{ route.attended }}/{{ route.producers }} productores</span>
+              <span class="text-[#6E6E73]">{{ numberFormatter.format(route.liters) }} L</span>
             </div>
-            <div class="mt-2 h-1.5 bg-[#E5E5E5] rounded-full overflow-hidden">
-              <div 
-                :class="[
-                  'h-full rounded-full transition-all duration-300',
-                  route.status === 'completed' ? 'bg-[#34C759]' : route.status === 'in_progress' ? 'bg-[#007AFF]' : 'bg-[#8E8E93]'
-                ]"
+            <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-[#E5E5E5]">
+              <div
+                class="h-full rounded-full transition-all duration-300"
+                :class="route.status === 'completed' ? 'bg-[#34C759]' : route.status === 'in_progress' ? 'bg-[#007AFF]' : 'bg-[#8E8E93]'"
                 :style="{ width: `${route.progress}%` }"
-              ></div>
+              />
             </div>
           </div>
         </div>
-      </div>
+        <div v-else class="flex min-h-48 flex-col items-center justify-center gap-2 text-center">
+          <Activity class="size-8 text-[#8E8E93]" />
+          <p class="text-sm font-medium text-[#1D1D1F]">Sin rutas activas</p>
+        </div>
+      </section>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <!-- Weekly Performance Chart -->
-      <div class="bg-white rounded-2xl border border-[#E5E5E5] p-5 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-base font-display font-semibold text-[#1D1D1F]">Rendimiento Semanal</h2>
-          <select class="text-xs bg-[#F5F5F7] border-none rounded-lg px-3 py-1.5 text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50">
-            <option>Esta semana</option>
-            <option>Semana pasada</option>
-            <option>Este mes</option>
-          </select>
-        </div>
-        
-        <div class="h-56 flex items-end justify-between space-x-2">
-          <div 
-            v-for="(data, index) in weeklyData" 
-            :key="data.day"
-            class="flex-1 flex flex-col items-center"
-          >
-            <div class="w-full flex flex-col items-center">
-              <div 
-                class="w-full bg-[#007AFF] rounded-t-lg transition-all duration-300 hover:bg-[#0056CC]"
-                :style="{ height: `${(data.liters / 13000) * 100}%` }"
-              ></div>
-              <div 
-                class="w-full bg-[#E5E5E5] rounded-b-lg mt-1"
-                :style="{ height: `${(data.target / 13000) * 100}%` }"
-              ></div>
-            </div>
-            <span class="text-xs text-[#8E8E93] mt-2">{{ data.day }}</span>
+    <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <section class="rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm">
+        <div class="mb-4 flex items-start justify-between gap-3">
+          <div>
+            <h2 class="font-display text-base font-semibold text-[#1D1D1F]">Acopio semanal</h2>
+            <p class="mt-1 text-xs text-[#8E8E93]">Litros registrados por día</p>
           </div>
+          <p class="text-sm font-semibold text-[#007AFF]">{{ numberFormatter.format(weekTotal) }} L</p>
         </div>
-        
-        <div class="flex items-center justify-center space-x-6 mt-4 text-xs">
-          <div class="flex items-center">
-            <div class="w-2.5 h-2.5 bg-[#007AFF] rounded mr-2"></div>
-            <span class="text-[#6E6E73]">Real</span>
-          </div>
-          <div class="flex items-center">
-            <div class="w-2.5 h-2.5 bg-[#E5E5E5] rounded mr-2"></div>
-            <span class="text-[#6E6E73]">Objetivo</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- Quality Metrics -->
-      <div class="bg-white rounded-2xl border border-[#E5E5E5] p-5 shadow-sm">
-        <h2 class="text-base font-display font-semibold text-[#1D1D1F] mb-4">Calidad de Leche</h2>
-        <div class="grid grid-cols-2 gap-3">
-          <div 
-            v-for="metric in qualityMetrics"
-            :key="metric.metric"
-            class="p-3 bg-[#F5F5F7] rounded-xl"
-          >
-            <div class="flex items-center justify-between mb-2">
-              <component :is="metric.icon" class="w-4 h-4 text-[#8E8E93]" />
-              <div 
-                :class="[
-                  'w-1.5 h-1.5 rounded-full',
-                  metric.status === 'good' ? 'bg-[#34C759]' : metric.status === 'warning' ? 'bg-[#FF9500]' : 'bg-[#FF3B30]'
-                ]"
-              ></div>
+        <div class="flex h-56 items-end justify-between gap-2">
+          <div v-for="data in weeklyData" :key="data.date" class="flex h-full flex-1 flex-col items-center justify-end">
+            <span class="mb-1 text-[10px] font-medium text-[#6E6E73]">{{ numberFormatter.format(data.liters) }}</span>
+            <div class="flex h-44 w-full items-end">
+              <div
+                class="w-full rounded-t-lg bg-[#007AFF] transition-colors duration-300 hover:bg-[#0056CC]"
+                :class="data.liters > 0 ? 'min-h-1' : ''"
+                :style="{ height: `${(data.liters / chartMaximum) * 100}%` }"
+              />
             </div>
-            <p class="text-xs text-[#8E8E93] mb-1">{{ metric.metric }}</p>
-            <p class="text-lg font-display font-bold text-[#1D1D1F]">{{ metric.value }}</p>
+            <span class="mt-2 text-xs text-[#8E8E93]">{{ data.day }}</span>
           </div>
         </div>
-      </div>
+      </section>
+
+      <section class="rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm">
+        <div class="mb-4">
+          <h2 class="font-display text-base font-semibold text-[#1D1D1F]">Calidad de leche</h2>
+          <p class="mt-1 text-xs text-[#8E8E93]">Promedios de la semana actual</p>
+        </div>
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div v-for="metric in qualityMetrics" :key="metric.key" class="rounded-xl bg-[#F5F5F7] p-3">
+            <div class="mb-2 flex items-center justify-between">
+              <component :is="qualityIcon[metric.key]" class="size-4 text-[#8E8E93]" />
+              <span class="size-1.5 rounded-full" :class="metric.value === null ? 'bg-[#8E8E93]' : 'bg-[#34C759]'" />
+            </div>
+            <p class="mb-1 text-xs text-[#8E8E93]">{{ metric.metric }}</p>
+            <p class="font-display text-lg font-bold text-[#1D1D1F]">
+              {{ metric.value === null ? 'Sin datos' : `${numberFormatter.format(metric.value)}${metric.unit}` }}
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <!-- Pending Operations -->
-      <div class="bg-white rounded-2xl border border-[#E5E5E5] p-5 shadow-sm">
-        <h2 class="text-base font-display font-semibold text-[#1D1D1F] mb-4">Operaciones Pendientes</h2>
-        <div class="space-y-3">
-          <div 
-            v-for="op in pendingOperations"
-            :key="op.description"
-            class="flex items-start space-x-3 p-3 border border-[#E5E5E5] rounded-xl hover:border-[#007AFF] transition-colors"
-          >
-            <div :class="op.priority === 'high' ? 'bg-[#FFE5E5] text-[#FF3B30]' : 'bg-[#FFF4E5] text-[#FF9500]'" class="p-2 rounded-xl">
-              <AlertCircle v-if="op.priority === 'high'" class="w-4 h-4" />
-              <Clock v-else class="w-4 h-4" />
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <section class="rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm">
+        <h2 class="mb-4 font-display text-base font-semibold text-[#1D1D1F]">Operaciones pendientes</h2>
+        <div v-if="pendingOperations.length" class="flex flex-col gap-3">
+          <div v-for="operation in pendingOperations" :key="`${operation.type}-${operation.description}`" class="flex items-start gap-3 rounded-xl border border-[#E5E5E5] p-3 transition-colors hover:border-[#007AFF]">
+            <div class="rounded-xl p-2" :class="operation.priority === 'high' ? 'bg-[#FFE5E5] text-[#FF3B30]' : 'bg-[#FFF4E5] text-[#FF9500]'">
+              <AlertCircle v-if="operation.priority === 'high'" class="size-4" />
+              <Clock v-else class="size-4" />
             </div>
-            <div class="flex-1 min-w-0">
-              <p class="font-medium text-[#1D1D1F] text-sm">{{ op.type }}</p>
-              <p class="text-sm text-[#8E8E93] truncate">{{ op.description }}</p>
-              <div class="flex items-center mt-1.5 text-xs text-[#8E8E93]">
-                <span>{{ op.responsible }}</span>
-                <span class="mx-2">•</span>
-                <span>{{ op.date }}</span>
-              </div>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-medium text-[#1D1D1F]">{{ operation.type }}</p>
+              <p class="text-sm text-[#8E8E93]">{{ operation.description }}</p>
+              <p class="mt-1.5 text-xs text-[#8E8E93]">{{ operation.area }}</p>
             </div>
-            <button class="text-xs text-[#007AFF] hover:text-[#0056CC] font-semibold whitespace-nowrap">
-              {{ op.action }}
-            </button>
+            <Link :href="operation.href" class="shrink-0 text-xs font-semibold text-[#007AFF] hover:text-[#0056CC]">{{ operation.action }}</Link>
           </div>
         </div>
-      </div>
+        <div v-else class="flex min-h-40 flex-col items-center justify-center gap-2 text-center">
+          <Package class="size-8 text-[#34C759]" />
+          <p class="text-sm font-medium text-[#1D1D1F]">No hay operaciones pendientes</p>
+        </div>
+      </section>
 
-      <!-- Recent Activity -->
-      <div class="bg-white rounded-2xl border border-[#E5E5E5] p-5 shadow-sm">
-        <h2 class="text-base font-display font-semibold text-[#1D1D1F] mb-4">Actividad Reciente</h2>
-        <div class="space-y-2">
-          <div 
-            v-for="activity in recentActivity"
-            :key="activity.details"
-            class="flex items-start space-x-3 p-2.5 hover:bg-[#F5F5F7] rounded-xl transition-colors"
-          >
-            <div class="bg-[#E8F8E8] text-[#34C759] p-2 rounded-xl flex-shrink-0">
-              <component :is="activity.icon" class="w-4 h-4" />
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="font-medium text-[#1D1D1F] text-sm">{{ activity.event }}</p>
-              <p class="text-sm text-[#8E8E93] truncate">{{ activity.details }}</p>
-              <p class="text-xs text-[#8E8E93] mt-0.5">{{ activity.time }}</p>
+      <section class="rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm">
+        <h2 class="mb-4 font-display text-base font-semibold text-[#1D1D1F]">Actividad reciente</h2>
+        <div v-if="recentActivity.length" class="flex flex-col gap-2">
+          <div v-for="activity in recentActivity" :key="activity.id" class="flex items-start gap-3 rounded-xl p-2.5 transition-colors hover:bg-[#F5F5F7]">
+            <div class="shrink-0 rounded-xl bg-[#E8F8E8] p-2 text-[#34C759]"><Activity class="size-4" /></div>
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-medium text-[#1D1D1F]">{{ activity.event }}</p>
+              <p class="truncate text-sm text-[#8E8E93]">{{ activity.details }}</p>
+              <p class="mt-0.5 text-xs text-[#8E8E93]"><span v-if="activity.user">{{ activity.user }} · </span>{{ relativeTime(activity.occurred_at) }}</p>
             </div>
           </div>
         </div>
-      </div>
+        <div v-else class="flex min-h-40 flex-col items-center justify-center gap-2 text-center">
+          <Activity class="size-8 text-[#8E8E93]" />
+          <p class="text-sm font-medium text-[#1D1D1F]">Todavía no hay actividad registrada</p>
+        </div>
+      </section>
     </div>
   </AppShell>
 </template>

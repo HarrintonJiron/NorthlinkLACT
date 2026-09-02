@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Modules\Producers\Models\MilkCollection;
+use App\Modules\Producers\Models\Producer;
 use App\Modules\Producers\Services\ProducerService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -17,6 +18,7 @@ class SumniModuleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->authenticate();
         $this->setUpAcopio();
     }
 
@@ -155,7 +157,7 @@ class SumniModuleTest extends TestCase
 
         $response->assertSessionHas('success');
 
-        $producer = \App\Modules\Producers\Models\Producer::query()
+        $producer = Producer::query()
             ->where('full_name', 'Cliente Nuevo')
             ->first();
 

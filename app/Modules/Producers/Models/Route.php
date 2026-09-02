@@ -2,6 +2,10 @@
 
 namespace App\Modules\Producers\Models;
 
+use App\Models\RouteRun;
+use App\Modules\Admin\Models\Company;
+use App\Modules\Admin\Models\Plant;
+use App\Modules\Ruteros\Models\Rutero;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -27,12 +31,12 @@ class Route extends Model
 
     public function company()
     {
-        return $this->belongsTo(\App\Modules\Admin\Models\Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function plant()
     {
-        return $this->belongsTo(\App\Modules\Admin\Models\Plant::class);
+        return $this->belongsTo(Plant::class);
     }
 
     public function assignments()
@@ -50,8 +54,13 @@ class Route extends Model
         return $this->hasMany(MilkCollection::class);
     }
 
+    public function routeRuns()
+    {
+        return $this->hasMany(RouteRun::class);
+    }
+
     public function rutero()
     {
-        return $this->hasOne(\App\Modules\Ruteros\Models\Rutero::class);
+        return $this->hasOne(Rutero::class);
     }
 }

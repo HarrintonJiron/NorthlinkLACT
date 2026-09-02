@@ -15,6 +15,13 @@ class EmployeeControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->authenticate();
+    }
+
     public function test_personnel_page_renders_active_and_inactive_roles_with_totals(): void
     {
         $administrativeRole = EmployeeRole::factory()->create(['name' => 'Contabilidad']);

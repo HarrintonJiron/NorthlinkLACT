@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Modules\Admin\Controllers\UserController;
 use App\Modules\Auth\Controllers\AuthenticatedSessionController;
 use App\Modules\Finanzas\Controllers\FinanceTransactionController;
@@ -21,22 +22,18 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.store');
 });
 
-Route::middleware(['auth', 'active'])->group(function () {
-    Route::get('/', function () {
-        return inertia('Admin/Dashboard');
-    })->name('dashboard');
+Route::middleware(['auth', 'user.active'])->group(function () {
+    Route::get('/', DashboardController::class)->name('dashboard');
 
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/', function () {
-            return inertia('Admin/Dashboard');
-        })->name('dashboard');
+        Route::get('/', DashboardController::class)->name('dashboard');
     });
 
     Route::prefix('sumni')->name('sumni.')->middleware('module.permission:sumni')->group(function () {
         Route::get('/', [SumniController::class, 'index'])->name('index');
-        Route::get('/{route}', [SumniController::class, 'show'])->name('show');
-        Route::post('/{route}/producers', [SumniController::class, 'storeProducer'])->name('producers.store');
-        Route::post('/{route}', [SumniController::class, 'store'])->name('store');
+        Route::get('/{route}', [SumniController::class, 'show'])->name('show')->where('route', '[0-9]+');
+        Route::post('/{route}/producers', [SumniController::class, 'storeProducer'])->name('producers.store')->where('route', '[0-9]+');
+        Route::post('/{route}', [SumniController::class, 'store'])->name('store')->where('route', '[0-9]+');
     });
 
     Route::prefix('ruteros')->name('ruteros.')->middleware('module.permission:ruteros')->group(function () {

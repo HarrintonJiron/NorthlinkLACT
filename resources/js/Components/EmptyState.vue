@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { Link } from '@inertiajs/vue3'
 
 const props = defineProps({
   title: {
@@ -26,12 +26,12 @@ const props = defineProps({
     </div>
     <h3 class="text-lg font-medium text-gray-900 mb-2">{{ title }}</h3>
     <p class="text-gray-500 max-w-sm mx-auto mb-6">{{ description }}</p>
-    <a 
+    <Link
       v-if="actionLabel && actionHref"
       :href="actionHref"
       class="inline-flex items-center px-4 py-2 bg-[#1E3A5F] text-white rounded-lg hover:bg-[#2D4A6F] transition-colors"
     >
       {{ actionLabel }}
-    </a>
+    </Link>
   </div>
 </template>

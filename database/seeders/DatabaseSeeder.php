@@ -18,11 +18,19 @@ class DatabaseSeeder extends Seeder
         $this->call(EmployeeRoleSeeder::class);
         $this->call(ModulePermissionSeeder::class);
 
-        // User::factory(10)->create();
+        if (! app()->isLocal()) {
+            return;
+        }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::query()->firstOrCreate(
+            ['username' => 'admin'],
+            [
+                'name' => 'Administrador Local',
+                'email' => 'admin@northlink.test',
+                'password' => 'password',
+                'active' => true,
+                'is_admin' => true,
+            ],
+        );
     }
 }

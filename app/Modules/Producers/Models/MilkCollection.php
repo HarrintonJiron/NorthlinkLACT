@@ -2,6 +2,11 @@
 
 namespace App\Modules\Producers\Models;
 
+use App\Models\Device;
+use App\Models\RouteRun;
+use App\Models\User;
+use App\Modules\Admin\Models\Company;
+use App\Modules\Admin\Models\Plant;
 use Illuminate\Database\Eloquent\Model;
 
 class MilkCollection extends Model
@@ -19,6 +24,11 @@ class MilkCollection extends Model
         'collected_by',
         'verified_by',
         'notes',
+        'external_uuid',
+        'route_run_id',
+        'device_id',
+        'sync_status',
+        'synced_at',
     ];
 
     protected function casts(): array
@@ -29,17 +39,18 @@ class MilkCollection extends Model
             'temperature' => 'decimal:2',
             'acidity' => 'decimal:2',
             'fat_percentage' => 'decimal:2',
+            'synced_at' => 'datetime',
         ];
     }
 
     public function company()
     {
-        return $this->belongsTo(\App\Modules\Admin\Models\Company::class);
+        return $this->belongsTo(Company::class);
     }
 
     public function plant()
     {
-        return $this->belongsTo(\App\Modules\Admin\Models\Plant::class);
+        return $this->belongsTo(Plant::class);
     }
 
     public function route()
@@ -52,14 +63,24 @@ class MilkCollection extends Model
         return $this->belongsTo(Producer::class);
     }
 
+    public function routeRun()
+    {
+        return $this->belongsTo(RouteRun::class);
+    }
+
+    public function device()
+    {
+        return $this->belongsTo(Device::class);
+    }
+
     public function collectedBy()
     {
-        return $this->belongsTo(\App\Models\User::class, 'collected_by');
+        return $this->belongsTo(User::class, 'collected_by');
     }
 
     public function verifiedBy()
     {
-        return $this->belongsTo(\App\Models\User::class, 'verified_by');
+        return $this->belongsTo(User::class, 'verified_by');
     }
 
     public function scopeForRouteAndDate($query, $routeId, $date)

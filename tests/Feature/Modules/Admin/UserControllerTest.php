@@ -7,7 +7,9 @@ use App\Modules\Admin\Models\Permission;
 use App\Modules\Personnel\Models\Employee;
 use App\Modules\Personnel\Models\EmployeeRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -21,6 +23,11 @@ class UserControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Schema::disableForeignKeyConstraints();
+        DB::table('users')->truncate();
+        DB::table('employees')->truncate();
+        Schema::enableForeignKeyConstraints();
 
         $administrator = User::factory()->make()->forceFill([
             'id' => 999,

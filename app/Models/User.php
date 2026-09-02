@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['employee_id', 'username', 'name', 'email', 'password', 'pin', 'phone', 'active'])]
+#[Fillable(['employee_id', 'username', 'name', 'email', 'password', 'pin', 'phone', 'active', 'is_admin'])]
 #[Hidden([
     'password',
     'pin',
@@ -30,7 +31,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * Get the attributes that should be cast.
@@ -50,6 +51,16 @@ class User extends Authenticatable
             'password' => 'hashed',
             'pin' => 'hashed',
         ];
+    }
+
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
+
+    public function routeRuns()
+    {
+        return $this->hasMany(RouteRun::class);
     }
 
     public function employee(): BelongsTo
