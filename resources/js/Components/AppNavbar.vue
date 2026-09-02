@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue'
-import { Search, Bell, HelpCircle, Menu, MapPin, Users, FileText, Wallet, Factory, UserCheck, Calculator, BarChart3, Settings, ChevronDown } from '@lucide/vue'
+import { computed, ref } from 'vue'
+import { router, usePage } from '@inertiajs/vue3'
+import { Search, Bell, HelpCircle, Menu, MapPin, Users, FileText, Wallet, Factory, UserCheck, Calculator, BarChart3, Settings, ChevronDown, LogOut } from '@lucide/vue'
 
 const props = defineProps({
   currentRoute: String
@@ -9,51 +10,58 @@ const props = defineProps({
 const searchQuery = ref('')
 const mobileMenuOpen = ref(false)
 const activeDropdown = ref(null)
+const page = usePage()
+const allowedModules = computed(() => page.props.auth?.modules || [])
+const canAccess = (module) => !module || allowedModules.value.includes('*') || allowedModules.value.includes(module)
 
-const navigation = [
+const navigation = computed(() => [
   { name: 'Dashboard', href: '/', icon: null, current: props.currentRoute === '/' },
   { 
     name: 'Acopio', 
     icon: null,
     children: [
-      { name: 'Sumni', href: '/sumni' },
-      { name: 'Rutas', href: '/routes' },
-      { name: 'Rutero', href: '/ruteros' },
-      { name: 'Productores', href: '/producers' },
+      { name: 'Sumni', href: '/sumni', module: 'sumni' },
+      { name: 'Rutas', href: '/routes', module: 'routes' },
+      { name: 'Rutero', href: '/ruteros', module: 'ruteros' },
+      { name: 'Recolecciones', href: '/collections', module: 'collections' },
+      { name: 'Productores', href: '/producers', module: 'producers' },
     ]
   },
   { 
     name: 'Finanzas', 
     icon: null,
     children: [
-      { name: 'Movimientos', href: '/finanzas' },
+      { name: 'Movimientos', href: '/finanzas', module: 'finances' },
     ]
   },
   { 
     name: 'Operaciones', 
     icon: null,
     children: [
-      { name: 'Producción', href: '/production' },
-      { name: 'Inventario', href: '/inventory' },
+      { name: 'Producción', href: '/production', module: 'production' },
+      { name: 'Inventario', href: '/inventory', module: 'inventory' },
     ]
   },
   { 
     name: 'Recursos', 
     icon: null,
     children: [
-      { name: 'Personal', href: '/employees' },
-      { name: 'Nómina', href: '/payroll' },
+      { name: 'Personal', href: '/employees', module: 'personnel' },
+      { name: 'Nómina', href: '/payroll', module: 'payroll' },
     ]
   },
   { 
     name: 'Sistema', 
     icon: null,
     children: [
-      { name: 'Reportes', href: '/reports' },
-      { name: 'Configuración', href: '/settings' },
+      { name: 'Reportes', href: '/reports', module: 'reports' },
+      { name: 'Configuración', href: '/settings', module: 'administrator' },
     ]
   }
-]
+].map((item) => item.children
+  ? { ...item, children: item.children.filter((child) => child.module === 'administrator' ? allowedModules.value.includes('*') : canAccess(child.module)) }
+  : item)
+  .filter((item) => !item.children || item.children.length))
 
 const toggleDropdown = (name) => {
   if (activeDropdown.value === name) {
@@ -161,6 +169,10 @@ const toggleMobileMenu = () => {
               <p class="text-sm font-medium text-[#1D1D1F]">{{ $page.props.auth?.user?.name || 'Usuario' }}</p>
             </div>
           </div>
+
+          <button type="button" title="Cerrar sesión" class="p-2.5 rounded-xl hover:bg-[#F5F5F7] transition-colors" @click="router.post('/logout')">
+            <LogOut class="w-5 h-5 text-[#8E8E93]" />
+          </button>
 
           <!-- Mobile menu button -->
           <button 

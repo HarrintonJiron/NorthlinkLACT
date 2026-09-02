@@ -22,6 +22,7 @@ const props = defineProps({
   users: Object,
   availableEmployees: Array,
   stats: Object,
+  modules: Array,
 })
 
 const searchQuery = ref('')
@@ -41,6 +42,7 @@ const form = useForm({
   password_confirmation: '',
   pin: '',
   active: true,
+  permission_ids: [],
 })
 
 const selectedEmployee = computed(() => props.availableEmployees.find(
@@ -92,6 +94,7 @@ const editForm = useForm({
   password_confirmation: '',
   pin: '',
   active: true,
+  permission_ids: [],
 })
 
 const openEdit = (user) => {
@@ -102,6 +105,7 @@ const openEdit = (user) => {
   editForm.password_confirmation = ''
   editForm.pin = ''
   editForm.active = user.active
+  editForm.permission_ids = user.permissions?.map((permission) => permission.id) || []
   showEditPassword.value = false
   showEditPin.value = false
   showEditPanel.value = true
@@ -204,6 +208,7 @@ const formatDate = (value) => new Intl.DateTimeFormat('es-NI', {
                 <th class="px-4 py-3">Colaborador</th>
                 <th class="px-4 py-3">Usuario</th>
                 <th class="px-4 py-3">Rol de personal</th>
+                <th class="px-4 py-3">Módulos</th>
                 <th class="px-4 py-3">Estado</th>
                 <th class="px-4 py-3">Creado</th>
                 <th class="px-4 py-3 text-right">Acciones</th>
@@ -219,6 +224,7 @@ const formatDate = (value) => new Intl.DateTimeFormat('es-NI', {
                 </td>
                 <td class="px-4 py-3"><span class="font-mono text-sm font-semibold text-[#245DA8]">{{ user.username || 'Sin usuario' }}</span></td>
                 <td class="px-4 py-3"><span class="inline-flex rounded-lg bg-[#F2EAFE] px-2.5 py-1 text-xs font-medium text-[#7A35A8]">{{ user.employee?.role?.name || 'Sin rol' }}</span></td>
+                <td class="max-w-52 px-4 py-3"><span v-if="user.is_admin" class="text-xs font-semibold text-[#AF52DE]">Acceso total</span><span v-else class="line-clamp-2 text-xs text-[#6E6E73]">{{ user.permissions?.map((permission) => permission.display_name).join(', ') || 'Sin acceso asignado' }}</span></td>
                 <td class="px-4 py-3"><span :class="['inline-flex rounded-full px-2.5 py-1 text-xs font-semibold', user.active ? 'bg-[#E9F8EE] text-[#187A31]' : 'bg-[#F2F2F7] text-[#6E6E73]']">{{ user.active ? 'Activo' : 'Inactivo' }}</span></td>
                 <td class="px-4 py-3 text-xs text-[#8E8E93]">{{ formatDate(user.created_at) }}</td>
                 <td class="px-4 py-3 text-right">
@@ -226,7 +232,7 @@ const formatDate = (value) => new Intl.DateTimeFormat('es-NI', {
                     <button type="button" class="rounded-lg p-2 text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#007AFF]" @click="openEdit(user)" title="Editar">
                       <Edit class="size-4" />
                     </button>
-                    <button type="button" :class="['rounded-lg p-2', user.active ? 'text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#FF3B30]' : 'text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#34C759]']" @click="toggleStatus(user)" :title="user.active ? 'Desactivar' : 'Activar'">
+                    <button v-if="!user.is_admin" type="button" :class="['rounded-lg p-2', user.active ? 'text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#FF3B30]' : 'text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#34C759]']" @click="toggleStatus(user)" :title="user.active ? 'Desactivar' : 'Activar'">
                       <X v-if="user.active" class="size-4" />
                       <Check v-else class="size-4" />
                     </button>
@@ -243,13 +249,13 @@ const formatDate = (value) => new Intl.DateTimeFormat('es-NI', {
             <div class="min-w-0 flex-1">
               <p class="truncate text-sm font-semibold">{{ user.name }}</p>
               <p class="truncate font-mono text-xs text-[#245DA8]">@{{ user.username }}</p>
-              <div class="mt-1 flex gap-2 text-[11px]"><span class="text-[#7A35A8]">{{ user.employee?.role?.name || 'Sin rol' }}</span><span class="text-[#C7C7CC]">•</span><span :class="user.active ? 'text-[#187A31]' : 'text-[#8E8E93]'">{{ user.active ? 'Activo' : 'Inactivo' }}</span></div>
+              <div class="mt-1 flex gap-2 text-[11px]"><span class="text-[#7A35A8]">{{ user.is_admin ? 'Administrador · acceso total' : `${user.permissions?.length || 0} módulos` }}</span><span class="text-[#C7C7CC]">•</span><span :class="user.active ? 'text-[#187A31]' : 'text-[#8E8E93]'">{{ user.active ? 'Activo' : 'Inactivo' }}</span></div>
             </div>
             <div class="flex gap-2">
               <button type="button" class="rounded-lg p-2 text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#007AFF]" @click="openEdit(user)" title="Editar">
                 <Edit class="size-4" />
               </button>
-              <button type="button" :class="['rounded-lg p-2', user.active ? 'text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#FF3B30]' : 'text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#34C759]']" @click="toggleStatus(user)" :title="user.active ? 'Desactivar' : 'Activar'">
+              <button v-if="!user.is_admin" type="button" :class="['rounded-lg p-2', user.active ? 'text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#FF3B30]' : 'text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#34C759]']" @click="toggleStatus(user)" :title="user.active ? 'Desactivar' : 'Activar'">
                 <X v-if="user.active" class="size-4" />
                 <Check v-else class="size-4" />
               </button>
@@ -300,13 +306,24 @@ const formatDate = (value) => new Intl.DateTimeFormat('es-NI', {
               <div><label for="username" class="mb-1 block text-xs font-semibold">Nombre de usuario</label><input id="username" v-model="form.username" type="text" autocomplete="username" placeholder="Ej. amartinez" :class="['h-10 w-full rounded-xl border bg-[#F8F8FA] px-3 font-mono text-sm lowercase focus:ring-2', form.errors.username ? 'border-[#FF3B30]/50 focus:ring-[#FF3B30]/15' : 'border-transparent focus:ring-[#007AFF]/20']"><p v-if="form.errors.username" class="mt-1 text-xs text-[#D70015]">{{ form.errors.username }}</p></div>
 
               <div class="grid gap-3 sm:grid-cols-2">
-                <div><label for="password" class="mb-1 block text-xs font-semibold">Contraseña</label><div class="relative"><KeyRound class="absolute left-3 top-3 size-4 text-[#8E8E93]" /><input id="password" v-model="form.password" :type="showPassword ? 'text' : 'password'" autocomplete="new-password" placeholder="Mínimo 8 caracteres" class="h-10 w-full rounded-xl border-0 bg-[#F8F8FA] pl-9 pr-10 text-sm focus:ring-2 focus:ring-[#007AFF]/20"><button type="button" class="absolute right-2.5 top-2.5 p-1 text-[#8E8E93]" @click="showPassword = !showPassword"><EyeOff v-if="showPassword" class="size-4" /><Eye v-else class="size-4" /></button></div><p v-if="form.errors.password" class="mt-1 text-xs text-[#D70015]">{{ form.errors.password }}</p></div>
+                <div><label for="password" class="mb-1 block text-xs font-semibold">Contraseña</label><div class="relative"><KeyRound class="absolute left-3 top-3 size-4 text-[#8E8E93]" /><input id="password" v-model="form.password" :type="showPassword ? 'text' : 'password'" autocomplete="new-password" minlength="12" maxlength="255" placeholder="Mínimo 12 caracteres" class="h-10 w-full rounded-xl border-0 bg-[#F8F8FA] pl-9 pr-10 text-sm focus:ring-2 focus:ring-[#007AFF]/20"><button type="button" class="absolute right-2.5 top-2.5 p-1 text-[#8E8E93]" @click="showPassword = !showPassword"><EyeOff v-if="showPassword" class="size-4" /><Eye v-else class="size-4" /></button></div><p v-if="form.errors.password" class="mt-1 text-xs text-[#D70015]">{{ form.errors.password }}</p></div>
                 <div><label for="password-confirmation" class="mb-1 block text-xs font-semibold">Confirmar contraseña</label><input id="password-confirmation" v-model="form.password_confirmation" :type="showPassword ? 'text' : 'password'" autocomplete="new-password" placeholder="Repite la contraseña" class="h-10 w-full rounded-xl border-0 bg-[#F8F8FA] px-3 text-sm focus:ring-2 focus:ring-[#007AFF]/20"></div>
               </div>
 
               <div><label for="pin" class="mb-1 block text-xs font-semibold">PIN de 4 dígitos</label><div class="relative max-w-48"><LockKeyhole class="absolute left-3 top-3 size-4 text-[#8E8E93]" /><input id="pin" v-model="form.pin" :type="showPin ? 'text' : 'password'" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="••••" class="h-10 w-full rounded-xl border-0 bg-[#F8F8FA] pl-9 pr-10 font-mono text-lg tracking-[0.35em] focus:ring-2 focus:ring-[#AF52DE]/20"><button type="button" class="absolute right-2.5 top-2.5 p-1 text-[#8E8E93]" @click="showPin = !showPin"><EyeOff v-if="showPin" class="size-4" /><Eye v-else class="size-4" /></button></div><p v-if="form.errors.pin" class="mt-1 text-xs text-[#D70015]">{{ form.errors.pin }}</p></div>
-              <p class="text-[11px] leading-4 text-[#8E8E93]">La contraseña debe incluir letras y números. El PIN se almacena protegido y nunca se muestra en el listado.</p>
+              <p class="text-[11px] leading-4 text-[#8E8E93]">La contraseña debe incluir mayúsculas, minúsculas, números y símbolos. El PIN se almacena protegido y nunca se muestra en el listado.</p>
             </div>
+          </section>
+
+          <section class="border-t border-[#EFEFF1] pt-5">
+            <div class="mb-3"><h3 class="text-xs font-bold uppercase tracking-wide text-[#6E6E73]">Módulos que podrá gestionar</h3><p class="mt-1 text-xs text-[#8E8E93]">Selecciona únicamente las áreas necesarias para su trabajo.</p></div>
+            <div class="grid gap-2 sm:grid-cols-2">
+              <label v-for="module in modules" :key="module.id" class="flex cursor-pointer items-center gap-3 rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] p-3 transition hover:border-[#007AFF]/40">
+                <input v-model="form.permission_ids" type="checkbox" :value="module.id" class="size-4 rounded border-[#C7C7CC] text-[#007AFF] focus:ring-[#007AFF]/20">
+                <span class="text-sm font-medium">{{ module.display_name }}</span>
+              </label>
+            </div>
+            <p v-if="form.errors.permission_ids" class="mt-2 text-xs text-[#D70015]">{{ form.errors.permission_ids }}</p>
           </section>
 
           <section class="flex items-center justify-between gap-4 rounded-xl bg-[#F5F5F7] p-3.5">
@@ -345,18 +362,33 @@ const formatDate = (value) => new Intl.DateTimeFormat('es-NI', {
               <div><label for="edit-username" class="mb-1 block text-xs font-semibold">Nombre de usuario</label><input id="edit-username" v-model="editForm.username" type="text" autocomplete="username" placeholder="Ej. amartinez" :class="['h-10 w-full rounded-xl border bg-[#F8F8FA] px-3 font-mono text-sm lowercase focus:ring-2', editForm.errors.username ? 'border-[#FF3B30]/50 focus:ring-[#FF3B30]/15' : 'border-transparent focus:ring-[#007AFF]/20']"><p v-if="editForm.errors.username" class="mt-1 text-xs text-[#D70015]">{{ editForm.errors.username }}</p></div>
 
               <div class="grid gap-3 sm:grid-cols-2">
-                <div><label for="edit-password" class="mb-1 block text-xs font-semibold">Contraseña (opcional)</label><div class="relative"><KeyRound class="absolute left-3 top-3 size-4 text-[#8E8E93]" /><input id="edit-password" v-model="editForm.password" :type="showEditPassword ? 'text' : 'password'" autocomplete="new-password" placeholder="Dejar vacío para mantener" class="h-10 w-full rounded-xl border-0 bg-[#F8F8FA] pl-9 pr-10 text-sm focus:ring-2 focus:ring-[#007AFF]/20"><button type="button" class="absolute right-2.5 top-2.5 p-1 text-[#8E8E93]" @click="showEditPassword = !showEditPassword"><EyeOff v-if="showEditPassword" class="size-4" /><Eye v-else class="size-4" /></button></div><p v-if="editForm.errors.password" class="mt-1 text-xs text-[#D70015]">{{ editForm.errors.password }}</p></div>
+                <div><label for="edit-password" class="mb-1 block text-xs font-semibold">Contraseña (opcional)</label><div class="relative"><KeyRound class="absolute left-3 top-3 size-4 text-[#8E8E93]" /><input id="edit-password" v-model="editForm.password" :type="showEditPassword ? 'text' : 'password'" autocomplete="new-password" minlength="12" maxlength="255" placeholder="Dejar vacío para mantener" class="h-10 w-full rounded-xl border-0 bg-[#F8F8FA] pl-9 pr-10 text-sm focus:ring-2 focus:ring-[#007AFF]/20"><button type="button" class="absolute right-2.5 top-2.5 p-1 text-[#8E8E93]" @click="showEditPassword = !showEditPassword"><EyeOff v-if="showEditPassword" class="size-4" /><Eye v-else class="size-4" /></button></div><p v-if="editForm.errors.password" class="mt-1 text-xs text-[#D70015]">{{ editForm.errors.password }}</p></div>
                 <div><label for="edit-password-confirmation" class="mb-1 block text-xs font-semibold">Confirmar contraseña</label><input id="edit-password-confirmation" v-model="editForm.password_confirmation" :type="showEditPassword ? 'text' : 'password'" autocomplete="new-password" placeholder="Repite la contraseña" class="h-10 w-full rounded-xl border-0 bg-[#F8F8FA] px-3 text-sm focus:ring-2 focus:ring-[#007AFF]/20"></div>
               </div>
 
               <div><label for="edit-pin" class="mb-1 block text-xs font-semibold">PIN de 4 dígitos (opcional)</label><div class="relative max-w-48"><LockKeyhole class="absolute left-3 top-3 size-4 text-[#8E8E93]" /><input id="edit-pin" v-model="editForm.pin" :type="showEditPin ? 'text' : 'password'" inputmode="numeric" maxlength="4" autocomplete="new-password" placeholder="••••" class="h-10 w-full rounded-xl border-0 bg-[#F8F8FA] pl-9 pr-10 font-mono text-lg tracking-[0.35em] focus:ring-2 focus:ring-[#AF52DE]/20"><button type="button" class="absolute right-2.5 top-2.5 p-1 text-[#8E8E93]" @click="showEditPin = !showEditPin"><EyeOff v-if="showEditPin" class="size-4" /><Eye v-else class="size-4" /></button></div><p v-if="editForm.errors.pin" class="mt-1 text-xs text-[#D70015]">{{ editForm.errors.pin }}</p></div>
-              <p class="text-[11px] leading-4 text-[#8E8E93]">Deja la contraseña y PIN vacíos para mantener los actuales. Si los modificas, la contraseña debe incluir letras y números.</p>
+              <p class="text-[11px] leading-4 text-[#8E8E93]">Deja la contraseña y PIN vacíos para mantener los actuales. La contraseña debe incluir mayúsculas, minúsculas, números y símbolos.</p>
             </div>
+          </section>
+
+          <section v-if="editingUser && !editingUser.is_admin" class="border-t border-[#EFEFF1] pt-5">
+            <div class="mb-3"><h3 class="text-xs font-bold uppercase tracking-wide text-[#6E6E73]">Módulos que podrá gestionar</h3><p class="mt-1 text-xs text-[#8E8E93]">Puedes agregar o retirar accesos en cualquier momento.</p></div>
+            <div class="grid gap-2 sm:grid-cols-2">
+              <label v-for="module in modules" :key="module.id" class="flex cursor-pointer items-center gap-3 rounded-xl border border-[#E5E5E5] bg-[#FAFAFA] p-3 transition hover:border-[#007AFF]/40">
+                <input v-model="editForm.permission_ids" type="checkbox" :value="module.id" class="size-4 rounded border-[#C7C7CC] text-[#007AFF] focus:ring-[#007AFF]/20">
+                <span class="text-sm font-medium">{{ module.display_name }}</span>
+              </label>
+            </div>
+            <p v-if="editForm.errors.permission_ids" class="mt-2 text-xs text-[#D70015]">{{ editForm.errors.permission_ids }}</p>
+          </section>
+
+          <section v-else-if="editingUser?.is_admin" class="rounded-xl border border-[#AF52DE]/20 bg-[#F8F1FF] p-3.5">
+            <p class="text-sm font-semibold text-[#7A35A8]">Administrador principal</p><p class="mt-1 text-xs text-[#8E6AA8]">Tiene acceso total y sus módulos o estado no pueden restringirse.</p>
           </section>
 
           <section class="flex items-center justify-between gap-4 rounded-xl bg-[#F5F5F7] p-3.5">
             <div><p class="text-sm font-semibold">Usuario activo</p><p class="text-xs text-[#8E8E93]">Podrá ingresar al sistema.</p></div>
-            <button type="button" role="switch" :aria-checked="editForm.active" :class="['relative h-6 w-11 rounded-full transition', editForm.active ? 'bg-[#34C759]' : 'bg-[#C7C7CC]']" @click="editForm.active = !editForm.active"><span :class="['absolute top-0.5 size-5 rounded-full bg-white shadow', editForm.active ? 'left-5.5' : 'left-0.5']" /></button>
+            <button type="button" role="switch" :disabled="editingUser?.is_admin" :aria-checked="editForm.active" :class="['relative h-6 w-11 rounded-full transition disabled:cursor-not-allowed disabled:opacity-50', editForm.active ? 'bg-[#34C759]' : 'bg-[#C7C7CC]']" @click="editForm.active = !editForm.active"><span :class="['absolute top-0.5 size-5 rounded-full bg-white shadow', editForm.active ? 'left-5.5' : 'left-0.5']" /></button>
           </section>
         </div>
 

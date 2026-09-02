@@ -3,6 +3,7 @@
 namespace Tests\Feature\Modules\Admin;
 
 use App\Models\User;
+use App\Modules\Admin\Models\Permission;
 use App\Modules\Personnel\Models\Employee;
 use App\Modules\Personnel\Models\EmployeeRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,6 +15,25 @@ use Tests\TestCase;
 class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    private Permission $modulePermission;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $administrator = User::factory()->make()->forceFill([
+            'id' => 999,
+            'active' => true,
+            'is_admin' => true,
+        ]);
+        $this->actingAs($administrator);
+        $this->modulePermission = Permission::query()->create([
+            'name' => 'access_inventory',
+            'display_name' => 'Inventario',
+            'module' => 'inventory',
+        ]);
+    }
 
     public function test_settings_page_exposes_user_management_option(): void
     {
@@ -70,10 +90,11 @@ class UserControllerTest extends TestCase
         $response = $this->post(route('settings.users.store'), [
             'employee_id' => $employee->id,
             'username' => '  AMARTINEZ  ',
-            'password' => 'Clave2026',
-            'password_confirmation' => 'Clave2026',
+            'password' => 'Clave!Segura2026',
+            'password_confirmation' => 'Clave!Segura2026',
             'pin' => '0427',
             'active' => true,
+            'permission_ids' => [$this->modulePermission->id],
             'name' => 'Nombre alterado',
             'role_id' => 999,
         ]);
@@ -90,9 +111,14 @@ class UserControllerTest extends TestCase
         $this->assertSame('ana@example.com', $createdUser->email);
         $this->assertSame('8888-7777', $createdUser->phone);
         $this->assertTrue($createdUser->active);
-        $this->assertTrue(Hash::check('Clave2026', $createdUser->password));
+        $this->assertTrue(Hash::check('Clave!Segura2026', $createdUser->password));
+        $this->assertNotNull($createdUser->password_changed_at);
         $this->assertTrue(Hash::check('0427', $createdUser->pin));
         $this->assertDatabaseMissing('role_user', ['user_id' => $createdUser->id]);
+        $this->assertDatabaseHas('permission_user', [
+            'user_id' => $createdUser->id,
+            'permission_id' => $this->modulePermission->id,
+        ]);
     }
 
     public function test_requires_collaborator_username_password_and_pin(): void
@@ -184,14 +210,16 @@ class UserControllerTest extends TestCase
             'employee_id' => $employee->id,
             'username' => 'olduser',
             'active' => true,
+            'remember_token' => 'previous-token',
         ]);
 
         $response = $this->put(route('settings.users.update', $user), [
             'username' => 'newuser',
-            'password' => 'NewPass2026',
-            'password_confirmation' => 'NewPass2026',
+            'password' => 'Nueva!Clave2026',
+            'password_confirmation' => 'Nueva!Clave2026',
             'pin' => '9876',
             'active' => false,
+            'permission_ids' => [$this->modulePermission->id],
         ]);
 
         $response
@@ -201,8 +229,11 @@ class UserControllerTest extends TestCase
         $user->refresh();
         $this->assertSame('newuser', $user->username);
         $this->assertFalse($user->active);
-        $this->assertTrue(Hash::check('NewPass2026', $user->password));
+        $this->assertTrue(Hash::check('Nueva!Clave2026', $user->password));
+        $this->assertNotNull($user->password_changed_at);
+        $this->assertNotSame('previous-token', $user->remember_token);
         $this->assertTrue(Hash::check('9876', $user->pin));
+        $this->assertTrue($user->hasPermission('access_inventory'));
     }
 
     public function test_update_preserves_password_and_pin_when_not_provided(): void
@@ -212,7 +243,7 @@ class UserControllerTest extends TestCase
         $user = User::factory()->create([
             'employee_id' => $employee->id,
             'username' => 'testuser',
-            'password' => Hash::make('OldPass123'),
+            'password' => Hash::make('Anterior!Clave123'),
             'pin' => Hash::make('1234'),
         ]);
 
@@ -222,12 +253,33 @@ class UserControllerTest extends TestCase
             'password_confirmation' => '',
             'pin' => '',
             'active' => true,
+            'permission_ids' => [$this->modulePermission->id],
         ]);
 
         $user->refresh();
         $this->assertSame('updateduser', $user->username);
-        $this->assertTrue(Hash::check('OldPass123', $user->password));
+        $this->assertTrue(Hash::check('Anterior!Clave123', $user->password));
         $this->assertTrue(Hash::check('1234', $user->pin));
+    }
+
+    public function test_update_can_remove_all_module_permissions(): void
+    {
+        $user = User::factory()->create(['username' => 'limiteduser']);
+        $user->permissions()->attach($this->modulePermission);
+
+        $this->put(route('settings.users.update', $user), [
+            'username' => 'limiteduser',
+            'password' => '',
+            'password_confirmation' => '',
+            'pin' => '',
+            'active' => true,
+            'permission_ids' => [],
+        ])->assertRedirect(route('settings.users.index'));
+
+        $this->assertDatabaseMissing('permission_user', [
+            'user_id' => $user->id,
+            'permission_id' => $this->modulePermission->id,
+        ]);
     }
 
     public function test_update_status_toggles_user_active_state(): void
@@ -267,10 +319,11 @@ class UserControllerTest extends TestCase
         return [
             'employee_id' => $employee->id,
             'username' => 'usuario_prueba',
-            'password' => 'Clave2026',
-            'password_confirmation' => 'Clave2026',
+            'password' => 'Clave!Segura2026',
+            'password_confirmation' => 'Clave!Segura2026',
             'pin' => '1234',
             'active' => true,
+            'permission_ids' => [$this->modulePermission->id],
         ];
     }
 
@@ -292,8 +345,11 @@ class UserControllerTest extends TestCase
     public static function weakPasswords(): array
     {
         return [
-            'without letters' => ['12345678', 'La contraseña debe incluir al menos una letra.'],
-            'without numbers' => ['SoloLetras', 'La contraseña debe incluir al menos un número.'],
+            'too short' => ['Corta!1Aa', 'La contraseña debe tener al menos 12 caracteres.'],
+            'without mixed case' => ['solominusculas!2026', 'La contraseña debe incluir mayúsculas y minúsculas.'],
+            'without numbers' => ['SinNumeros!Clave', 'La contraseña debe incluir al menos un número.'],
+            'without symbols' => ['SinSimbolo2026Aa', 'La contraseña debe incluir al menos un símbolo.'],
+            'too long' => [str_repeat('Aa1!', 64), 'La contraseña no puede superar 255 caracteres.'],
         ];
     }
 }

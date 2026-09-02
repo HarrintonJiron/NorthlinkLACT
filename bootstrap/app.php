@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Middleware\EnsureActiveUser;
+use App\Http\Middleware\EnsureAdministrator;
+use App\Http\Middleware\EnsureCompanyScope;
+use App\Http\Middleware\EnsureModulePermission;
+use App\Http\Middleware\EnsurePlantScope;
+use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,11 +19,14 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
-            \App\Http\Middleware\HandleInertiaRequests::class,
+            HandleInertiaRequests::class,
         ]);
         $middleware->alias([
-            'company.scope' => \App\Http\Middleware\EnsureCompanyScope::class,
-            'plant.scope' => \App\Http\Middleware\EnsurePlantScope::class,
+            'company.scope' => EnsureCompanyScope::class,
+            'plant.scope' => EnsurePlantScope::class,
+            'active' => EnsureActiveUser::class,
+            'administrator' => EnsureAdministrator::class,
+            'module.permission' => EnsureModulePermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

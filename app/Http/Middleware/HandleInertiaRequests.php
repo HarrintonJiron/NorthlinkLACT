@@ -41,6 +41,9 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'companies' => $request->user()?->companies,
                 'plants' => $request->user()?->plants,
+                'modules' => $request->user()?->is_admin
+                    ? ['*']
+                    : $request->user()?->permissions()->pluck('module')->all(),
             ],
             'flash' => [
                 'success' => $request->session()->get('success'),

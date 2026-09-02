@@ -4,23 +4,29 @@ namespace App\Modules\Admin\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Modules\Admin\Models\Permission;
 use App\Modules\Admin\Requests\StoreUserRequest;
 use App\Modules\Admin\Requests\UpdateUserRequest;
+use App\Modules\Auth\Services\AccountLockoutService;
 use App\Modules\Personnel\Models\Employee;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class UserController extends Controller
 {
+    public function __construct(private readonly AccountLockoutService $accountLockoutService) {}
+
     public function index(): Response
     {
         $users = User::query()
-            ->select(['id', 'employee_id', 'username', 'name', 'email', 'phone', 'active', 'created_at'])
+            ->select(['id', 'employee_id', 'username', 'name', 'email', 'phone', 'active', 'is_admin', 'created_at'])
             ->with([
                 'employee:id,employee_role_id,first_name,last_name,email,phone',
                 'employee.role:id,name',
+                'permissions:id,name,display_name,module',
             ])
             ->latest('id')
             ->paginate(12)
@@ -45,6 +51,11 @@ class UserController extends Controller
         return Inertia::render('Settings/Users/Index', [
             'users' => $users,
             'availableEmployees' => $availableEmployees,
+            'modules' => Permission::query()
+                ->select(['id', 'name', 'display_name', 'module'])
+                ->where('name', 'like', 'access_%')
+                ->orderBy('display_name')
+                ->get(),
             'stats' => [
                 'total' => User::query()->count(),
                 'active' => User::query()->where('active', true)->count(),
@@ -58,16 +69,21 @@ class UserController extends Controller
         $data = $request->validated();
         $employee = Employee::query()->findOrFail($data['employee_id']);
 
-        User::query()->create([
-            'employee_id' => $employee->id,
-            'username' => $data['username'],
-            'name' => $employee->full_name,
-            'email' => $employee->email,
-            'phone' => $employee->phone,
-            'password' => $data['password'],
-            'pin' => $data['pin'],
-            'active' => $data['active'],
-        ]);
+        DB::transaction(function () use ($data, $employee): void {
+            $user = User::query()->create([
+                'employee_id' => $employee->id,
+                'username' => $data['username'],
+                'name' => $employee->full_name,
+                'email' => $employee->email,
+                'phone' => $employee->phone,
+                'password' => $data['password'],
+                'pin' => $data['pin'],
+                'active' => $data['active'],
+            ]);
+
+            $user->permissions()->sync($data['permission_ids']);
+            $this->accountLockoutService->recordPasswordChanged($user);
+        });
 
         return redirect()
             ->route('settings.users.index')
@@ -78,18 +94,25 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $user->update([
-            'username' => $data['username'],
-            'active' => $data['active'],
-        ]);
+        DB::transaction(function () use ($data, $user): void {
+            $user->update([
+                'username' => $data['username'],
+                'active' => $user->is_admin ? true : $data['active'],
+            ]);
 
-        if (filled($data['password'])) {
-            $user->update(['password' => $data['password']]);
-        }
+            if (! $user->is_admin) {
+                $user->permissions()->sync($data['permission_ids']);
+            }
 
-        if (filled($data['pin'])) {
-            $user->update(['pin' => $data['pin']]);
-        }
+            if (filled($data['password'])) {
+                $user->update(['password' => $data['password']]);
+                $this->accountLockoutService->recordPasswordChanged($user);
+            }
+
+            if (filled($data['pin'])) {
+                $user->update(['pin' => $data['pin']]);
+            }
+        });
 
         return redirect()
             ->route('settings.users.index')
@@ -98,6 +121,8 @@ class UserController extends Controller
 
     public function updateStatus(Request $request, User $user): RedirectResponse
     {
+        abort_if($user->is_admin, 422, 'No se puede desactivar al administrador.');
+
         $validated = $request->validate([
             'active' => ['required', 'boolean'],
         ]);
