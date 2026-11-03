@@ -39,12 +39,12 @@ class PlatformDemoSeeder extends Seeder
         });
 
         $this->command?->info('Demo ampliado: usuarios, rutas, productores, acopios, inventario, finanzas y personal listos.');
-        $this->command?->info('Login demo: admin / Northlink2026!');
+        $this->command?->info('Las credenciales administrativas existentes se conservaron.');
     }
 
     private function adminUser(): User
     {
-        $user = User::query()->updateOrCreate(
+        $user = User::query()->firstOrCreate(
             ['username' => 'admin'],
             [
                 'name' => 'Administrador Northlink',
@@ -56,7 +56,9 @@ class PlatformDemoSeeder extends Seeder
             ],
         );
 
-        $user->forceFill(['is_admin' => true])->save();
+        if (! $user->is_admin) {
+            $user->forceFill(['is_admin' => true])->save();
+        }
 
         return $user;
     }

@@ -29,9 +29,16 @@ const clearFilters = () => {
   router.get('/collections', {}, { preserveState: true, replace: true })
 }
 
-const formatDate = (value) => value
-  ? new Intl.DateTimeFormat('es-NI', { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`))
-  : 'Sin fecha'
+const formatDate = (value) => {
+  if (!value) return 'Sin fecha'
+
+  const datePart = String(value).slice(0, 10)
+  const date = new Date(`${datePart}T00:00:00Z`)
+
+  return Number.isNaN(date.getTime())
+    ? 'Fecha no disponible'
+    : new Intl.DateTimeFormat('es-NI', { dateStyle: 'medium', timeZone: 'UTC' }).format(date)
+}
 
 const formatDateTime = (value) => value
   ? new Intl.DateTimeFormat('es-NI', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value))
