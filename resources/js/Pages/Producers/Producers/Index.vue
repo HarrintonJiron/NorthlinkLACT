@@ -65,6 +65,10 @@ const priceForm = useForm({
   price_per_liter: props.report.price || '',
   reason: '',
 })
+const closedPriceForm = useForm({
+  price_per_liter: props.report.price || '',
+  reason: '',
+})
 
 watch(
   () => [props.report.week?.end, props.report.price],
@@ -73,6 +77,9 @@ watch(
     priceForm.price_per_liter = price || ''
     priceForm.reason = ''
     priceForm.clearErrors()
+    closedPriceForm.price_per_liter = price || ''
+    closedPriceForm.reason = ''
+    closedPriceForm.clearErrors()
   },
 )
 
@@ -158,6 +165,14 @@ const updateWeeklyPrice = () => {
   })
 }
 
+const reviseClosedPrice = () => {
+  if (!window.confirm('¿Corregir el precio de esta planilla cerrada? Se recalcularán los pagos y quedará registrado en auditoría.')) return
+  closedPriceForm.patch(`/payment-sheets/${props.paymentBatch.id}/price`, {
+    preserveScroll: true,
+    onSuccess: () => { closedPriceForm.reason = '' },
+  })
+}
+
 const openCreateModal = () => {
   showCreateModal.value = true
 }
@@ -217,6 +232,15 @@ const printReport = () => {
         <button type="submit" :disabled="priceForm.processing" class="min-h-11 rounded-xl bg-amber-700 px-5 text-sm font-bold text-white hover:bg-amber-800 disabled:opacity-50">{{ priceForm.processing ? 'Guardando…' : 'Guardar precio' }}</button>
       </div>
       <p class="mt-2 text-xs text-amber-900">Se aplicará a todos los productores de la planilla que cierra el jueves {{ report.week.end }}. Los ajustes individuales conservan su propio precio. Al cerrar la planilla, los importes quedan congelados.</p>
+    </form>
+
+    <form v-if="mode === 'payment-sheets' && paymentBatch?.status === 'closed'" class="mb-4 rounded-2xl border border-orange-300 bg-orange-50 p-4 print:hidden" @submit.prevent="reviseClosedPrice">
+      <div class="grid gap-3 lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_auto] lg:items-end">
+        <label class="block"><span class="mb-1 block text-xs font-bold uppercase tracking-wide text-orange-900">Corregir precio base</span><div class="flex items-center rounded-xl border border-orange-300 bg-white px-3"><span class="font-bold text-slate-600">C$</span><input v-model="closedPriceForm.price_per_liter" type="number" min="0.01" max="10000" step="0.01" required class="min-h-11 w-full border-0 bg-transparent px-2 text-lg font-bold outline-none" /></div><p v-if="closedPriceForm.errors.price_per_liter" class="mt-1 text-xs font-semibold text-red-700">{{ closedPriceForm.errors.price_per_liter }}</p></label>
+        <label class="block"><span class="mb-1 block text-xs font-bold uppercase tracking-wide text-orange-900">Motivo obligatorio</span><input v-model="closedPriceForm.reason" type="text" minlength="5" maxlength="500" required placeholder="Ej. Corrección autorizada por gerencia" class="min-h-11 w-full rounded-xl border border-orange-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-orange-300" /><p v-if="closedPriceForm.errors.reason || closedPriceForm.errors.batch" class="mt-1 text-xs font-semibold text-red-700">{{ closedPriceForm.errors.reason || closedPriceForm.errors.batch }}</p></label>
+        <button type="submit" :disabled="closedPriceForm.processing" class="min-h-11 rounded-xl bg-orange-700 px-5 text-sm font-bold text-white hover:bg-orange-800 disabled:opacity-50">{{ closedPriceForm.processing ? 'Recalculando…' : 'Corregir y recalcular' }}</button>
+      </div>
+      <p class="mt-2 text-xs text-orange-900">La corrección cambia el precio base y recalcula bruto y neto. Los precios individuales por calidad se conservan. Una planilla pagada no puede modificarse.</p>
     </form>
 
     <ProducerStatsPanel

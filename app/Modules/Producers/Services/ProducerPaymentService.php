@@ -107,6 +107,99 @@ class ProducerPaymentService
         });
     }
 
+    public function reviseClosedPrice(ProducerPaymentBatch $batch, string $pricePerLiter, string $reason, User $user): ProducerPaymentBatch
+    {
+        return DB::transaction(function () use ($batch, $pricePerLiter, $reason, $user): ProducerPaymentBatch {
+            $locked = ProducerPaymentBatch::query()->with('items')->lockForUpdate()->findOrFail($batch->id);
+            if ($locked->status !== ProducerPaymentBatch::STATUS_CLOSED) {
+                throw ValidationException::withMessages(['batch' => 'Solo se puede corregir una planilla cerrada que todavía no ha sido pagada.']);
+            }
+
+            $range = $this->producers->weekRange($locked->week_end->toDateString());
+            $currentPrice = MilkPrice::query()
+                ->effectiveOn($range['end'])
+                ->orderByDesc('effective_from')
+                ->orderByDesc('id')
+                ->first();
+            $oldBasePrice = (float) ($currentPrice?->price_per_liter ?? 0);
+            $newBasePrice = (float) $pricePerLiter;
+            $oldValues = [
+                'base_price' => $oldBasePrice,
+                'gross_amount' => $locked->gross_amount,
+                'net_amount' => $locked->net_amount,
+                'items' => $locked->items->map(fn ($item): array => [
+                    'id' => $item->id,
+                    'price_per_liter' => $item->price_per_liter,
+                    'gross_amount' => $item->gross_amount,
+                    'net_amount' => $item->net_amount,
+                ])->all(),
+            ];
+
+            $affectedItems = 0;
+            foreach ($locked->items as $item) {
+                if ($oldBasePrice > 0 && abs((float) $item->price_per_liter - $oldBasePrice) > 0.0001) {
+                    continue;
+                }
+
+                $gross = round((float) $item->liters * $newBasePrice, 2);
+                $item->update([
+                    'price_per_liter' => $pricePerLiter,
+                    'gross_amount' => $gross,
+                    'net_amount' => round($gross - (float) $item->advance_amount, 2),
+                ]);
+                $affectedItems++;
+            }
+
+            $route = Route::query()->orderBy('id')->first();
+            $companyId = $currentPrice?->company_id ?? $route?->company_id;
+            $plantId = $currentPrice?->plant_id ?? $route?->plant_id;
+            if (! $companyId) {
+                throw ValidationException::withMessages(['price_per_liter' => 'No se encontró la empresa de la planilla.']);
+            }
+
+            MilkPrice::query()->updateOrCreate([
+                'company_id' => $companyId,
+                'plant_id' => $plantId,
+                'effective_from' => $range['start'],
+                'effective_until' => $range['end'],
+            ], [
+                'price_per_liter' => $pricePerLiter,
+                'active' => true,
+            ]);
+
+            $locked->update([
+                'gross_amount' => $locked->items()->sum('gross_amount'),
+                'advance_amount' => $locked->items()->sum('advance_amount'),
+                'net_amount' => $locked->items()->sum('net_amount'),
+                'notes' => trim(implode("\n", array_filter([
+                    $locked->notes,
+                    'Corrección de precio: '.$reason,
+                ]))),
+            ]);
+
+            AuditEvent::query()->create([
+                'user_id' => $user->id,
+                'company_id' => $companyId,
+                'plant_id' => $plantId,
+                'entity_type' => ProducerPaymentBatch::class,
+                'entity_id' => $locked->id,
+                'action' => 'price_revised',
+                'description' => "Precio base corregido de C$ {$oldBasePrice} a C$ {$newBasePrice}. {$affectedItems} pagos recalculados. Motivo: {$reason}",
+                'old_values' => $oldValues,
+                'new_values' => [
+                    'base_price' => $newBasePrice,
+                    'gross_amount' => $locked->fresh()->gross_amount,
+                    'net_amount' => $locked->fresh()->net_amount,
+                    'affected_items' => $affectedItems,
+                ],
+                'ip_address' => request()?->ip(),
+                'user_agent' => request()?->userAgent(),
+            ]);
+
+            return $locked->refresh()->load('items');
+        });
+    }
+
     public function markPaid(ProducerPaymentBatch $batch, User $user): ProducerPaymentBatch
     {
         return DB::transaction(function () use ($batch, $user) {

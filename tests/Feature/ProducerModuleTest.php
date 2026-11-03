@@ -173,6 +173,57 @@ class ProducerModuleTest extends TestCase
         $this->assertSame(1, AuditEvent::query()->where('entity_type', ProducerPaymentBatch::class)->count());
     }
 
+    public function test_closed_unpaid_sheet_price_can_be_revised_without_overwriting_individual_prices(): void
+    {
+        $this->createPrice(20);
+        $route = $this->createRoute();
+        $baseProducer = $this->createProducer($route, ['full_name' => 'Precio base']);
+        $adjustedProducer = $this->createProducer($route, ['full_name' => 'Precio individual']);
+        $this->collectMilk($baseProducer, 10, now()->toDateString());
+        $this->collectMilk($adjustedProducer, 10, now()->toDateString());
+        $weekEnd = app(ProducerService::class)->currentPayThursday()->toDateString();
+        ProducerWeekAdjustment::query()->create([
+            'producer_id' => $adjustedProducer->id,
+            'week_end' => $weekEnd,
+            'density_price' => 15,
+            'advance_amount' => 0,
+        ]);
+        $this->post(route('payment-sheets.close'), ['week_end' => $weekEnd])->assertRedirect();
+        $batch = ProducerPaymentBatch::query()->firstOrFail();
+
+        $this->patch(route('payment-sheets.price.revise', $batch), [
+            'price_per_liter' => 22,
+            'reason' => 'Corrección autorizada por gerencia',
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $batch->refresh();
+        $this->assertSame('370.00', $batch->gross_amount);
+        $this->assertSame('370.00', $batch->net_amount);
+        $this->assertDatabaseHas('producer_payment_items', [
+            'batch_id' => $batch->id,
+            'producer_id' => $baseProducer->id,
+            'price_per_liter' => 22,
+            'net_amount' => 220,
+        ]);
+        $this->assertDatabaseHas('producer_payment_items', [
+            'batch_id' => $batch->id,
+            'producer_id' => $adjustedProducer->id,
+            'price_per_liter' => 15,
+            'net_amount' => 150,
+        ]);
+        $this->assertDatabaseHas('audit_events', [
+            'entity_type' => ProducerPaymentBatch::class,
+            'entity_id' => $batch->id,
+            'action' => 'price_revised',
+        ]);
+
+        $this->patch(route('payment-sheets.pay', $batch))->assertRedirect();
+        $this->from(route('payment-sheets.index'))->patch(route('payment-sheets.price.revise', $batch), [
+            'price_per_liter' => 23,
+            'reason' => 'Intento después del pago',
+        ])->assertRedirect(route('payment-sheets.index'))->assertSessionHasErrors('batch');
+    }
+
     public function test_paid_payment_sheet_creates_traceable_finance_payment_once(): void
     {
         $this->createPrice(18.5);

@@ -10,6 +10,7 @@ use App\Modules\Producers\Models\ProducerRouteAssignment;
 use App\Modules\Producers\Models\ProducerWeekAdjustment;
 use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Requests\CloseProducerPaymentBatchRequest;
+use App\Modules\Producers\Requests\ReviseClosedPaymentBatchRequest;
 use App\Modules\Producers\Requests\StoreProducerRequest;
 use App\Modules\Producers\Requests\StoreProducerWeekAdjustmentRequest;
 use App\Modules\Producers\Requests\UpdateProducerRequest;
@@ -84,6 +85,18 @@ class ProducerController extends Controller
         );
 
         return back()->with('success', 'Precio de la planilla actualizado y registrado en auditoría.');
+    }
+
+    public function reviseClosedPaymentPrice(ReviseClosedPaymentBatchRequest $request, ProducerPaymentBatch $batch)
+    {
+        $this->producerPaymentService->reviseClosedPrice(
+            $batch,
+            (string) $request->validated('price_per_liter'),
+            $request->validated('reason'),
+            $request->user(),
+        );
+
+        return back()->with('success', 'Precio corregido. La planilla y los tickets fueron recalculados con trazabilidad.');
     }
 
     public function paymentTicket(ProducerPaymentBatch $batch, Producer $producer)

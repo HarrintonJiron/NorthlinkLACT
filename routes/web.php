@@ -115,6 +115,7 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::put('/price', [ProducerController::class, 'updateWeeklyMilkPrice'])->name('price.update');
         Route::post('/close', [ProducerController::class, 'closePaymentSheet'])->name('close');
         Route::get('/{batch}/producers/{producer}/ticket', [ProducerController::class, 'paymentTicket'])->name('ticket');
+        Route::patch('/{batch}/price', [ProducerController::class, 'reviseClosedPaymentPrice'])->name('price.revise');
         Route::patch('/{batch}/pay', [ProducerController::class, 'payPaymentSheet'])->name('pay');
     });
 
