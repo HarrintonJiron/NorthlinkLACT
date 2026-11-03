@@ -17,15 +17,20 @@ class StoreEmployeeDeductionRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $routeEmployee = $this->route('employee');
+        $isPayrollDeduction = $this->filled('concept');
+
         $this->merge([
-            'employee_id' => $this->filled('employee_id') ? $this->integer('employee_id') : null,
-            'type' => $this->input('type'),
+            'employee_id' => $this->filled('employee_id') ? $this->integer('employee_id') : $routeEmployee?->id,
+            'type' => $this->input('type', $isPayrollDeduction ? PersonnelService::DEDUCTION_OTRA : null),
+            'concept' => $isPayrollDeduction ? trim((string) $this->input('concept')) : null,
             'amount' => $this->filled('amount') ? $this->input('amount') : null,
             'total_amount' => $this->filled('total_amount') ? $this->input('total_amount') : null,
             'installment_amount' => $this->filled('installment_amount') ? $this->input('installment_amount') : null,
             'installments_total' => $this->filled('installments_total') ? $this->integer('installments_total') : null,
             'deduction_date' => $this->input('deduction_date'),
-            'reason' => $this->filled('reason') ? trim((string) $this->input('reason')) : null,
+            'reason' => $this->filled('reason') ? trim((string) $this->input('reason')) : ($isPayrollDeduction ? trim((string) $this->input('concept')) : null),
+            'notes' => $this->filled('notes') ? trim((string) $this->input('notes')) : null,
             'status' => $this->input('status', PersonnelService::DEDUCTION_STATUS_ACTIVA),
         ]);
     }
@@ -41,12 +46,14 @@ class StoreEmployeeDeductionRequest extends FormRequest
         return [
             'employee_id' => ['required', 'integer', Rule::exists(Employee::class, 'id')],
             'type' => ['required', 'string', Rule::in($types)],
+            'concept' => ['nullable', 'string', 'max:255'],
             'amount' => ['required', 'numeric', 'min:0.01'],
             'total_amount' => ['nullable', 'numeric', 'min:0.01'],
             'installment_amount' => ['nullable', 'numeric', 'min:0.01'],
             'installments_total' => ['nullable', 'integer', 'min:1', 'max:120'],
             'deduction_date' => ['required', 'date'],
             'reason' => ['nullable', 'string', 'max:1000'],
+            'notes' => ['nullable', 'string', 'max:500'],
             'status' => ['required', 'string', Rule::in($statuses)],
         ];
     }

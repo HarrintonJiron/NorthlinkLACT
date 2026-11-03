@@ -4,16 +4,16 @@ services:
     container_name: northlink_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: northlink
-      POSTGRES_USER: northlink
-      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: ${DB_DATABASE:-northlink}
+      POSTGRES_USER: ${DB_USERNAME:-northlink}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD in .env}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker/postgres/init-test-database.sql:/docker-entrypoint-initdb.d/01-create-test-database.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U northlink -d northlink"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-northlink} -d ${DB_DATABASE:-northlink}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -23,7 +23,7 @@ services:
     container_name: northlink_redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     volumes:
       - redis_data:/data
 
@@ -43,11 +43,25 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       USE_VITE_DEV_SERVER: "false"
+      TRUSTED_PROXIES: "172.16.0.0/12"
+      FORCE_HTTPS: ${FORCE_HTTPS:-false}
+      APP_URL: ${APP_URL:-http://localhost:8000}
+      ASSET_URL: ${ASSET_URL:-}
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_started
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: northlink_tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --url http://app:8000
+    depends_on:
+      - app
+    profiles:
+      - tunnel
 
 volumes:
   postgres_data:

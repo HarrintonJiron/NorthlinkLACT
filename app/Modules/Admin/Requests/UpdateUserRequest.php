@@ -2,11 +2,13 @@
 
 namespace App\Modules\Admin\Requests;
 
+use App\Models\RouteOperatorAssignment;
 use App\Models\User;
 use App\Modules\Admin\Models\Permission;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Validator;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -45,7 +47,28 @@ class UpdateUserRequest extends FormRequest
             'active' => ['required', 'boolean'],
             'permission_ids' => ['present', 'array'],
             'permission_ids.*' => ['integer', 'distinct', Rule::exists(Permission::class, 'id')],
+            'route_id' => ['nullable', 'integer', Rule::exists('routes', 'id')->where('active', true)],
+            'route_date' => ['nullable', 'required_with:route_id', 'date_format:Y-m-d', 'after_or_equal:today'],
         ];
+    }
+
+    public function after(): array
+    {
+        return [function (Validator $validator): void {
+            if (! $this->filled('route_id') || ! $this->filled('route_date')) {
+                return;
+            }
+
+            $occupied = RouteOperatorAssignment::query()
+                ->where('route_id', $this->integer('route_id'))
+                ->whereDate('assigned_date', $this->input('route_date'))
+                ->where('user_id', '!=', $this->route('user')->id)
+                ->exists();
+
+            if ($occupied) {
+                $validator->errors()->add('route_id', 'La ruta ya está asignada a otro operador para esa fecha.');
+            }
+        }];
     }
 
     /**
@@ -68,6 +91,7 @@ class UpdateUserRequest extends FormRequest
             'active.required' => 'El estado del usuario es obligatorio.',
             'permission_ids.present' => 'La selección de módulos es obligatoria.',
             'permission_ids.*.exists' => 'Uno de los módulos seleccionados no es válido.',
+            'route_date.after_or_equal' => 'La ruta solo puede asignarse para hoy o una fecha futura.',
         ];
     }
 }

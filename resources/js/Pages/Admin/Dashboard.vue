@@ -32,11 +32,16 @@ const props = defineProps({
   qualityMetrics: { type: Array, default: () => [] },
   pendingOperations: { type: Array, default: () => [] },
   recentActivity: { type: Array, default: () => [] },
+  executiveSummary: { type: Object, default: () => ({}) },
 })
 
 const numberFormatter = new Intl.NumberFormat('es-NI', { maximumFractionDigits: 2 })
 const chartMaximum = computed(() => Math.max(1, ...props.weeklyData.map((item) => item.liters)))
 const weekTotal = computed(() => props.weeklyData.reduce((sum, item) => sum + item.liters, 0))
+const maxVisibleItems = 30
+const visibleRoutesStatus = computed(() => props.routesStatus.slice(0, maxVisibleItems))
+const visiblePendingOperations = computed(() => props.pendingOperations.slice(0, maxVisibleItems))
+const visibleRecentActivity = computed(() => props.recentActivity.slice(0, maxVisibleItems))
 
 const qualityIcon = {
   temperature: Thermometer,
@@ -71,15 +76,27 @@ const relativeTime = (value) => {
 
     <MorningOperationsPanel :overview="overview" :user-name="userName" />
 
+    <section class="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4 xl:grid-cols-7">
+      <Link href="/payment-sheets" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><span class="text-xs text-slate-500">Planillas pendientes</span><strong class="mt-1 block text-2xl text-violet-700">{{ executiveSummary.unpaid_sheets || 0 }}</strong><small class="text-slate-500">C$ {{ numberFormatter.format(executiveSummary.unpaid_amount || 0) }}</small></Link>
+      <Link href="/finanzas" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><span class="text-xs text-slate-500">Finanzas pendientes</span><strong class="mt-1 block text-2xl text-amber-700">{{ executiveSummary.finance_pending || 0 }}</strong></Link>
+      <Link href="/production" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><span class="text-xs text-slate-500">Lotes abiertos</span><strong class="mt-1 block text-2xl text-blue-700">{{ executiveSummary.production_open || 0 }}</strong></Link>
+      <Link href="/dispatches" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><span class="text-xs text-slate-500">En tránsito</span><strong class="mt-1 block text-2xl text-blue-700">{{ executiveSummary.dispatches_in_transit || 0 }}</strong></Link>
+      <Link href="/inventory" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm lg:col-span-2"><span class="text-xs text-slate-500">Producto terminado disponible</span><strong class="mt-1 block text-2xl text-emerald-700">{{ numberFormatter.format(executiveSummary.finished_available || 0) }} lb</strong></Link>
+      <Link href="/inventory" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><span class="text-xs text-slate-500">Valor terminado</span><strong class="mt-1 block text-xl text-emerald-700">C$ {{ numberFormatter.format(executiveSummary.finished_value || 0) }}</strong></Link>
+    </section>
+
     <div class="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
       <div class="lg:col-span-2">
-        <RouteMap :routes="routesStatus" />
+        <RouteMap :routes="visibleRoutesStatus" :total-routes="routesStatus.length" />
       </div>
 
       <section class="rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm">
         <h2 class="mb-4 font-display text-base font-semibold text-[#1D1D1F]">Estado de rutas</h2>
-        <div v-if="routesStatus.length" class="flex flex-col gap-3">
-          <div v-for="route in routesStatus" :key="route.id" class="rounded-xl bg-[#F5F5F7] p-3">
+        <p v-if="routesStatus.length" class="mb-3 text-xs text-[#8E8E93]">
+          Mostrando {{ visibleRoutesStatus.length }} de {{ routesStatus.length }} rutas
+        </p>
+        <div v-if="routesStatus.length" class="max-h-[36rem] overflow-y-auto pr-1 flex flex-col gap-3">
+          <div v-for="route in visibleRoutesStatus" :key="route.id" class="rounded-xl bg-[#F5F5F7] p-3">
             <div class="mb-2 flex items-center justify-between gap-2">
               <p class="truncate text-sm font-medium text-[#1D1D1F]">{{ route.name }}</p>
               <StatusBadge :status="route.status" :label="statusLabel[route.status]" />
@@ -152,8 +169,11 @@ const relativeTime = (value) => {
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <section class="rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm">
         <h2 class="mb-4 font-display text-base font-semibold text-[#1D1D1F]">Operaciones pendientes</h2>
-        <div v-if="pendingOperations.length" class="flex flex-col gap-3">
-          <div v-for="operation in pendingOperations" :key="`${operation.type}-${operation.description}`" class="flex items-start gap-3 rounded-xl border border-[#E5E5E5] p-3 transition-colors hover:border-[#007AFF]">
+        <p v-if="pendingOperations.length" class="mb-3 text-xs text-[#8E8E93]">
+          Mostrando {{ visiblePendingOperations.length }} de {{ pendingOperations.length }} pendientes
+        </p>
+        <div v-if="pendingOperations.length" class="max-h-[36rem] overflow-y-auto pr-1 flex flex-col gap-3">
+          <div v-for="operation in visiblePendingOperations" :key="`${operation.type}-${operation.description}`" class="flex items-start gap-3 rounded-xl border border-[#E5E5E5] p-3 transition-colors hover:border-[#007AFF]">
             <div class="rounded-xl p-2" :class="operation.priority === 'high' ? 'bg-[#FFE5E5] text-[#FF3B30]' : 'bg-[#FFF4E5] text-[#FF9500]'">
               <AlertCircle v-if="operation.priority === 'high'" class="size-4" />
               <Clock v-else class="size-4" />
@@ -174,8 +194,11 @@ const relativeTime = (value) => {
 
       <section class="rounded-2xl border border-[#E5E5E5] bg-white p-5 shadow-sm">
         <h2 class="mb-4 font-display text-base font-semibold text-[#1D1D1F]">Actividad reciente</h2>
-        <div v-if="recentActivity.length" class="flex flex-col gap-2">
-          <div v-for="activity in recentActivity" :key="activity.id" class="flex items-start gap-3 rounded-xl p-2.5 transition-colors hover:bg-[#F5F5F7]">
+        <p v-if="recentActivity.length" class="mb-3 text-xs text-[#8E8E93]">
+          Mostrando {{ visibleRecentActivity.length }} de {{ recentActivity.length }} actividades
+        </p>
+        <div v-if="recentActivity.length" class="max-h-[36rem] overflow-y-auto pr-1 flex flex-col gap-2">
+          <div v-for="activity in visibleRecentActivity" :key="activity.id" class="flex items-start gap-3 rounded-xl p-2.5 transition-colors hover:bg-[#F5F5F7]">
             <div class="shrink-0 rounded-xl bg-[#E8F8E8] p-2 text-[#34C759]"><Activity class="size-4" /></div>
             <div class="min-w-0 flex-1">
               <p class="text-sm font-medium text-[#1D1D1F]">{{ activity.event }}</p>

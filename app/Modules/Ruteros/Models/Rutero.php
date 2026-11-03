@@ -3,12 +3,19 @@
 namespace App\Modules\Ruteros\Models;
 
 use App\Modules\Producers\Models\Route;
+use Database\Factories\Modules\Ruteros\RuteroFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Rutero extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    protected static function newFactory(): RuteroFactory
+    {
+        return RuteroFactory::new();
+    }
 
     protected $fillable = [
         'route_id',

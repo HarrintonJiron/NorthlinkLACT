@@ -7,10 +7,19 @@ use App\Models\RouteRun;
 use App\Models\User;
 use App\Modules\Admin\Models\Company;
 use App\Modules\Admin\Models\Plant;
+use Database\Factories\Modules\Producers\MilkCollectionFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class MilkCollection extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory(): MilkCollectionFactory
+    {
+        return MilkCollectionFactory::new();
+    }
+
     protected $fillable = [
         'company_id',
         'plant_id',
@@ -18,6 +27,10 @@ class MilkCollection extends Model
         'producer_id',
         'collection_date',
         'liters',
+        'visit_status',
+        'density',
+        'original_printed_at',
+        'print_copy_count',
         'temperature',
         'acidity',
         'fat_percentage',
@@ -36,6 +49,9 @@ class MilkCollection extends Model
         return [
             'collection_date' => 'date',
             'liters' => 'decimal:2',
+            'density' => 'decimal:3',
+            'original_printed_at' => 'datetime',
+            'print_copy_count' => 'integer',
             'temperature' => 'decimal:2',
             'acidity' => 'decimal:2',
             'fat_percentage' => 'decimal:2',

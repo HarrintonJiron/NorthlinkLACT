@@ -2,16 +2,24 @@
 
 namespace App\Modules\Producers\Models;
 
+use App\Models\RouteOperatorAssignment;
 use App\Models\RouteRun;
 use App\Modules\Admin\Models\Company;
 use App\Modules\Admin\Models\Plant;
 use App\Modules\Ruteros\Models\Rutero;
+use Database\Factories\Modules\Producers\RouteFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Route extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    protected static function newFactory(): RouteFactory
+    {
+        return RouteFactory::new();
+    }
 
     protected $fillable = [
         'company_id',
@@ -57,6 +65,11 @@ class Route extends Model
     public function routeRuns()
     {
         return $this->hasMany(RouteRun::class);
+    }
+
+    public function operatorAssignments()
+    {
+        return $this->hasMany(RouteOperatorAssignment::class);
     }
 
     public function rutero()

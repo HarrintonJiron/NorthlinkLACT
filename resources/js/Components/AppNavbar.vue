@@ -1,7 +1,8 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import { Search, Bell, HelpCircle, Menu, ChevronDown, LogOut } from '@lucide/vue'
+import { clearPrivateOfflineData } from '@/offline/sumniOffline'
 
 const props = defineProps({
   currentRoute: String
@@ -30,6 +31,8 @@ const navigation = computed(() => [
     name: 'Finanzas',
     children: [
       { name: 'Movimientos', href: '/finanzas', module: 'finances' },
+      { name: 'Planillas de pago', href: '/payment-sheets', module: 'finances' },
+      { name: 'Pagos', href: '/payments', module: 'finances' },
     ]
   },
   {
@@ -82,6 +85,11 @@ const closeMobileMenu = () => {
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value
+}
+
+const logout = async () => {
+  await clearPrivateOfflineData().catch(() => {})
+  router.post('/logout')
 }
 </script>
 
@@ -175,16 +183,15 @@ const toggleMobileMenu = () => {
             </div>
           </div>
 
-          <Link
-            href="/logout"
-            method="post"
-            as="button"
+          <button
+            type="button"
             class="rounded-xl p-2.5 text-[#8E8E93] transition-colors hover:bg-[#F5F5F7] hover:text-[#FF3B30]"
             aria-label="Cerrar sesión"
             title="Cerrar sesión"
+            @click="logout"
           >
             <LogOut class="size-5" />
-          </Link>
+          </button>
 
           <button
             type="button"

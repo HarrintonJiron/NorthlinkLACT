@@ -36,6 +36,16 @@ class FinanzasModuleTest extends TestCase
         $this->assertGreaterThanOrEqual(5, FinanceCategory::query()->count());
     }
 
+    public function test_payments_page_uses_real_finance_movements_with_payment_filter(): void
+    {
+        $this->get(route('payments.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Finanzas/Index')
+                ->where('initialType', FinanceTransaction::TYPE_PAGO)
+                ->has('transactions'));
+    }
+
     public function test_store_transaction_with_auto_code_and_descriptions(): void
     {
         $this->get('/finanzas')->assertOk();
@@ -119,7 +129,7 @@ class FinanzasModuleTest extends TestCase
             ->assertSessionHasErrors(['type', 'concept', 'amount', 'transaction_date']);
     }
 
-    public function test_update_and_toggle_transaction(): void
+    public function test_update_and_financial_workflow_are_auditable(): void
     {
         $this->get('/finanzas')->assertOk();
         $category = FinanceCategory::query()->where('code', 'INS')->firstOrFail();
@@ -155,8 +165,67 @@ class FinanzasModuleTest extends TestCase
         ]);
 
         $this->patch('/finanzas/transactions/'.$transaction->id.'/toggle')
-            ->assertRedirect();
+            ->assertRedirect()
+            ->assertSessionHasErrors(['transaction']);
 
+        $this->patch('/finanzas/transactions/'.$transaction->id.'/status', ['status' => 'reviewed'])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+        $this->patch('/finanzas/transactions/'.$transaction->id.'/status', ['status' => 'approved'])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+        $this->patch('/finanzas/transactions/'.$transaction->id.'/status', ['status' => 'paid'])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+        $this->patch('/finanzas/transactions/'.$transaction->id.'/status', ['status' => 'reconciled'])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertSame('reconciled', $transaction->fresh()->status);
+        $this->assertNotNull($transaction->fresh()->approved_at);
+        $this->assertNotNull($transaction->fresh()->paid_at);
+        $this->assertNotNull($transaction->fresh()->reconciled_at);
+        $this->assertDatabaseCount('audit_events', 5);
+    }
+
+    public function test_void_requires_reason_and_finalized_transaction_cannot_be_edited_or_deleted(): void
+    {
+        $this->get('/finanzas')->assertOk();
+        $category = FinanceCategory::query()->where('code', 'OPER')->firstOrFail();
+
+        $transaction = FinanceTransaction::query()->create([
+            'code' => 'FIN-0099',
+            'type' => FinanceTransaction::TYPE_GASTO,
+            'category_id' => $category->id,
+            'concept' => 'Prueba de control',
+            'amount' => 100,
+            'transaction_date' => '2026-11-03',
+            'active' => true,
+        ]);
+
+        $this->from('/finanzas')->patch('/finanzas/transactions/'.$transaction->id.'/status', ['status' => 'voided'])
+            ->assertRedirect('/finanzas')
+            ->assertSessionHasErrors(['reason']);
+
+        $this->patch('/finanzas/transactions/'.$transaction->id.'/status', [
+            'status' => 'voided',
+            'reason' => 'Documento duplicado confirmado',
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $this->assertSame('voided', $transaction->fresh()->status);
         $this->assertFalse($transaction->fresh()->active);
+
+        $this->from('/finanzas')->put('/finanzas/transactions/'.$transaction->id, [
+            'type' => FinanceTransaction::TYPE_GASTO,
+            'category_id' => $category->id,
+            'concept' => 'Intento de edición',
+            'amount' => 200,
+            'transaction_date' => '2026-11-03',
+        ])->assertRedirect('/finanzas')->assertSessionHasErrors(['transaction']);
+
+        $this->from('/finanzas')->delete('/finanzas/transactions/'.$transaction->id)
+            ->assertRedirect('/finanzas')
+            ->assertSessionHasErrors(['transaction']);
+        $this->assertNotSoftDeleted('finance_transactions', ['id' => $transaction->id]);
     }
 }

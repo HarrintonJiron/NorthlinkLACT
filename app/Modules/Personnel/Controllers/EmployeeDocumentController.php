@@ -16,7 +16,7 @@ class EmployeeDocumentController extends Controller
     {
         $data = $request->validated();
         $file = $request->file('file');
-        $path = $file->store("employee-documents/{$employee->id}", 'public');
+        $path = $file->store("employee-documents/{$employee->id}", 'local');
 
         EmployeeDocument::query()->create([
             'employee_id' => $employee->id,
@@ -38,14 +38,21 @@ class EmployeeDocumentController extends Controller
     {
         abort_unless($document->employee_id === $employee->id, 404);
 
-        return Storage::disk('public')->download($document->file_path, $document->file_name);
+        return Storage::disk('local')->download(
+            $document->file_path,
+            $document->file_name,
+            [
+                'Cache-Control' => 'private, no-store',
+                'X-Content-Type-Options' => 'nosniff',
+            ],
+        );
     }
 
     public function destroy(Employee $employee, EmployeeDocument $document): RedirectResponse
     {
         abort_unless($document->employee_id === $employee->id, 404);
 
-        Storage::disk('public')->delete($document->file_path);
+        Storage::disk('local')->delete($document->file_path);
         $document->delete();
 
         return redirect()

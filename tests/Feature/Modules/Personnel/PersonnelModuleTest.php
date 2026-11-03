@@ -286,6 +286,7 @@ class PersonnelModuleTest extends TestCase
 
     public function test_attendance_delete_removes_justification_file(): void
     {
+        Storage::fake('local');
         Storage::fake('public');
         $employee = Employee::factory()->create();
 
@@ -298,12 +299,13 @@ class PersonnelModuleTest extends TestCase
 
         $attendance = EmployeeAttendance::query()->firstOrFail();
         $this->assertNotNull($attendance->justification_path);
-        Storage::disk('public')->assertExists($attendance->justification_path);
+        Storage::disk('local')->assertExists($attendance->justification_path);
+        Storage::disk('public')->assertMissing($attendance->justification_path);
 
         $this->delete(route('employees.attendances.destroy', [$employee, $attendance]))
             ->assertRedirect(route('employees.show', $employee));
 
-        Storage::disk('public')->assertMissing($attendance->justification_path);
+        Storage::disk('local')->assertMissing($attendance->justification_path);
     }
 
     public function test_cannot_delete_attendance_belonging_to_another_employee(): void
@@ -322,6 +324,7 @@ class PersonnelModuleTest extends TestCase
 
     public function test_document_can_be_downloaded_and_deleted(): void
     {
+        Storage::fake('local');
         Storage::fake('public');
         $employee = Employee::factory()->create();
 
@@ -332,22 +335,25 @@ class PersonnelModuleTest extends TestCase
         ])->assertRedirect();
 
         $document = EmployeeDocument::query()->firstOrFail();
-        Storage::disk('public')->assertExists($document->file_path);
+        Storage::disk('local')->assertExists($document->file_path);
+        Storage::disk('public')->assertMissing($document->file_path);
 
         $this->get(route('employees.documents.download', [$employee, $document]))
             ->assertOk()
-            ->assertDownload('cedula.pdf');
+            ->assertDownload('cedula.pdf')
+            ->assertHeader('Cache-Control', 'no-store, private')
+            ->assertHeader('X-Content-Type-Options', 'nosniff');
 
         $this->delete(route('employees.documents.destroy', [$employee, $document]))
             ->assertRedirect(route('employees.show', $employee));
 
-        Storage::disk('public')->assertMissing($document->file_path);
+        Storage::disk('local')->assertMissing($document->file_path);
         $this->assertSoftDeleted('employee_documents', ['id' => $document->id]);
     }
 
     public function test_cannot_download_document_belonging_to_another_employee(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $employee = Employee::factory()->create();
         $otherEmployee = Employee::factory()->create();
 

@@ -115,6 +115,76 @@ class SumniModuleTest extends TestCase
         $this->assertSame(370.0, $row['amount']);
     }
 
+    public function test_firefox_offline_queue_syncs_idempotently_with_the_web_session(): void
+    {
+        $route = $this->createRoute();
+        $producer = $this->createProducer($route);
+        $this->company->users()->attach($this->user->id, ['plant_id' => $this->plant->id]);
+
+        $payload = [
+            'device_uuid' => '10000000-0000-4000-8000-000000000101',
+            'device_name' => 'Firefox SUNMI P3H',
+            'platform' => 'firefox-android',
+            'route_run' => [
+                'uuid' => '20000000-0000-4000-8000-000000000101',
+                'route_id' => $route->id,
+                'run_date' => now()->toDateString(),
+                'status' => 'in_progress',
+                'started_at' => now()->startOfDay()->toIso8601String(),
+                'completed_at' => null,
+            ],
+            'collections' => [[
+                'uuid' => '30000000-0000-4000-8000-000000000101',
+                'producer_id' => $producer->id,
+                'collection_date' => now()->toDateString(),
+                'liters' => 18.5,
+                'temperature' => 25,
+                'notes' => 'Capturado desde Firefox.',
+            ]],
+        ];
+
+        $endpoint = route('sumni.offline-sync', $route);
+
+        $this->postJson($endpoint, $payload)
+            ->assertOk()
+            ->assertJsonPath('sync_status', 'synced')
+            ->assertJsonPath('created', 1);
+
+        $this->postJson($endpoint, $payload)
+            ->assertOk()
+            ->assertJsonPath('created', 0)
+            ->assertJsonPath('already_synced', 1);
+
+        $this->assertDatabaseCount('route_runs', 1);
+        $this->assertDatabaseHas('milk_collections', [
+            'external_uuid' => '30000000-0000-4000-8000-000000000101',
+            'producer_id' => $producer->id,
+            'liters' => 18.50,
+            'sync_status' => 'synced',
+        ]);
+    }
+
+    public function test_firefox_offline_sync_rejects_a_route_mismatch(): void
+    {
+        $route = $this->createRoute();
+        $otherRoute = $this->createRoute();
+
+        $this->postJson(route('sumni.offline-sync', $route), [
+            'device_uuid' => '10000000-0000-4000-8000-000000000102',
+            'route_run' => [
+                'uuid' => '20000000-0000-4000-8000-000000000102',
+                'route_id' => $otherRoute->id,
+                'run_date' => now()->toDateString(),
+                'status' => 'in_progress',
+                'started_at' => now()->toIso8601String(),
+            ],
+            'collections' => [],
+        ])->assertNotFound();
+
+        $this->assertDatabaseCount('devices', 0);
+        $this->assertDatabaseCount('route_runs', 0);
+    }
+
     public function test_sumni_rejects_clients_from_another_route(): void
     {
         $norte = $this->createRoute();

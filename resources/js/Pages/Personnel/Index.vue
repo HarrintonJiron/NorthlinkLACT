@@ -27,6 +27,7 @@ const editingEmployee = ref(null)
 const editingRoleId = ref(null)
 const pendingRoleId = ref(null)
 const pendingEmployeeId = ref(null)
+const maxVisibleItems = 30
 
 const roleForm = useForm({ name: '', description: '' })
 
@@ -41,6 +42,8 @@ const filteredEmployees = computed(() => {
     return roleMatch && statusMatch && (!term || content.includes(term))
   })
 })
+
+const visibleEmployees = computed(() => filteredEmployees.value.slice(0, maxVisibleItems))
 
 const statusClass = (status) => ({
   activo: 'bg-[#E9F8EE] text-[#187A31]',
@@ -165,8 +168,12 @@ const filterByStatus = (status) => {
           </div>
         </div>
 
-        <div v-if="filteredEmployees.length" class="divide-y divide-[#EFEFF1]">
-          <article v-for="employee in filteredEmployees" :key="employee.id" class="grid gap-3 p-4 hover:bg-[#F8FAFF] md:grid-cols-[minmax(13rem,1.5fr)_1fr_1fr_auto] md:items-center">
+        <div v-if="filteredEmployees.length" class="border-b border-[#E5E5E5] px-4 py-2 text-xs text-[#8E8E93]">
+          Mostrando {{ visibleEmployees.length }} de {{ filteredEmployees.length }} colaboradores
+        </div>
+
+        <div v-if="filteredEmployees.length" class="max-h-[38rem] divide-y divide-[#EFEFF1] overflow-y-auto">
+          <article v-for="employee in visibleEmployees" :key="employee.id" class="grid gap-3 p-4 hover:bg-[#F8FAFF] md:grid-cols-[minmax(13rem,1.5fr)_1fr_1fr_auto] md:items-center">
             <Link :href="`/employees/${employee.id}`" class="flex min-w-0 items-center gap-3">
               <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#007AFF] text-xs font-bold text-white">{{ initials(employee.full_name) }}</div>
               <div class="min-w-0">

@@ -1,20 +1,26 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { router } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 import AppShell from '../../Components/AppShell.vue'
 import FinanzasStatsPanel from '../../Components/FinanzasStatsPanel.vue'
 import FinanceTransactionModal from '../../Components/FinanceTransactionModal.vue'
 import {
   Search,
   Pencil,
-  Power,
   Wallet,
   Calendar,
   User,
   FileText,
+  CircleCheck,
+  CircleX,
+  ArrowRight,
 } from '@lucide/vue'
 
 const props = defineProps({
+  initialType: {
+    type: String,
+    default: null,
+  },
   transactions: {
     type: Array,
     default: () => [],
@@ -35,12 +41,14 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  pagination: { type: Object, default: () => ({ links: [], total: 0 }) },
 })
 
 const searchQuery = ref('')
-const typeFilter = ref('all')
+const typeFilter = ref(props.initialType || 'all')
 const showModal = ref(false)
 const editingTransaction = ref(null)
+const maxVisibleItems = 30
 
 const typeMeta = {
   gasto: { label: 'Gasto', class: 'bg-[#FFF4E5] text-[#FF9500]' },
@@ -54,6 +62,15 @@ const paymentMethodLabels = {
   cheque: 'Cheque',
   tarjeta: 'Tarjeta',
   otro: 'Otro',
+}
+
+const statusMeta = {
+  draft: { label: 'Borrador', class: 'bg-[#F5F5F7] text-[#6E6E73]', next: 'reviewed', action: 'Enviar a revisión' },
+  reviewed: { label: 'Revisado', class: 'bg-[#E5F1FF] text-[#007AFF]', next: 'approved', action: 'Aprobar' },
+  approved: { label: 'Aprobado', class: 'bg-[#FFF4E5] text-[#B66A00]', next: 'paid', action: 'Marcar realizado' },
+  paid: { label: 'Realizado', class: 'bg-[#F1EAFE] text-[#7C3AED]', next: 'reconciled', action: 'Conciliar' },
+  reconciled: { label: 'Conciliado', class: 'bg-[#E8F8E8] text-[#1D7A32]' },
+  voided: { label: 'Anulado', class: 'bg-[#FFECEB] text-[#C9342E]' },
 }
 
 const formatMoney = (value) =>
@@ -100,6 +117,8 @@ const filteredTransactions = computed(() => {
   )
 })
 
+const visibleTransactions = computed(() => filteredTransactions.value.slice(0, maxVisibleItems))
+
 const openCreate = () => {
   editingTransaction.value = null
   showModal.value = true
@@ -130,13 +149,24 @@ const handleSubmit = (form) => {
   })
 }
 
-const toggleTransaction = (transaction) => {
-  router.patch(`/finanzas/transactions/${transaction.id}/toggle`, {}, { preserveScroll: true })
+const transitionTransaction = (transaction, status) => {
+  let reason = null
+  if (status === 'voided') {
+    reason = window.prompt('Indica el motivo de la anulación (mínimo 8 caracteres):')
+    if (!reason) return
+  }
+
+  router.patch(`/finanzas/transactions/${transaction.id}/status`, { status, reason }, { preserveScroll: true })
 }
 </script>
 
 <template>
   <AppShell>
+    <div v-if="initialType === 'pago'" class="mb-4 rounded-2xl border border-blue-200 bg-blue-50 px-5 py-4">
+      <p class="font-display text-lg font-bold text-slate-950">Control de pagos</p>
+      <p class="mt-1 text-sm text-slate-600">Esta vista muestra inicialmente los movimientos de tipo pago. Puedes consultar los demás tipos con los filtros.</p>
+    </div>
+
     <FinanzasStatsPanel :stats="stats" @registrar-movimiento="openCreate" />
 
     <div
@@ -144,6 +174,12 @@ const toggleTransaction = (transaction) => {
       class="bg-[#E8F8E8] border border-[#34C759] text-[#1D7A32] px-4 py-3 rounded-xl mb-4"
     >
       {{ $page.props.flash.success }}
+    </div>
+    <div
+      v-if="$page.props.errors?.transaction || $page.props.errors?.status || $page.props.errors?.reason"
+      class="bg-[#FFECEB] border border-[#FF3B30] text-[#A5231E] px-4 py-3 rounded-xl mb-4"
+    >
+      {{ $page.props.errors.transaction || $page.props.errors.status || $page.props.errors.reason }}
     </div>
 
     <div class="rounded-[28px] border border-[#E5E5E5] bg-white overflow-hidden shadow-sm">
@@ -170,11 +206,13 @@ const toggleTransaction = (transaction) => {
           >
             {{ option.label }}
           </button>
-          <p class="text-sm text-[#8E8E93] ml-1">{{ filteredTransactions.length }} movimientos</p>
+          <p class="text-sm text-[#8E8E93] ml-1">
+            Mostrando {{ visibleTransactions.length }} de {{ filteredTransactions.length }} movimientos
+          </p>
         </div>
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="max-h-[38rem] overflow-auto">
         <table class="w-full text-sm">
           <thead class="bg-[#F5F5F7] text-left text-xs uppercase tracking-wide text-[#8E8E93]">
             <tr>
@@ -189,7 +227,7 @@ const toggleTransaction = (transaction) => {
           </thead>
           <tbody class="divide-y divide-[#E5E5E5]">
             <tr
-              v-for="transaction in filteredTransactions"
+              v-for="transaction in visibleTransactions"
               :key="transaction.id"
               class="hover:bg-[#F5F5F7]"
             >
@@ -245,14 +283,16 @@ const toggleTransaction = (transaction) => {
               <td class="px-3 py-3 text-center">
                 <span
                   class="inline-flex px-2.5 py-1 rounded-full text-[11px] font-semibold"
-                  :class="transaction.active ? 'bg-[#E8F8E8] text-[#1D7A32]' : 'bg-[#F5F5F7] text-[#8E8E93]'"
+                  :class="statusMeta[transaction.status]?.class || 'bg-[#F5F5F7] text-[#8E8E93]'"
                 >
-                  {{ transaction.active ? 'Activo' : 'Anulado' }}
+                  {{ statusMeta[transaction.status]?.label || transaction.status }}
                 </span>
+                <p v-if="transaction.void_reason" class="mt-1 text-[11px] text-[#C9342E] max-w-36 mx-auto">{{ transaction.void_reason }}</p>
               </td>
               <td class="px-3 py-3">
                 <div class="flex items-center justify-end gap-2">
                   <button
+                    v-if="transaction.status === 'draft'"
                     type="button"
                     @click="openEdit(transaction)"
                     class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#E5F1FF] text-[#007AFF] hover:bg-[#D6E9FF]"
@@ -261,15 +301,23 @@ const toggleTransaction = (transaction) => {
                     Editar
                   </button>
                   <button
+                    v-if="statusMeta[transaction.status]?.next"
                     type="button"
-                    @click="toggleTransaction(transaction)"
-                    class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold transition-colors"
-                    :class="transaction.active
-                      ? 'bg-[#F5F5F7] text-[#6E6E73] hover:bg-[#E5E5E5]'
-                      : 'bg-[#E8F8E8] text-[#1D7A32] hover:bg-[#DDF3DD]'"
+                    @click="transitionTransaction(transaction, statusMeta[transaction.status].next)"
+                    class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#E8F8E8] text-[#1D7A32] hover:bg-[#DDF3DD]"
                   >
-                    <Power class="w-3.5 h-3.5 mr-1" />
-                    {{ transaction.active ? 'Anular' : 'Activar' }}
+                    <CircleCheck class="w-3.5 h-3.5 mr-1" />
+                    {{ statusMeta[transaction.status].action }}
+                    <ArrowRight class="w-3.5 h-3.5 ml-1" />
+                  </button>
+                  <button
+                    v-if="!['voided', 'reconciled'].includes(transaction.status)"
+                    type="button"
+                    @click="transitionTransaction(transaction, 'voided')"
+                    class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#FFECEB] text-[#C9342E] hover:bg-[#FFDAD8]"
+                  >
+                    <CircleX class="w-3.5 h-3.5 mr-1" />
+                    Anular
                   </button>
                 </div>
               </td>
@@ -282,6 +330,7 @@ const toggleTransaction = (transaction) => {
           </tbody>
         </table>
       </div>
+      <div v-if="pagination.links?.length > 3" class="flex items-center justify-between border-t border-[#E5E5E5] px-4 py-3"><p class="text-xs text-[#8E8E93]">{{ pagination.from || 0 }}–{{ pagination.to || 0 }} de {{ pagination.total }}</p><div class="flex gap-1"><Link v-for="link in pagination.links.filter((item) => item.url)" :key="link.label" :href="link.url" :class="['rounded-lg px-3 py-1.5 text-xs', link.active ? 'bg-[#007AFF] text-white' : 'bg-[#F5F5F7] text-[#6E6E73]']" v-html="link.label" /></div></div>
     </div>
 
     <FinanceTransactionModal

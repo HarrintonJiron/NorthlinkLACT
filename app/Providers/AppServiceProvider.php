@@ -8,7 +8,9 @@ use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Policies\MilkCollectionPolicy;
 use App\Modules\Producers\Policies\ProducerPolicy;
 use App\Modules\Producers\Policies\RoutePolicy;
+use Illuminate\Foundation\Vite;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -27,6 +29,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('app.force_https')) {
+            URL::forceRootUrl(config('app.url'));
+            URL::forceScheme('https');
+            $this->app->make(Vite::class)->createAssetPathsUsing(
+                fn (string $path): string => rtrim(config('app.url'), '/').'/'.ltrim($path, '/'),
+            );
+        }
+
         Password::defaults(fn (): Password => Password::min((int) config('auth_security.password.min_length'))
             ->max((int) config('auth_security.password.max_length'))
             ->mixedCase()

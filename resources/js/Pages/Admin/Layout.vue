@@ -18,7 +18,7 @@ const pageTitle = computed(() => props.title || 'Dashboard')
                 <div class="flex justify-between h-16">
                     <div class="flex">
                         <div class="flex-shrink-0 flex items-center">
-                            <h1 class="text-xl font-bold text-gray-900">Northlink LACT</h1>
+                            <h1 class="text-xl font-bold text-gray-900">Northlink Quebar</h1>
                         </div>
                         <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                             <Link href="/admin" class="border-gray-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">

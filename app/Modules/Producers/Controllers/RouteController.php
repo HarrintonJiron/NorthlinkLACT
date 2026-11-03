@@ -22,13 +22,16 @@ class RouteController extends Controller
 
     public function index()
     {
-        // Temporalmente sin filtro por usuario durante desarrollo
-        $routes = Route::with(['company', 'plant', 'rutero'])->latest()->get();
+        $user = request()->user();
+        $routes = $this->routeService->accessibleQuery($user)
+            ->with(['company', 'plant', 'rutero'])
+            ->latest()
+            ->get();
 
         return Inertia::render('Producers/Routes/Index', [
             'routes' => $routes,
             'nextCode' => $this->routeService->nextCode(),
-            'stats' => $this->routeService->stats(),
+            'stats' => $this->routeService->stats($user),
         ]);
     }
 
@@ -47,8 +50,7 @@ class RouteController extends Controller
 
     public function show(Route $route)
     {
-        // Temporalmente sin authorize durante desarrollo
-        // $this->authorize('view', $route);
+        $this->ensureRouteAccess($route);
 
         $route->load(['company', 'plant', 'rutero']);
 
@@ -60,6 +62,7 @@ class RouteController extends Controller
 
     public function update(UpdateRouteRequest $request, Route $route)
     {
+        $this->ensureRouteAccess($route);
         $this->routeService->update($route, $request->validated());
 
         return redirect()->route('routes.show', $route)
@@ -68,6 +71,7 @@ class RouteController extends Controller
 
     public function toggle(Route $route)
     {
+        $this->ensureRouteAccess($route);
         $route = $this->routeService->toggleActive($route);
         $status = $route->active ? 'activada' : 'desactivada';
 
@@ -77,6 +81,7 @@ class RouteController extends Controller
 
     public function storeCollection(StoreRouteCollectionRequest $request, Route $route)
     {
+        $this->ensureRouteAccess($route);
         $this->collectionService->recordForRoute($route, $request);
 
         return redirect()->back()
@@ -85,6 +90,7 @@ class RouteController extends Controller
 
     public function assignRutero(AssignRuteroToRouteRequest $request, Route $route)
     {
+        $this->ensureRouteAccess($route);
         $rutero = Rutero::query()->findOrFail($request->validated('rutero_id'));
 
         if (! $rutero->active) {
@@ -110,6 +116,7 @@ class RouteController extends Controller
 
     public function unassignRutero(Route $route)
     {
+        $this->ensureRouteAccess($route);
         Rutero::query()
             ->where('route_id', $route->id)
             ->update(['route_id' => null]);
@@ -128,5 +135,10 @@ class RouteController extends Controller
             })
             ->orderBy('owner_name')
             ->get(['id', 'owner_name', 'driver_name', 'vehicle_plate', 'route_id']);
+    }
+
+    private function ensureRouteAccess(Route $route): void
+    {
+        abort_unless($this->routeService->userCanAccess(request()->user(), $route), 404);
     }
 }

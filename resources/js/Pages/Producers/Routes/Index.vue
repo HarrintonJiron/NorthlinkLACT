@@ -24,6 +24,7 @@ const props = defineProps({
 
 const showCreateModal = ref(false)
 const searchQuery = ref('')
+const maxVisibleItems = 30
 
 const filteredRoutes = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
@@ -40,6 +41,8 @@ const filteredRoutes = computed(() => {
       .some((value) => String(value).toLowerCase().includes(query))
   })
 })
+
+const visibleRoutes = computed(() => filteredRoutes.value.slice(0, maxVisibleItems))
 
 const openCreateModal = () => {
   showCreateModal.value = true
@@ -84,13 +87,13 @@ const handleCreate = (form) => {
           </button>
         </div>
         <div class="text-sm text-[#8E8E93]">
-          {{ filteredRoutes.length }} rutas
+          Mostrando {{ visibleRoutes.length }} de {{ filteredRoutes.length }} rutas
         </div>
       </div>
 
-      <div v-if="filteredRoutes.length > 0" class="divide-y divide-[#E5E5E5]">
+      <div v-if="filteredRoutes.length > 0" class="max-h-[38rem] divide-y divide-[#E5E5E5] overflow-y-auto">
         <div
-          v-for="route in filteredRoutes"
+          v-for="route in visibleRoutes"
           :key="route.id"
           class="p-4 hover:bg-[#F5F5F7] transition-colors"
         >

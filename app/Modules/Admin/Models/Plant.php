@@ -2,12 +2,20 @@
 
 namespace App\Modules\Admin\Models;
 
+use App\Models\User;
+use Database\Factories\Modules\Admin\PlantFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Plant extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    protected static function newFactory(): PlantFactory
+    {
+        return PlantFactory::new();
+    }
 
     protected $fillable = [
         'company_id',
@@ -33,7 +41,7 @@ class Plant extends Model
 
     public function users()
     {
-        return $this->belongsToMany(\App\Models\User::class, 'company_user')
+        return $this->belongsToMany(User::class, 'company_user')
             ->withPivot('company_id')
             ->withTimestamps();
     }

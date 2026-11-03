@@ -3,7 +3,10 @@
 namespace Tests\Feature;
 
 use App\Modules\Producers\Models\Producer;
+use App\Modules\Producers\Models\ProducerPaymentBatch;
 use App\Modules\Producers\Models\ProducerRouteAssignment;
+use App\Modules\Producers\Models\ProducerWeekAdjustment;
+use App\Modules\Producers\Services\ProducerService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -48,6 +51,77 @@ class ProducerModuleTest extends TestCase
                 ->where('report.rows.0.full_name', 'María Elena')
                 ->where('report.rows.0.liters', 20)
             );
+    }
+
+    public function test_payment_sheets_uses_real_weekly_producer_report(): void
+    {
+        $this->createPrice(18.5);
+        $route = $this->createRoute();
+        $producer = $this->createProducer($route);
+        $this->collectMilk($producer, 10, now()->toDateString());
+
+        $this->get(route('payment-sheets.index'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Producers/Producers/Index')
+                ->where('mode', 'payment-sheets')
+                ->where('report.totals.liters', 10)
+                ->where('report.totals.amount', 185));
+    }
+
+    public function test_payment_sheet_closure_freezes_values_and_prevents_duplicate_or_adjustment(): void
+    {
+        $this->createPrice(20);
+        $route = $this->createRoute();
+        $producer = $this->createProducer($route, ['full_name' => 'Productor cierre']);
+        $this->collectMilk($producer, 10, now()->toDateString());
+        $weekEnd = app(ProducerService::class)->currentPayThursday()->toDateString();
+
+        $this->post(route('payment-sheets.close'), ['week_end' => $weekEnd])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $batch = ProducerPaymentBatch::query()->with('items')->firstOrFail();
+        $this->assertSame('closed', $batch->status);
+        $this->assertSame('200.00', $batch->net_amount);
+        $this->assertSame('10.00', $batch->items->first()->liters);
+
+        $this->from(route('payment-sheets.index'))->post(route('payment-sheets.close'), ['week_end' => $weekEnd])
+            ->assertRedirect(route('payment-sheets.index'))
+            ->assertSessionHasErrors(['week_end']);
+
+        $this->from(route('payment-sheets.index'))->put(route('producers.week-adjustment', $producer), [
+            'week_end' => $weekEnd,
+            'advance_amount' => 25,
+        ])->assertRedirect(route('payment-sheets.index'))->assertSessionHasErrors(['week_end']);
+        $this->assertDatabaseMissing('producer_week_adjustments', ['producer_id' => $producer->id]);
+    }
+
+    public function test_paid_payment_sheet_creates_traceable_finance_payment_once(): void
+    {
+        $this->createPrice(18.5);
+        $route = $this->createRoute();
+        $producer = $this->createProducer($route);
+        $this->collectMilk($producer, 12, now()->toDateString());
+        $weekEnd = app(ProducerService::class)->currentPayThursday()->toDateString();
+        $this->post(route('payment-sheets.close'), ['week_end' => $weekEnd])->assertRedirect();
+        $batch = ProducerPaymentBatch::query()->firstOrFail();
+
+        $this->patch(route('payment-sheets.pay', $batch))->assertRedirect()->assertSessionHas('success');
+        $batch->refresh();
+        $this->assertSame('paid', $batch->status);
+        $this->assertNotNull($batch->finance_transaction_id);
+        $this->assertDatabaseHas('finance_transactions', [
+            'id' => $batch->finance_transaction_id,
+            'type' => 'pago',
+            'status' => 'paid',
+            'reference' => $batch->code,
+            'amount' => 222,
+        ]);
+
+        $this->from(route('payment-sheets.index'))->patch(route('payment-sheets.pay', $batch))
+            ->assertRedirect(route('payment-sheets.index'))->assertSessionHasErrors(['batch']);
+        $this->assertDatabaseCount('finance_transactions', 1);
     }
 
     public function test_weekly_payroll_only_includes_current_friday_to_thursday(): void
@@ -130,6 +204,18 @@ class ProducerModuleTest extends TestCase
         ])->assertRedirect('/routes/'.$route->id);
     }
 
+    public function test_store_producer_rejects_scheme_relative_return_path(): void
+    {
+        $route = $this->createRoute();
+
+        $this->post('/producers', [
+            'full_name' => 'Cliente seguro',
+            'identity_number' => '441-22222-0099B',
+            'route_id' => $route->id,
+            'return_to' => '//evil.example/phishing',
+        ])->assertRedirect(route('producers.index'));
+    }
+
     public function test_update_producer_can_move_to_another_route(): void
     {
         $norte = $this->createRoute(['name' => 'Norte']);
@@ -198,7 +284,7 @@ class ProducerModuleTest extends TestCase
         $producer = $this->createProducer($route, ['full_name' => 'Con Multa']);
         $this->collectMilk($producer, 10, now()->toDateString(), null, 23.5);
 
-        $weekEnd = app(\App\Modules\Producers\Services\ProducerService::class)
+        $weekEnd = app(ProducerService::class)
             ->currentPayThursday()
             ->toDateString();
 
@@ -219,7 +305,7 @@ class ProducerModuleTest extends TestCase
         ]);
 
         $this->assertTrue(
-            \App\Modules\Producers\Models\ProducerWeekAdjustment::query()
+            ProducerWeekAdjustment::query()
                 ->where('producer_id', $producer->id)
                 ->whereDate('week_end', $weekEnd)
                 ->exists()
@@ -251,7 +337,7 @@ class ProducerModuleTest extends TestCase
 
         $this->assertSame(
             1,
-            \App\Modules\Producers\Models\ProducerWeekAdjustment::query()
+            ProducerWeekAdjustment::query()
                 ->where('producer_id', $producer->id)
                 ->whereDate('week_end', $weekEnd)
                 ->count()

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Ruteros\Models\Rutero;
 use App\Modules\Ruteros\Requests\StoreRuteroRequest;
 use App\Modules\Ruteros\Requests\UpdateRuteroRequest;
+use App\Support\InternalReturnPath;
 use Inertia\Inertia;
 
 class RuteroController extends Controller
@@ -40,10 +41,7 @@ class RuteroController extends Controller
     {
         $rutero->load('route:id,code,name,active');
 
-        $returnTo = request()->query('return_to');
-        if (! is_string($returnTo) || ! str_starts_with($returnTo, '/')) {
-            $returnTo = null;
-        }
+        $returnTo = InternalReturnPath::sanitize(request()->query('return_to'));
 
         return Inertia::render('Ruteros/Show', [
             'rutero' => $rutero,
@@ -55,8 +53,8 @@ class RuteroController extends Controller
     {
         $rutero->update($request->validated());
 
-        $returnTo = $request->input('return_to');
-        if (is_string($returnTo) && str_starts_with($returnTo, '/')) {
+        $returnTo = InternalReturnPath::sanitize($request->input('return_to'));
+        if ($returnTo) {
             return redirect($returnTo)
                 ->with('success', 'Rutero actualizado exitosamente.');
         }

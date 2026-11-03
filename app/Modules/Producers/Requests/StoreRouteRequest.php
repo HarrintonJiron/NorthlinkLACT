@@ -8,7 +8,7 @@ class StoreRouteRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return (bool) ($this->user()?->is_admin || $this->user()?->hasPermission('access_routes'));
     }
 
     public function rules(): array

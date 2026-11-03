@@ -20,7 +20,7 @@ class AuthenticatedRoutesTest extends TestCase
 
     public function test_every_non_public_route_has_authentication_and_active_user_middleware(): void
     {
-        $publicUris = ['login', 'api/offline/login', 'up', 'sanctum/csrf-cookie', 'storage/{path}'];
+        $publicUris = ['login', 'privacy-policy', 'api/offline/login', 'up', 'sanctum/csrf-cookie', 'storage/{path}'];
 
         /** @var LaravelRoute $route */
         foreach (app('router')->getRoutes() as $route) {

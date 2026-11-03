@@ -3,6 +3,9 @@
 namespace App\Modules\Sumni\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Device;
+use App\Models\User;
+use App\Modules\Offline\Services\OfflineSyncService;
 use App\Modules\Producers\Models\MilkCollection;
 use App\Modules\Producers\Models\Producer;
 use App\Modules\Producers\Models\ProducerRouteAssignment;
@@ -11,6 +14,8 @@ use App\Modules\Producers\Services\MilkCollectionService;
 use App\Modules\Producers\Services\ProducerService;
 use App\Modules\Sumni\Requests\StoreSumniCollectionRequest;
 use App\Modules\Sumni\Requests\StoreSumniProducerRequest;
+use App\Modules\Sumni\Requests\SyncSumniOfflineRequest;
+use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 
 class SumniController extends Controller
@@ -195,9 +200,54 @@ class SumniController extends Controller
             ->with('success', "Se registraron {$request->validated('liters')} L de {$producer->full_name}.");
     }
 
+    public function syncOffline(
+        SyncSumniOfflineRequest $request,
+        Route $route,
+        OfflineSyncService $offlineSyncService,
+    ): JsonResponse {
+        if (! $route->active || $request->integer('route_run.route_id') !== $route->id) {
+            abort(404);
+        }
+
+        $validated = $request->validated();
+        $user = $request->user();
+
+        $device = Device::query()
+            ->where('device_uuid', $validated['device_uuid'])
+            ->first();
+
+        if ($device && $device->user_id !== $user->id) {
+            return response()->json([
+                'sync_status' => 'conflict',
+                'message' => 'Este dispositivo ya está vinculado a otra cuenta.',
+                'conflicts' => [],
+            ], 409);
+        }
+
+        Device::query()->updateOrCreate(
+            ['device_uuid' => $validated['device_uuid']],
+            [
+                'user_id' => $user->id,
+                'name' => $validated['device_name'] ?? 'Firefox SUNMI',
+                'platform' => $validated['platform'] ?? 'firefox-android',
+                'active' => true,
+                'last_seen_at' => now(),
+            ],
+        );
+
+        unset($validated['device_name'], $validated['platform']);
+
+        $result = $offlineSyncService->sync($user, $validated);
+
+        return response()->json(
+            $result,
+            $result['sync_status'] === 'conflict' ? 409 : 200,
+        );
+    }
+
     protected function assignProducerToRoute(Producer $producer, Route $route, ?int $userId): void
     {
-        $assignedBy = $userId ?: \App\Models\User::query()->value('id');
+        $assignedBy = $userId ?: User::query()->value('id');
 
         if (! $assignedBy) {
             throw new \RuntimeException('No hay un usuario para asignar el productor a la ruta.');

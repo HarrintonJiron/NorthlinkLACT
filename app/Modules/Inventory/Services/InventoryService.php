@@ -2,9 +2,13 @@
 
 namespace App\Modules\Inventory\Services;
 
+use App\Modules\Audit\Models\AuditEvent;
+use App\Modules\Inventory\Models\InventoryMovement;
 use App\Modules\Inventory\Models\InventoryProduct;
 use App\Modules\Inventory\Models\InventoryUnit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class InventoryService
 {
@@ -101,7 +105,15 @@ class InventoryService
                 'active' => array_key_exists('active', $data) ? (bool) $data['active'] : true,
             ];
 
-            return InventoryProduct::query()->create($payload);
+            $initialStock = (float) $payload['stock'];
+            $payload['stock'] = 0;
+            $product = InventoryProduct::query()->create($payload);
+
+            if ($initialStock > 0) {
+                $this->recordMovement($product, 'initial', $initialStock, 'Saldo inicial al registrar el producto');
+            }
+
+            return $product->refresh();
         });
     }
 
@@ -111,21 +123,130 @@ class InventoryService
             $created = 0;
 
             foreach ($items as $item) {
-                InventoryProduct::query()->create([
+                $initialStock = (float) ($item['stock'] ?? 0);
+                $product = InventoryProduct::query()->create([
                     'code' => $this->allocateNextCode(),
                     'name' => $item['name'],
                     'description' => $item['description'] ?? null,
                     'unit_id' => $item['unit_id'],
-                    'stock' => (float) ($item['stock'] ?? 0),
+                    'stock' => 0,
                     'min_stock' => (float) ($item['min_stock'] ?? 0),
                     'active' => true,
                 ]);
+
+                if ($initialStock > 0) {
+                    $this->recordMovement($product, 'initial', $initialStock, 'Saldo inicial de carga masiva');
+                }
 
                 $created++;
             }
 
             return $created;
         });
+    }
+
+    public function updateProduct(InventoryProduct $product, array $data): InventoryProduct
+    {
+        return DB::transaction(function () use ($product, $data) {
+            $locked = InventoryProduct::query()->lockForUpdate()->findOrFail($product->id);
+            $requestedStock = (float) ($data['stock'] ?? $locked->stock);
+            $currentStock = (float) $locked->stock;
+            $reason = trim((string) ($data['adjustment_reason'] ?? ''));
+
+            unset($data['stock'], $data['adjustment_reason'], $data['code']);
+            $data['min_stock'] = (float) ($data['min_stock'] ?? 0);
+            $data['expiration_date'] = $data['expiration_date'] ?? null;
+
+            $locked->update($data);
+
+            if (abs($requestedStock - $currentStock) > 0.0005) {
+                if ($reason === '') {
+                    throw ValidationException::withMessages([
+                        'adjustment_reason' => 'Debes indicar el motivo del ajuste de inventario.',
+                    ]);
+                }
+
+                $this->recordMovement(
+                    $locked,
+                    'adjustment',
+                    $requestedStock - $currentStock,
+                    $reason
+                );
+            }
+
+            $this->audit($locked, 'updated', 'Producto de inventario actualizado');
+
+            return $locked->refresh();
+        });
+    }
+
+    public function recordMovement(
+        InventoryProduct $product,
+        string $type,
+        float $signedQuantity,
+        string $reason,
+        ?string $reference = null,
+        ?Model $source = null
+    ): InventoryMovement {
+        $previous = (float) $product->stock;
+        $new = round($previous + $signedQuantity, 3);
+
+        if ($new < 0) {
+            throw ValidationException::withMessages([
+                'stock' => 'El movimiento dejaría el inventario con saldo negativo.',
+            ]);
+        }
+
+        $movement = $product->movements()->create([
+            'type' => $type,
+            'quantity' => abs($signedQuantity),
+            'direction' => $signedQuantity >= 0 ? 1 : -1,
+            'previous_stock' => $previous,
+            'new_stock' => $new,
+            'reason' => $reason,
+            'reference' => $reference,
+            'source_type' => $source?->getMorphClass(),
+            'source_id' => $source?->getKey(),
+            'user_id' => auth()->id(),
+        ]);
+
+        $product->update(['stock' => $new]);
+
+        return $movement;
+    }
+
+    public function toggleProduct(InventoryProduct $product): InventoryProduct
+    {
+        $product->update(['active' => ! $product->active]);
+        $this->audit($product, $product->active ? 'activated' : 'deactivated', 'Estado del producto actualizado');
+
+        return $product;
+    }
+
+    public function deleteProduct(InventoryProduct $product): void
+    {
+        if ($product->movements()->exists() || abs((float) $product->stock) > 0.0005) {
+            throw ValidationException::withMessages([
+                'product' => 'No se puede eliminar un producto con saldo o historial. Inhabilítalo para conservar el kardex.',
+            ]);
+        }
+
+        $this->audit($product, 'deleted', 'Producto de inventario eliminado sin movimientos');
+        $product->delete();
+    }
+
+    private function audit(InventoryProduct $product, string $action, string $description): void
+    {
+        AuditEvent::query()->create([
+            'user_id' => auth()->id(),
+            'entity_type' => InventoryProduct::class,
+            'entity_id' => $product->id,
+            'action' => $action,
+            'description' => $description,
+            'new_values' => $product->fresh()?->toArray(),
+            'ip_address' => request()?->ip(),
+            'user_agent' => request()?->userAgent(),
+        ]);
     }
 
     protected function allocateNextCode(): string
@@ -150,6 +271,7 @@ class InventoryService
             ['code' => 'L', 'name' => 'Litro', 'symbol' => 'L'],
             ['code' => 'ML', 'name' => 'Mililitro', 'symbol' => 'ml'],
             ['code' => 'KG', 'name' => 'Kilogramo', 'symbol' => 'kg'],
+            ['code' => 'LB', 'name' => 'Libra', 'symbol' => 'lb'],
             ['code' => 'G', 'name' => 'Gramo', 'symbol' => 'g'],
             ['code' => 'UND', 'name' => 'Unidad', 'symbol' => 'und'],
             ['code' => 'CJ', 'name' => 'Caja', 'symbol' => 'cja'],

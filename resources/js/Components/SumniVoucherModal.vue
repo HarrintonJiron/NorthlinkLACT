@@ -23,7 +23,10 @@ const densityLabel = computed(() => {
 const close = () => emit('close')
 
 const printVoucher = () => {
+  const originalTitle = document.title
+  document.title = `Acopio-${props.voucher?.producer_code || 'Quebar'}-${props.voucher?.date || 'hoy'}`
   window.print()
+  document.title = originalTitle
 }
 </script>
 
@@ -43,7 +46,7 @@ const printVoucher = () => {
 
       <div id="sumni-voucher" class="p-6 text-[#1D1D1F]">
         <div class="text-center border-b border-dashed border-[#C7C7CC] pb-4 mb-4">
-          <p class="text-[11px] tracking-[0.2em] uppercase text-[#007AFF] print:text-black">Northlink LACT</p>
+          <p class="text-[11px] tracking-[0.2em] uppercase text-[#007AFF] print:text-black">Northlink Quebar</p>
           <h3 class="text-xl font-display font-bold mt-1">Comprobante de acopio</h3>
           <p class="text-sm text-[#8E8E93] print:text-black mt-1">Entrega del día</p>
         </div>
@@ -119,6 +122,20 @@ const printVoucher = () => {
 
 <style>
 @media print {
+  @page {
+    size: 58mm auto;
+    margin: 0;
+  }
+
+  html,
+  body {
+    width: 58mm !important;
+    min-width: 58mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
   body * {
     visibility: hidden !important;
   }
@@ -129,11 +146,43 @@ const printVoucher = () => {
   }
 
   #sumni-voucher {
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
-    width: 100%;
-    padding: 16px;
+    box-sizing: border-box;
+    width: 58mm !important;
+    max-width: 58mm !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 3mm 5mm 5mm !important;
+    color: #000 !important;
+    background: #fff !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+    overflow: hidden !important;
+  }
+
+  #sumni-voucher h3 {
+    font-size: 17px !important;
+    line-height: 1.1 !important;
+  }
+
+  #sumni-voucher dl {
+    font-size: 11px !important;
+  }
+
+  #sumni-voucher dd {
+    max-width: 29mm !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #sumni-voucher .text-3xl {
+    font-size: 24px !important;
+  }
+
+  #sumni-voucher .rounded-2xl {
+    border-radius: 0 !important;
   }
 }
 </style>

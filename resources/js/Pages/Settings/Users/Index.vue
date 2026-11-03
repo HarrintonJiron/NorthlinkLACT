@@ -23,6 +23,7 @@ const props = defineProps({
   availableEmployees: Array,
   stats: Object,
   modules: Array,
+  routes: Array,
 })
 
 const searchQuery = ref('')
@@ -34,6 +35,7 @@ const showEditPassword = ref(false)
 const showEditPin = ref(false)
 const successMessage = ref('')
 const editingUser = ref(null)
+const maxVisibleItems = 30
 
 const form = useForm({
   employee_id: '',
@@ -61,6 +63,8 @@ const filteredUsers = computed(() => {
     user.employee?.role?.name,
   ].filter(Boolean).join(' ').toLocaleLowerCase().includes(query))
 })
+
+const visibleUsers = computed(() => filteredUsers.value.slice(0, maxVisibleItems))
 
 const openCreate = () => {
   successMessage.value = ''
@@ -95,6 +99,8 @@ const editForm = useForm({
   pin: '',
   active: true,
   permission_ids: [],
+  route_id: '',
+  route_date: new Date().toISOString().slice(0, 10),
 })
 
 const openEdit = (user) => {
@@ -106,6 +112,9 @@ const openEdit = (user) => {
   editForm.pin = ''
   editForm.active = user.active
   editForm.permission_ids = user.permissions?.map((permission) => permission.id) || []
+  const assignment = user.route_operator_assignments?.[0]
+  editForm.route_id = assignment?.route_id || ''
+  editForm.route_date = assignment?.assigned_date?.slice(0, 10) || new Date().toISOString().slice(0, 10)
   showEditPassword.value = false
   showEditPin.value = false
   showEditPanel.value = true
@@ -198,10 +207,12 @@ const formatDate = (value) => new Intl.DateTimeFormat('es-NI', {
             <Search class="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#8E8E93]" />
             <input v-model="searchQuery" type="search" placeholder="Buscar colaborador, usuario o rol..." class="h-10 w-full rounded-xl border-0 bg-[#F5F5F7] pl-9 pr-3 text-sm focus:ring-2 focus:ring-[#007AFF]/20">
           </div>
-          <p class="text-xs text-[#8E8E93]">{{ filteredUsers.length }} de {{ users.total }} usuarios</p>
+          <p class="text-xs text-[#8E8E93]">
+            Mostrando {{ visibleUsers.length }} de {{ filteredUsers.length }} usuarios
+          </p>
         </div>
 
-        <div v-if="filteredUsers.length" class="hidden overflow-x-auto md:block">
+        <div v-if="filteredUsers.length" class="hidden max-h-[38rem] overflow-auto md:block">
           <table class="w-full text-left">
             <thead class="bg-[#FAFAFA]">
               <tr class="text-[11px] font-semibold uppercase tracking-wide text-[#8E8E93]">
@@ -215,7 +226,7 @@ const formatDate = (value) => new Intl.DateTimeFormat('es-NI', {
               </tr>
             </thead>
             <tbody class="divide-y divide-[#EFEFF1]">
-              <tr v-for="user in filteredUsers" :key="user.id" class="transition hover:bg-[#F8FAFF]">
+              <tr v-for="user in visibleUsers" :key="user.id" class="transition hover:bg-[#F8FAFF]">
                 <td class="px-4 py-3">
                   <div class="flex items-center gap-3">
                     <div class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#007AFF] to-[#5AC8FA] text-xs font-bold text-white">{{ initials(user.name) }}</div>
@@ -243,8 +254,8 @@ const formatDate = (value) => new Intl.DateTimeFormat('es-NI', {
           </table>
         </div>
 
-        <div v-if="filteredUsers.length" class="divide-y divide-[#EFEFF1] md:hidden">
-          <article v-for="user in filteredUsers" :key="user.id" class="flex items-center gap-3 p-4">
+        <div v-if="filteredUsers.length" class="max-h-[38rem] divide-y divide-[#EFEFF1] overflow-y-auto md:hidden">
+          <article v-for="user in visibleUsers" :key="user.id" class="flex items-center gap-3 p-4">
             <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#007AFF] text-xs font-bold text-white">{{ initials(user.name) }}</div>
             <div class="min-w-0 flex-1">
               <p class="truncate text-sm font-semibold">{{ user.name }}</p>
@@ -380,6 +391,18 @@ const formatDate = (value) => new Intl.DateTimeFormat('es-NI', {
               </label>
             </div>
             <p v-if="editForm.errors.permission_ids" class="mt-2 text-xs text-[#D70015]">{{ editForm.errors.permission_ids }}</p>
+          </section>
+
+          <section v-if="editingUser && !editingUser.is_admin" class="border-t border-[#EFEFF1] pt-5">
+            <div class="mb-3"><h3 class="text-xs font-bold uppercase tracking-wide text-[#6E6E73]">Ruta del día</h3><p class="mt-1 text-xs text-[#8E8E93]">El dispositivo solo descargará la ruta asignada para esta fecha.</p></div>
+            <div class="grid gap-3 sm:grid-cols-2">
+              <select v-model="editForm.route_id" class="h-11 rounded-xl border-0 bg-[#F8F8FA] px-3 text-sm focus:ring-2 focus:ring-[#007AFF]/20">
+                <option value="">Sin asignación</option>
+                <option v-for="route in routes" :key="route.id" :value="route.id">{{ route.code }} — {{ route.name }}</option>
+              </select>
+              <input v-model="editForm.route_date" type="date" class="h-11 rounded-xl border-0 bg-[#F8F8FA] px-3 text-sm focus:ring-2 focus:ring-[#007AFF]/20">
+            </div>
+            <p v-if="editForm.errors.route_id || editForm.errors.route_date" class="mt-2 text-xs text-[#D70015]">{{ editForm.errors.route_id || editForm.errors.route_date }}</p>
           </section>
 
           <section v-else-if="editingUser?.is_admin" class="rounded-xl border border-[#AF52DE]/20 bg-[#F8F1FF] p-3.5">

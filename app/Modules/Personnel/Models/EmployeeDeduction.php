@@ -10,9 +10,14 @@ class EmployeeDeduction extends Model
 {
     use SoftDeletes;
 
+    public const STATUS_PENDING = 'pending';
+
+    public const STATUS_APPLIED = 'applied';
+
     protected $fillable = [
         'employee_id',
         'type',
+        'concept',
         'amount',
         'total_amount',
         'installment_amount',
@@ -21,6 +26,8 @@ class EmployeeDeduction extends Model
         'deduction_date',
         'reason',
         'status',
+        'payroll_item_id',
+        'notes',
     ];
 
     /**
@@ -43,6 +50,11 @@ class EmployeeDeduction extends Model
         return $this->belongsTo(Employee::class);
     }
 
+    public function payrollItem(): BelongsTo
+    {
+        return $this->belongsTo(PayrollItem::class);
+    }
+
     public function installmentsPending(): ?int
     {
         if ($this->installments_total === null) {
@@ -55,5 +67,13 @@ class EmployeeDeduction extends Model
     public function supportsInstallments(): bool
     {
         return in_array($this->type, ['adelanto_salario', 'prestamo', 'anticipo'], true);
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (EmployeeDeduction $deduction): void {
+            $deduction->type ??= 'otra';
+            $deduction->reason ??= $deduction->concept;
+        });
     }
 }

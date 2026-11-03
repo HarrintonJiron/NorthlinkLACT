@@ -1,21 +1,42 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ModuleReportController;
+use App\Http\Controllers\ReportCenterController;
+use App\Modules\Admin\Controllers\OrganizationSettingsController;
+use App\Modules\Admin\Controllers\RoleController;
 use App\Modules\Admin\Controllers\UserController;
+use App\Modules\Audit\Controllers\AuditEventController;
 use App\Modules\Auth\Controllers\AuthenticatedSessionController;
 use App\Modules\Finanzas\Controllers\FinanceTransactionController;
 use App\Modules\Inventory\Controllers\InventoryProductController;
+use App\Modules\Personnel\Controllers\AbsenceController;
+use App\Modules\Personnel\Controllers\AguinaldoController;
+use App\Modules\Personnel\Controllers\BonusController;
+use App\Modules\Personnel\Controllers\DeductionController;
 use App\Modules\Personnel\Controllers\EmployeeAttendanceController;
 use App\Modules\Personnel\Controllers\EmployeeController;
 use App\Modules\Personnel\Controllers\EmployeeDeductionController;
 use App\Modules\Personnel\Controllers\EmployeeDocumentController;
+use App\Modules\Personnel\Controllers\EmployeeHistoryController;
 use App\Modules\Personnel\Controllers\EmployeeRoleController;
+use App\Modules\Personnel\Controllers\LeaveController;
+use App\Modules\Personnel\Controllers\LoanController;
+use App\Modules\Personnel\Controllers\PayrollController;
+use App\Modules\Personnel\Controllers\PayrollExportController;
+use App\Modules\Personnel\Controllers\SettlementController;
+use App\Modules\Personnel\Controllers\TaxPolicyController;
+use App\Modules\Personnel\Controllers\VacationController;
 use App\Modules\Producers\Controllers\MilkCollectionController;
 use App\Modules\Producers\Controllers\ProducerController;
 use App\Modules\Producers\Controllers\RouteController;
+use App\Modules\Production\Controllers\ProductDispatchController;
+use App\Modules\Production\Controllers\ProductionBatchController;
 use App\Modules\Ruteros\Controllers\RuteroController;
 use App\Modules\Sumni\Controllers\SumniController;
 use Illuminate\Support\Facades\Route;
+
+Route::view('/privacy-policy', 'legal.privacy')->name('privacy-policy');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -24,6 +45,10 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth', 'user.active'])->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
+    Route::get('/module-reports/{module}.pdf', ModuleReportController::class)
+        ->name('module-reports.show');
+    Route::get('/module-reports/{module}.xls', [ModuleReportController::class, 'excel'])
+        ->name('module-reports.excel');
 
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
@@ -33,6 +58,7 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::get('/', [SumniController::class, 'index'])->name('index');
         Route::get('/{route}', [SumniController::class, 'show'])->name('show')->where('route', '[0-9]+');
         Route::post('/{route}/producers', [SumniController::class, 'storeProducer'])->name('producers.store')->where('route', '[0-9]+');
+        Route::post('/{route}/offline-sync', [SumniController::class, 'syncOffline'])->name('offline-sync')->where('route', '[0-9]+');
         Route::post('/{route}', [SumniController::class, 'store'])->name('store')->where('route', '[0-9]+');
     });
 
@@ -79,26 +105,36 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::get('/', [FinanceTransactionController::class, 'index'])->name('index');
         Route::post('/transactions', [FinanceTransactionController::class, 'store'])->name('transactions.store');
         Route::put('/transactions/{transaction}', [FinanceTransactionController::class, 'update'])->name('transactions.update');
+        Route::patch('/transactions/{transaction}/status', [FinanceTransactionController::class, 'updateStatus'])->name('transactions.status');
         Route::patch('/transactions/{transaction}/toggle', [FinanceTransactionController::class, 'toggle'])->name('transactions.toggle');
         Route::delete('/transactions/{transaction}', [FinanceTransactionController::class, 'destroy'])->name('transactions.destroy');
     });
 
     Route::prefix('payment-sheets')->name('payment-sheets.')->middleware('module.permission:finances')->group(function () {
-        Route::get('/', function () {
-            return redirect()->route('finanzas.index');
-        })->name('index');
+        Route::get('/', [ProducerController::class, 'paymentSheets'])->name('index');
+        Route::post('/close', [ProducerController::class, 'closePaymentSheet'])->name('close');
+        Route::patch('/{batch}/pay', [ProducerController::class, 'payPaymentSheet'])->name('pay');
     });
 
     Route::prefix('payments')->name('payments.')->middleware('module.permission:finances')->group(function () {
-        Route::get('/', function () {
-            return redirect()->route('finanzas.index');
-        })->name('index');
+        Route::get('/', [FinanceTransactionController::class, 'payments'])->name('index');
     });
 
     Route::prefix('production')->name('production.')->middleware('module.permission:production')->group(function () {
-        Route::get('/', function () {
-            return inertia('UnderConstruction');
-        })->name('index');
+        Route::get('/', [ProductionBatchController::class, 'index'])->name('index');
+        Route::post('/', [ProductionBatchController::class, 'store'])->name('store');
+        Route::post('/{batch}/milk-inputs', [ProductionBatchController::class, 'storeMilkInput'])->name('milk-inputs.store');
+        Route::post('/{batch}/weights', [ProductionBatchController::class, 'storeWeight'])->name('weights.store');
+        Route::post('/{batch}/weights/{entry}/correct', [ProductionBatchController::class, 'correctWeight'])->name('weights.correct');
+        Route::patch('/{batch}/status', [ProductionBatchController::class, 'updateStatus'])->name('status.update');
+        Route::post('/{batch}/costs', [ProductionBatchController::class, 'storeCost'])->name('costs.store');
+        Route::post('/{batch}/finished-lots', [ProductionBatchController::class, 'storeFinishedLot'])->name('finished-lots.store');
+    });
+
+    Route::prefix('dispatches')->name('dispatches.')->middleware('module.permission:production')->group(function () {
+        Route::get('/', [ProductDispatchController::class, 'index'])->name('index');
+        Route::post('/', [ProductDispatchController::class, 'store'])->name('store');
+        Route::patch('/{dispatch}/receive', [ProductDispatchController::class, 'receive'])->name('receive');
     });
 
     Route::prefix('inventory')->name('inventory.')->middleware('module.permission:inventory')->group(function () {
@@ -125,21 +161,77 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::post('/{employee}/documents', [EmployeeDocumentController::class, 'store'])->name('documents.store');
         Route::get('/{employee}/documents/{document}/download', [EmployeeDocumentController::class, 'download'])->name('documents.download');
         Route::delete('/{employee}/documents/{document}', [EmployeeDocumentController::class, 'destroy'])->name('documents.destroy');
+        Route::get('/{employee}/history', [EmployeeHistoryController::class, 'show'])->name('history');
         Route::post('/roles', [EmployeeRoleController::class, 'store'])->name('roles.store');
         Route::put('/roles/{employeeRole}', [EmployeeRoleController::class, 'update'])->name('roles.update');
         Route::patch('/roles/{employeeRole}/status', [EmployeeRoleController::class, 'updateStatus'])->name('roles.status.update');
+
+        Route::post('/{employee}/vacations', [VacationController::class, 'store'])->name('vacations.store');
+        Route::put('/{employee}/vacations/{vacation}', [VacationController::class, 'update'])->name('vacations.update');
+        Route::patch('/{employee}/vacations/{vacation}/status', [VacationController::class, 'updateStatus'])->name('vacations.status.update');
+        Route::delete('/{employee}/vacations/{vacation}', [VacationController::class, 'destroy'])->name('vacations.destroy');
+
+        Route::post('/{employee}/bonuses', [BonusController::class, 'store'])->name('bonuses.store');
+        Route::put('/{employee}/bonuses/{bonus}', [BonusController::class, 'update'])->name('bonuses.update');
+        Route::delete('/{employee}/bonuses/{bonus}', [BonusController::class, 'destroy'])->name('bonuses.destroy');
+
+        Route::post('/{employee}/loans', [LoanController::class, 'store'])->name('loans.store');
+        Route::put('/{employee}/loans/{loan}', [LoanController::class, 'update'])->name('loans.update');
+        Route::delete('/{employee}/loans/{loan}', [LoanController::class, 'destroy'])->name('loans.destroy');
+
+        Route::post('/{employee}/payroll-deductions', [DeductionController::class, 'store'])->name('payroll-deductions.store');
+        Route::put('/{employee}/payroll-deductions/{deduction}', [DeductionController::class, 'update'])->name('payroll-deductions.update');
+        Route::delete('/{employee}/payroll-deductions/{deduction}', [DeductionController::class, 'destroy'])->name('payroll-deductions.destroy');
+
+        Route::post('/{employee}/leaves', [LeaveController::class, 'store'])->name('leaves.store');
+        Route::put('/{employee}/leaves/{leave}', [LeaveController::class, 'update'])->name('leaves.update');
+        Route::patch('/{employee}/leaves/{leave}/status', [LeaveController::class, 'updateStatus'])->name('leaves.status.update');
+        Route::delete('/{employee}/leaves/{leave}', [LeaveController::class, 'destroy'])->name('leaves.destroy');
+
+        Route::post('/{employee}/absences', [AbsenceController::class, 'store'])->name('absences.store');
+        Route::delete('/{employee}/absences/{absence}', [AbsenceController::class, 'destroy'])->name('absences.destroy');
     });
 
     Route::prefix('payroll')->name('payroll.')->middleware('module.permission:payroll')->group(function () {
-        Route::get('/', function () {
-            return inertia('UnderConstruction');
-        })->name('index');
+        Route::get('/', [PayrollController::class, 'index'])->name('index');
+        Route::post('/', [PayrollController::class, 'store'])->name('store');
+        Route::get('/{payrollPeriod}', [PayrollController::class, 'show'])->name('show');
+        Route::put('/{payrollPeriod}/items/{item}', [PayrollController::class, 'updateItem'])->name('items.update');
+        Route::patch('/{payrollPeriod}/approve', [PayrollController::class, 'approve'])->name('approve');
+        Route::patch('/{payrollPeriod}/pay', [PayrollController::class, 'markPaid'])->name('pay');
+        Route::delete('/{payrollPeriod}', [PayrollController::class, 'destroy'])->name('destroy');
+        Route::get('/{payrollPeriod}/export', [PayrollExportController::class, 'exportPlanilla'])->name('print');
+    });
+
+    Route::post('/tax-policies', [TaxPolicyController::class, 'store'])
+        ->middleware('module.permission:payroll')
+        ->name('tax-policies.store');
+
+    Route::prefix('aguinaldo')->name('aguinaldo.')->middleware('module.permission:payroll')->group(function () {
+        Route::post('/', [AguinaldoController::class, 'store'])->name('store');
+        Route::get('/{aguinaldoPeriod}', [AguinaldoController::class, 'show'])->name('show');
+        Route::patch('/{aguinaldoPeriod}/approve', [AguinaldoController::class, 'approve'])->name('approve');
+        Route::patch('/{aguinaldoPeriod}/pay', [AguinaldoController::class, 'markPaid'])->name('pay');
+        Route::delete('/{aguinaldoPeriod}', [AguinaldoController::class, 'destroy'])->name('destroy');
+        Route::get('/{aguinaldoPeriod}/export', [PayrollExportController::class, 'exportAguinaldo'])->name('print');
+    });
+
+    Route::get('/payroll-export/{section}', [PayrollExportController::class, 'export'])
+        ->middleware('module.permission:payroll')
+        ->name('payroll.export');
+
+    Route::prefix('settlements')->name('settlements.')->middleware('module.permission:payroll')->group(function () {
+        Route::post('/', [SettlementController::class, 'store'])->name('store');
+        Route::get('/{settlement}', [SettlementController::class, 'show'])->name('show');
+        Route::put('/{settlement}', [SettlementController::class, 'update'])->name('update');
+        Route::patch('/{settlement}/approve', [SettlementController::class, 'approve'])->name('approve');
+        Route::patch('/{settlement}/pay', [SettlementController::class, 'markPaid'])->name('pay');
+        Route::delete('/{settlement}', [SettlementController::class, 'destroy'])->name('destroy');
+        Route::get('/{settlement}/export', [PayrollExportController::class, 'exportSettlement'])->name('print');
     });
 
     Route::prefix('reports')->name('reports.')->middleware('module.permission:reports')->group(function () {
-        Route::get('/', function () {
-            return inertia('UnderConstruction');
-        })->name('index');
+        Route::get('/', ReportCenterController::class)->name('index');
     });
 
     Route::prefix('settings')->name('settings.')->middleware('administrator')->group(function () {
@@ -151,6 +243,16 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::patch('/users/{user}/status', [UserController::class, 'updateStatus'])->name('users.status.update');
+        Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+        Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+        Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
+        Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
+        Route::get('/audit', AuditEventController::class)->name('audit.index');
+        Route::get('/organization', [OrganizationSettingsController::class, 'index'])->name('organization.index');
+        Route::put('/organization/{company}', [OrganizationSettingsController::class, 'updateCompany'])->name('organization.update');
+        Route::post('/plants', [OrganizationSettingsController::class, 'storePlant'])->name('plants.store');
+        Route::put('/plants/{plant}', [OrganizationSettingsController::class, 'updatePlant'])->name('plants.update');
+        Route::patch('/plants/{plant}/status', [OrganizationSettingsController::class, 'togglePlant'])->name('plants.status');
     });
 
     // Ruta catch-all para cualquier página no implementada

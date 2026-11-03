@@ -9,8 +9,14 @@ window.addEventListener('vite:preloadError', (event) => {
     window.location.reload()
 })
 
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+    })
+}
+
 createInertiaApp({
-    title: (title) => `${title} - Northlink LACT`,
+    title: (title) => `${title} - Northlink Quebar`,
     resolve: name => {
         const page = pages[`./Pages/${name}.vue`]
 

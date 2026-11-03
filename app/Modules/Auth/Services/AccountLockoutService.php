@@ -44,13 +44,23 @@ class AccountLockoutService
 
     public function recordPasswordChanged(User $user): User
     {
-        return $this->updateSecurityState($user, [
-            'failed_login_attempts' => 0,
-            'last_failed_login_at' => null,
-            'locked_until' => null,
-            'password_changed_at' => now(),
-            'remember_token' => Str::random(60),
-        ]);
+        return DB::transaction(function () use ($user): User {
+            $lockedUser = User::query()
+                ->lockForUpdate()
+                ->findOrFail($user->getKey());
+
+            $lockedUser->forceFill([
+                'failed_login_attempts' => 0,
+                'last_failed_login_at' => null,
+                'locked_until' => null,
+                'password_changed_at' => now(),
+                'remember_token' => Str::random(60),
+            ])->save();
+            $lockedUser->tokens()->delete();
+            $lockedUser->devices()->update(['active' => false]);
+
+            return $lockedUser;
+        }, attempts: 3);
     }
 
     /**

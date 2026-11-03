@@ -31,6 +31,7 @@ const form = useForm({
   description: '',
   unit_id: '',
   stock: '0',
+  adjustment_reason: '',
   min_stock: '0',
   expiration_date: '',
   active: true,
@@ -42,6 +43,7 @@ const resetForm = () => {
     form.description = props.product.description || ''
     form.unit_id = props.product.unit_id ? String(props.product.unit_id) : ''
     form.stock = props.product.stock != null ? String(props.product.stock) : '0'
+    form.adjustment_reason = ''
     form.min_stock = props.product.min_stock != null ? String(props.product.min_stock) : '0'
     form.expiration_date = props.product.expiration_date
       ? String(props.product.expiration_date).slice(0, 10)
@@ -150,7 +152,9 @@ const close = () => emit('close')
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Stock actual</label>
+              <label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">
+                {{ isEditing ? 'Nuevo saldo' : 'Saldo inicial' }}
+              </label>
               <input
                 v-model="form.stock"
                 type="number"
@@ -171,6 +175,22 @@ const close = () => emit('close')
               />
               <p v-if="form.errors.min_stock" class="text-xs text-[#FF3B30] mt-1">{{ form.errors.min_stock }}</p>
             </div>
+          </div>
+
+          <div v-if="isEditing && Number(form.stock) !== Number(product?.stock)">
+            <label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Motivo del ajuste</label>
+            <textarea
+              v-model="form.adjustment_reason"
+              rows="2"
+              required
+              minlength="5"
+              placeholder="Ej. Entrada por compra, merma verificada o corrección de conteo"
+              class="w-full bg-[#FFF8E8] border border-[#FFD27A] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FF9F0A]/40 py-2.5 px-3 text-sm resize-none"
+            />
+            <p class="text-xs text-[#8E6A14] mt-1">Este cambio quedará registrado en el kardex con tu usuario.</p>
+            <p v-if="form.errors.adjustment_reason" class="text-xs text-[#FF3B30] mt-1">
+              {{ form.errors.adjustment_reason }}
+            </p>
           </div>
 
           <div>

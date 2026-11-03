@@ -22,9 +22,7 @@ class EnsureModulePermission
         }
 
         // Verificar si el usuario tiene el permiso específico del módulo
-        $hasPermission = $user->permissions()->where('name', "access_{$module}")->exists();
-
-        if ($hasPermission) {
+        if ($user->hasPermission("access_{$module}")) {
             return $next($request);
         }
 

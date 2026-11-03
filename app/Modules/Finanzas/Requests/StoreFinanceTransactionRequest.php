@@ -10,7 +10,7 @@ class StoreFinanceTransactionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return (bool) $this->user()?->hasPermission('access_finances');
     }
 
     protected function prepareForValidation(): void

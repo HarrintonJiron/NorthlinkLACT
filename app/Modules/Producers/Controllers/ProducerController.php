@@ -3,14 +3,19 @@
 namespace App\Modules\Producers\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Modules\Producers\Models\Producer;
+use App\Modules\Producers\Models\ProducerPaymentBatch;
 use App\Modules\Producers\Models\ProducerRouteAssignment;
 use App\Modules\Producers\Models\ProducerWeekAdjustment;
 use App\Modules\Producers\Models\Route;
+use App\Modules\Producers\Requests\CloseProducerPaymentBatchRequest;
 use App\Modules\Producers\Requests\StoreProducerRequest;
 use App\Modules\Producers\Requests\StoreProducerWeekAdjustmentRequest;
 use App\Modules\Producers\Requests\UpdateProducerRequest;
+use App\Modules\Producers\Services\ProducerPaymentService;
 use App\Modules\Producers\Services\ProducerService;
+use App\Support\InternalReturnPath;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -18,10 +23,21 @@ use Inertia\Inertia;
 class ProducerController extends Controller
 {
     public function __construct(
-        private ProducerService $producerService
+        private ProducerService $producerService,
+        private ProducerPaymentService $producerPaymentService,
     ) {}
 
     public function index(Request $request)
+    {
+        return $this->renderIndex($request);
+    }
+
+    public function paymentSheets(Request $request)
+    {
+        return $this->renderIndex($request, 'payment-sheets');
+    }
+
+    private function renderIndex(Request $request, string $mode = 'producers')
     {
         $routeId = $request->filled('route_id') ? (int) $request->input('route_id') : null;
         $week = $request->input('week');
@@ -35,13 +51,32 @@ class ProducerController extends Controller
             ],
             'weeks' => $this->producerService->weekOptions(),
             'report' => $this->producerService->weeklyPayroll($routeId, $week),
+            'mode' => $mode,
+            'paymentBatch' => ProducerPaymentBatch::query()
+                ->with('financeTransaction:id,code,status')
+                ->whereDate('week_end', $this->producerService->currentPayThursday($week)->toDateString())
+                ->first(),
         ]);
+    }
+
+    public function closePaymentSheet(CloseProducerPaymentBatchRequest $request)
+    {
+        $this->producerPaymentService->close($request->validated('week_end'), $request->user(), $request->validated('notes'));
+
+        return back()->with('success', 'Planilla cerrada. Los importes quedaron congelados para auditoría.');
+    }
+
+    public function payPaymentSheet(ProducerPaymentBatch $batch)
+    {
+        $this->producerPaymentService->markPaid($batch, request()->user());
+
+        return back()->with('success', 'Planilla pagada y movimiento financiero generado.');
     }
 
     public function create()
     {
         return Inertia::render('Producers/Producers/Create', [
-            'routes' => \App\Modules\Producers\Models\Route::where('active', true)->get(),
+            'routes' => Route::where('active', true)->get(),
         ]);
     }
 
@@ -57,9 +92,9 @@ class ProducerController extends Controller
 
         $this->assignToRoute($producer, (int) $request->route_id, $request->user()?->id);
 
-        $returnTo = $request->input('return_to');
+        $returnTo = InternalReturnPath::sanitize($request->input('return_to'));
 
-        if (is_string($returnTo) && str_starts_with($returnTo, '/')) {
+        if ($returnTo) {
             return redirect($returnTo)
                 ->with('success', 'Productor creado exitosamente');
         }
@@ -85,7 +120,7 @@ class ProducerController extends Controller
 
         return Inertia::render('Producers/Producers/Edit', [
             'producer' => $producer,
-            'routes' => \App\Modules\Producers\Models\Route::where('active', true)->get(),
+            'routes' => Route::where('active', true)->get(),
         ]);
     }
 
@@ -124,6 +159,9 @@ class ProducerController extends Controller
     public function storeWeekAdjustment(StoreProducerWeekAdjustmentRequest $request, Producer $producer)
     {
         $weekEnd = Carbon::parse($request->validated('week_end'))->toDateString();
+        if (ProducerPaymentBatch::query()->whereDate('week_end', $weekEnd)->exists()) {
+            return back()->withErrors(['week_end' => 'La semana está cerrada y sus ajustes ya no pueden modificarse.']);
+        }
         $densityPrice = $request->validated('density_price');
         $advance = (float) ($request->validated('advance_amount') ?? 0);
         $notes = $request->validated('notes');
@@ -157,8 +195,8 @@ class ProducerController extends Controller
             ]);
         }
 
-        $returnTo = $request->input('return_to');
-        if (is_string($returnTo) && str_starts_with($returnTo, '/')) {
+        $returnTo = InternalReturnPath::sanitize($request->input('return_to'));
+        if ($returnTo) {
             return redirect($returnTo)
                 ->with('success', "Ajustes de semana guardados para {$producer->full_name}.");
         }
@@ -169,7 +207,7 @@ class ProducerController extends Controller
 
     protected function assignToRoute(Producer $producer, int $routeId, ?int $userId): void
     {
-        $assignedBy = $userId ?: \App\Models\User::query()->value('id');
+        $assignedBy = $userId ?: User::query()->value('id');
 
         if (! $assignedBy) {
             throw new \RuntimeException('No hay un usuario para asignar el productor a la ruta.');

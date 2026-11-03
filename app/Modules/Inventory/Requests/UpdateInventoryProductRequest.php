@@ -9,7 +9,7 @@ class UpdateInventoryProductRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return (bool) $this->user()?->hasPermission('access_inventory');
     }
 
     protected function prepareForValidation(): void
@@ -37,6 +37,18 @@ class UpdateInventoryProductRequest extends FormRequest
                 }),
             ],
             'stock' => ['nullable', 'numeric', 'min:0'],
+            'adjustment_reason' => [
+                Rule::requiredIf(function (): bool {
+                    $current = (float) ($this->route('product')?->stock ?? 0);
+                    $requested = (float) $this->input('stock', $current);
+
+                    return abs($requested - $current) > 0.0005;
+                }),
+                'nullable',
+                'string',
+                'min:5',
+                'max:500',
+            ],
             'min_stock' => ['nullable', 'numeric', 'min:0'],
             'expiration_date' => ['nullable', 'date'],
             'active' => ['nullable', 'boolean'],
@@ -50,6 +62,8 @@ class UpdateInventoryProductRequest extends FormRequest
             'unit_id.required' => 'Debes seleccionar una unidad de medida.',
             'unit_id.exists' => 'La unidad de medida seleccionada no es válida.',
             'stock.min' => 'El stock no puede ser negativo.',
+            'adjustment_reason.required' => 'Debes indicar el motivo del ajuste de inventario.',
+            'adjustment_reason.min' => 'El motivo del ajuste debe tener al menos 5 caracteres.',
             'min_stock.min' => 'El stock mínimo no puede ser negativo.',
             'expiration_date.date' => 'La fecha de vencimiento no es válida.',
         ];

@@ -63,6 +63,11 @@ class User extends Authenticatable
         return $this->hasMany(RouteRun::class);
     }
 
+    public function routeOperatorAssignments()
+    {
+        return $this->hasMany(RouteOperatorAssignment::class);
+    }
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

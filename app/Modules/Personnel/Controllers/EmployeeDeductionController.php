@@ -18,6 +18,7 @@ class EmployeeDeductionController extends Controller
         EmployeeDeduction::query()->create([
             'employee_id' => $targetEmployeeId,
             'type' => $data['type'],
+            'concept' => $data['concept'] ?? null,
             'amount' => $data['amount'],
             'total_amount' => $data['total_amount'] ?? null,
             'installment_amount' => $data['installment_amount'] ?? null,
@@ -25,7 +26,8 @@ class EmployeeDeductionController extends Controller
             'installments_paid' => 0,
             'deduction_date' => $data['deduction_date'],
             'reason' => $data['reason'] ?? null,
-            'status' => $data['status'],
+            'status' => ($data['concept'] ?? null) ? EmployeeDeduction::STATUS_PENDING : $data['status'],
+            'notes' => $data['notes'] ?? null,
         ]);
 
         return redirect()

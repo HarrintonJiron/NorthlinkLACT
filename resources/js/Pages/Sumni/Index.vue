@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import AppShell from '../../Components/AppShell.vue'
+import FieldAppShell from '../../Components/FieldAppShell.vue'
 import { Link } from '@inertiajs/vue3'
 import { Search, MapPin, User, Truck, Droplets, UserCog } from '@lucide/vue'
 
@@ -13,6 +13,7 @@ const props = defineProps({
 })
 
 const searchQuery = ref('')
+const maxVisibleItems = 30
 
 const filteredRoutes = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
@@ -25,41 +26,46 @@ const filteredRoutes = computed(() => {
       .some((value) => String(value).toLowerCase().includes(query))
   )
 })
+
+const visibleRoutes = computed(() => filteredRoutes.value.slice(0, maxVisibleItems))
 </script>
 
 <template>
-  <AppShell>
-    <div class="max-w-2xl mx-auto">
-      <div class="mb-6 text-center sm:text-left">
-        <p class="text-[11px] tracking-[0.22em] uppercase text-[#007AFF]">Sumni</p>
-        <h1 class="text-3xl font-display font-bold text-[#1D1D1F] mt-1">Elige la ruta</h1>
-        <p class="text-sm text-[#8E8E93] mt-1">
+  <FieldAppShell>
+    <div class="mx-auto w-full max-w-2xl">
+      <div class="mb-4 px-1 sm:mb-6">
+        <p class="text-[11px] font-bold tracking-[0.18em] uppercase text-[#176B45]">Jornada de recolección</p>
+        <h1 class="mt-1 text-2xl font-extrabold text-[#17221C] sm:text-3xl">Selecciona una ruta</h1>
+        <p class="mt-1 text-sm leading-snug text-[#688075]">
           Cada ruta tiene su propietario y sus clientes. Hoy {{ today }}
         </p>
       </div>
 
-      <div class="bg-white rounded-[28px] border border-[#E5E5E5] shadow-sm overflow-hidden">
-        <div class="p-4 border-b border-[#E5E5E5]">
+      <div class="overflow-hidden rounded-2xl border border-[#DCE5DF] bg-white shadow-sm sm:rounded-[28px]">
+        <div class="border-b border-[#E3EAE6] p-3 sm:p-4">
           <div class="relative">
             <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8E8E93]" />
             <input
               type="text"
               v-model="searchQuery"
-              autofocus
               placeholder="Buscar ruta, propietario, encargado o placa..."
-              class="w-full pl-12 pr-4 py-3.5 bg-[#F5F5F7] border-none rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 text-base text-[#1D1D1F] placeholder-[#8E8E93]"
+              class="h-13 w-full rounded-xl border border-[#DCE5DF] bg-[#F4F7F5] py-3 pl-12 pr-4 text-base text-[#17221C] outline-none placeholder:text-[#829087] focus:border-[#176B45] focus:ring-2 focus:ring-[#176B45]/15 sm:rounded-2xl"
             />
           </div>
         </div>
 
-        <div v-if="filteredRoutes.length" class="divide-y divide-[#E5E5E5]">
+        <div v-if="filteredRoutes.length" class="border-b border-[#E5E5E5] px-4 py-2 text-xs text-[#8E8E93]">
+          Mostrando {{ visibleRoutes.length }} de {{ filteredRoutes.length }} rutas
+        </div>
+
+        <div v-if="filteredRoutes.length" class="divide-y divide-[#E3EAE6] sm:max-h-[38rem] sm:overflow-y-auto">
           <Link
-            v-for="route in filteredRoutes"
+            v-for="route in visibleRoutes"
             :key="route.id"
             :href="`/sumni/${route.id}`"
-            class="block p-5 hover:bg-[#F5F5F7] transition-colors"
+            class="block p-4 active:bg-[#EEF5F1] sm:p-5 sm:hover:bg-[#F4F7F5]"
           >
-            <div class="flex items-start justify-between gap-3">
+            <div class="flex flex-col gap-3 min-[390px]:flex-row min-[390px]:items-start min-[390px]:justify-between">
               <div class="flex items-start gap-3 min-w-0">
                 <div class="w-11 h-11 bg-[#E5F1FF] rounded-2xl flex items-center justify-center shrink-0">
                   <MapPin class="w-5 h-5 text-[#007AFF]" />
@@ -81,7 +87,7 @@ const filteredRoutes = computed(() => {
                   </p>
                 </div>
               </div>
-              <div class="text-right shrink-0">
+              <div class="ml-14 flex shrink-0 items-center justify-between gap-3 min-[390px]:ml-0 min-[390px]:block min-[390px]:text-right">
                 <p class="text-sm font-semibold text-[#1D1D1F]">{{ route.clients }} clientes</p>
                 <p class="text-xs text-[#8E8E93] mt-1 flex items-center justify-end gap-1">
                   <Droplets class="w-3 h-3" />
@@ -96,5 +102,5 @@ const filteredRoutes = computed(() => {
         </p>
       </div>
     </div>
-  </AppShell>
+  </FieldAppShell>
 </template>

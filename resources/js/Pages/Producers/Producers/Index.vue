@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import AppShell from '../../../Components/AppShell.vue'
 import { router } from '@inertiajs/vue3'
-import { Search, Printer, Pencil, Eye } from '@lucide/vue'
+import { Search, Printer, Pencil, Eye, LockKeyhole, BadgeCheck } from '@lucide/vue'
 import ProducerModal from '../../../Components/ProducerModal.vue'
 import ProducerWeekAdjustmentModal from '../../../Components/ProducerWeekAdjustmentModal.vue'
 import ProducerWeekDetailModal from '../../../Components/ProducerWeekDetailModal.vue'
@@ -10,6 +10,10 @@ import ProducerStatsPanel from '../../../Components/ProducerStatsPanel.vue'
 import ProducerPenalizedModal from '../../../Components/ProducerPenalizedModal.vue'
 
 const props = defineProps({
+  mode: {
+    type: String,
+    default: 'producers',
+  },
   routes: Array,
   stats: {
     type: Object,
@@ -41,6 +45,10 @@ const props = defineProps({
       totals: { producers: 0, days: 0, daily: {}, liters: 0, amount: 0, penalized: 0 },
     }),
   },
+  paymentBatch: {
+    type: Object,
+    default: null,
+  },
 })
 
 const searchQuery = ref('')
@@ -51,6 +59,7 @@ const showPenalizedModal = ref(false)
 const selectedProducer = ref(null)
 const routeFilter = ref(props.filters.route_id ? String(props.filters.route_id) : '')
 const weekFilter = ref(props.filters.week || '')
+const maxVisibleItems = 30
 
 const money = (value) =>
   `C$ ${Number(value || 0).toLocaleString('es-NI', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -75,12 +84,15 @@ const filteredRows = computed(() => {
   )
 })
 
+const visibleRows = computed(() => filteredRows.value.slice(0, maxVisibleItems))
+
 const adjustmentReturnTo = computed(() => {
   const params = new URLSearchParams()
   if (routeFilter.value) params.set('route_id', routeFilter.value)
   if (weekFilter.value) params.set('week', weekFilter.value)
   const query = params.toString()
-  return query ? `/producers?${query}` : '/producers'
+  const base = props.mode === 'payment-sheets' ? '/payment-sheets' : '/producers'
+  return query ? `${base}?${query}` : base
 })
 
 const penalizedCount = computed(() => {
@@ -104,7 +116,7 @@ const penalizedProducers = computed(() =>
 )
 
 const applyFilters = () => {
-  router.get('/producers', {
+  router.get(props.mode === 'payment-sheets' ? '/payment-sheets' : '/producers', {
     route_id: routeFilter.value || undefined,
     week: weekFilter.value || undefined,
   }, {
@@ -112,6 +124,16 @@ const applyFilters = () => {
     preserveScroll: true,
     replace: true,
   })
+}
+
+const closePaymentSheet = () => {
+  if (!window.confirm(`¿Cerrar definitivamente la planilla de la semana ${props.report.week.label}?`)) return
+  router.post('/payment-sheets/close', { week_end: props.report.week.end }, { preserveScroll: true })
+}
+
+const payPaymentSheet = () => {
+  if (!window.confirm('¿Confirmas que esta planilla fue pagada? Se generará el movimiento financiero.')) return
+  router.patch(`/payment-sheets/${props.paymentBatch.id}/pay`, {}, { preserveScroll: true })
 }
 
 const openCreateModal = () => {
@@ -162,6 +184,10 @@ const printReport = () => {
 
 <template>
   <AppShell>
+    <div v-if="mode === 'payment-sheets'" class="mb-4 rounded-2xl border border-blue-200 bg-blue-50 px-5 py-4 print:hidden">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><p class="font-display text-lg font-bold text-slate-950">Planillas semanales de productores</p><p class="mt-1 text-sm text-slate-600">Revisa litros, precio aplicado, adelantos y total de pago antes del cierre formal.</p></div><div class="flex flex-wrap gap-2"><span v-if="paymentBatch" class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold" :class="paymentBatch.status === 'paid' ? 'text-emerald-700' : 'text-violet-700'"><BadgeCheck class="size-4" />{{ paymentBatch.status === 'paid' ? 'Pagada' : 'Cerrada' }} · {{ paymentBatch.code }}</span><button v-if="!paymentBatch" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-violet-700 px-4 text-sm font-bold text-white" @click="closePaymentSheet"><LockKeyhole class="size-4" />Cerrar planilla</button><button v-else-if="paymentBatch.status === 'closed'" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-bold text-white" @click="payPaymentSheet"><BadgeCheck class="size-4" />Marcar pagada</button></div></div>
+    </div>
+
     <ProducerStatsPanel
       :stats="stats"
       :penalized="penalizedCount"
@@ -183,6 +209,7 @@ const printReport = () => {
     >
       {{ $page.props.flash.success }}
     </div>
+    <div v-if="$page.props.errors?.week_end || $page.props.errors?.batch" class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-800 print:hidden">{{ $page.props.errors.week_end || $page.props.errors.batch }}</div>
 
     <div class="rounded-[28px] border border-[#E5E5E5] bg-white overflow-hidden shadow-sm print:shadow-none print:border-0">
       <div class="p-4 border-b border-[#E5E5E5] flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between print:hidden">
@@ -234,11 +261,11 @@ const printReport = () => {
           </p>
         </div>
         <p class="text-xs text-[#8E8E93]">
-          Precio base: {{ money(report.price) }} / L
+          Mostrando {{ visibleRows.length }} de {{ filteredRows.length }} productores · Precio base: {{ money(report.price) }} / L
         </p>
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="max-h-[42rem] overflow-auto">
         <table class="w-full text-sm">
           <thead class="bg-[#F5F5F7] text-left text-xs uppercase tracking-wide text-[#8E8E93]">
             <tr>
@@ -259,7 +286,7 @@ const printReport = () => {
           </thead>
           <tbody class="divide-y divide-[#E5E5E5]">
             <tr
-              v-for="row in filteredRows"
+              v-for="row in visibleRows"
               :key="row.id"
               class="hover:bg-[#F5F5F7] cursor-pointer"
               @click="openDetailModal(row)"
@@ -301,6 +328,7 @@ const printReport = () => {
               <td class="px-3 py-3 text-right tabular-nums font-semibold text-[#1D1D1F]">{{ money(row.amount) }}</td>
               <td class="px-3 py-3 text-center print:hidden" @click.stop>
                 <button
+                  v-if="!paymentBatch"
                   type="button"
                   @click="openAdjustmentModal(row)"
                   class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-semibold bg-[#E5F1FF] text-[#007AFF] hover:bg-[#D6E9FF]"

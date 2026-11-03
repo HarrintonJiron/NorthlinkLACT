@@ -2,9 +2,11 @@
 
 namespace App\Modules\Finanzas\Services;
 
+use App\Modules\Audit\Models\AuditEvent;
 use App\Modules\Finanzas\Models\FinanceCategory;
 use App\Modules\Finanzas\Models\FinanceTransaction;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class FinanzasService
 {
@@ -117,8 +119,81 @@ class FinanzasService
                 'payee' => $data['payee'] ?? null,
                 'notes' => $data['notes'] ?? null,
                 'active' => array_key_exists('active', $data) ? (bool) $data['active'] : true,
+                'status' => FinanceTransaction::STATUS_DRAFT,
             ]);
         });
+    }
+
+    public function updateTransaction(FinanceTransaction $transaction, array $data): FinanceTransaction
+    {
+        if ($transaction->status !== FinanceTransaction::STATUS_DRAFT) {
+            throw ValidationException::withMessages([
+                'transaction' => 'Solo los movimientos en borrador pueden editarse. Anúlalo y registra uno nuevo si necesitas corregirlo.',
+            ]);
+        }
+
+        return DB::transaction(function () use ($transaction, $data) {
+            $old = $transaction->toArray();
+            unset($data['code'], $data['status']);
+            $data['amount'] = (float) $data['amount'];
+            $transaction->update($data);
+            $this->audit($transaction, 'updated', 'Movimiento financiero actualizado', $old);
+
+            return $transaction->refresh();
+        });
+    }
+
+    public function transition(FinanceTransaction $transaction, string $status, ?string $reason = null): FinanceTransaction
+    {
+        return DB::transaction(function () use ($transaction, $status, $reason) {
+            $locked = FinanceTransaction::query()->lockForUpdate()->findOrFail($transaction->id);
+            $allowed = [
+                FinanceTransaction::STATUS_DRAFT => [FinanceTransaction::STATUS_REVIEWED, FinanceTransaction::STATUS_VOIDED],
+                FinanceTransaction::STATUS_REVIEWED => [FinanceTransaction::STATUS_APPROVED, FinanceTransaction::STATUS_VOIDED],
+                FinanceTransaction::STATUS_APPROVED => [FinanceTransaction::STATUS_PAID, FinanceTransaction::STATUS_VOIDED],
+                FinanceTransaction::STATUS_PAID => [FinanceTransaction::STATUS_RECONCILED, FinanceTransaction::STATUS_VOIDED],
+                FinanceTransaction::STATUS_RECONCILED => [],
+                FinanceTransaction::STATUS_VOIDED => [],
+            ];
+
+            if (! in_array($status, $allowed[$locked->status] ?? [], true)) {
+                throw ValidationException::withMessages([
+                    'status' => 'La transición de estado solicitada no está permitida.',
+                ]);
+            }
+
+            $old = $locked->toArray();
+            $updates = ['status' => $status];
+            if ($status === FinanceTransaction::STATUS_APPROVED) {
+                $updates += ['approved_by' => auth()->id(), 'approved_at' => now()];
+            } elseif ($status === FinanceTransaction::STATUS_PAID) {
+                $updates += ['paid_by' => auth()->id(), 'paid_at' => now()];
+            } elseif ($status === FinanceTransaction::STATUS_RECONCILED) {
+                $updates += ['reconciled_by' => auth()->id(), 'reconciled_at' => now()];
+            } elseif ($status === FinanceTransaction::STATUS_VOIDED) {
+                $updates += ['void_reason' => trim((string) $reason), 'active' => false];
+            }
+
+            $locked->update($updates);
+            $this->audit($locked, 'status_changed', "Estado financiero cambiado a {$status}", $old);
+
+            return $locked->refresh();
+        });
+    }
+
+    private function audit(FinanceTransaction $transaction, string $action, string $description, ?array $old = null): void
+    {
+        AuditEvent::query()->create([
+            'user_id' => auth()->id(),
+            'entity_type' => FinanceTransaction::class,
+            'entity_id' => $transaction->id,
+            'action' => $action,
+            'description' => $description,
+            'old_values' => $old,
+            'new_values' => $transaction->fresh()?->toArray(),
+            'ip_address' => request()?->ip(),
+            'user_agent' => request()?->userAgent(),
+        ]);
     }
 
     protected function allocateNextCode(): string

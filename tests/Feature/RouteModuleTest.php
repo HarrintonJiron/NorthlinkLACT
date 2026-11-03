@@ -2,6 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use App\Modules\Admin\Models\Company;
+use App\Modules\Admin\Models\Permission;
+use App\Modules\Admin\Models\Plant;
 use App\Modules\Producers\Models\MilkCollection;
 use App\Modules\Producers\Models\Route;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -154,5 +158,39 @@ class RouteModuleTest extends TestCase
             ->assertSessionHas('success');
 
         $this->assertNull($rutero->fresh()->route_id);
+    }
+
+    public function test_non_admin_only_sees_and_changes_routes_from_assigned_tenant(): void
+    {
+        $allowedRoute = $this->createRoute(['name' => 'Ruta permitida']);
+        $otherCompany = Company::factory()->create();
+        $otherPlant = Plant::factory()->for($otherCompany)->create();
+        $forbiddenRoute = Route::query()->create([
+            'company_id' => $otherCompany->id,
+            'plant_id' => $otherPlant->id,
+            'code' => 'RUT-OTRA',
+            'name' => 'Ruta ajena',
+            'active' => true,
+        ]);
+        $permission = Permission::query()->create([
+            'name' => 'access_routes',
+            'display_name' => 'Acceder a rutas',
+            'module' => 'routes',
+        ]);
+        $operator = User::factory()->create(['is_admin' => false]);
+        $operator->permissions()->attach($permission);
+        $operator->companies()->attach($this->company->id, ['plant_id' => $this->plant->id]);
+        $this->actingAs($operator);
+
+        $this->get('/routes')
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->has('routes', 1)
+                ->where('routes.0.id', $allowedRoute->id)
+                ->where('stats.total', 1));
+
+        $this->get('/routes/'.$forbiddenRoute->id)->assertNotFound();
+        $this->put('/routes/'.$forbiddenRoute->id, ['name' => 'Intento ajeno'])->assertNotFound();
+        $this->assertSame('Ruta ajena', $forbiddenRoute->fresh()->name);
     }
 }

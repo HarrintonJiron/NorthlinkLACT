@@ -3,12 +3,14 @@
 namespace App\Modules\Admin\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\RouteOperatorAssignment;
 use App\Models\User;
 use App\Modules\Admin\Models\Permission;
 use App\Modules\Admin\Requests\StoreUserRequest;
 use App\Modules\Admin\Requests\UpdateUserRequest;
 use App\Modules\Auth\Services\AccountLockoutService;
 use App\Modules\Personnel\Models\Employee;
+use App\Modules\Producers\Models\Route;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +29,10 @@ class UserController extends Controller
                 'employee:id,employee_role_id,first_name,last_name,email,phone',
                 'employee.role:id,name',
                 'permissions:id,name,display_name,module',
+                'routeOperatorAssignments' => fn ($query) => $query
+                    ->whereDate('assigned_date', '>=', today())
+                    ->with('route:id,code,name')
+                    ->orderBy('assigned_date'),
             ])
             ->latest('id')
             ->paginate(12)
@@ -56,6 +62,10 @@ class UserController extends Controller
                 ->where('name', 'like', 'access_%')
                 ->orderBy('display_name')
                 ->get(),
+            'routes' => Route::query()
+                ->where('active', true)
+                ->orderBy('code')
+                ->get(['id', 'code', 'name']),
             'stats' => [
                 'total' => User::query()->count(),
                 'active' => User::query()->where('active', true)->count(),
@@ -112,6 +122,21 @@ class UserController extends Controller
             if (filled($data['pin'])) {
                 $user->update(['pin' => $data['pin']]);
             }
+
+            if (filled($data['route_id'] ?? null) && filled($data['route_date'] ?? null)) {
+                RouteOperatorAssignment::query()->updateOrCreate(
+                    ['user_id' => $user->id, 'assigned_date' => $data['route_date']],
+                    [
+                        'route_id' => $data['route_id'],
+                        'assigned_by' => request()->user()->id,
+                    ],
+                );
+            } elseif (filled($data['route_date'] ?? null)) {
+                RouteOperatorAssignment::query()
+                    ->where('user_id', $user->id)
+                    ->whereDate('assigned_date', $data['route_date'])
+                    ->delete();
+            }
         });
 
         return redirect()
@@ -127,9 +152,16 @@ class UserController extends Controller
             'active' => ['required', 'boolean'],
         ]);
 
-        $user->update([
-            'active' => $validated['active'],
-        ]);
+        DB::transaction(function () use ($user, $validated): void {
+            $lockedUser = User::query()->lockForUpdate()->findOrFail($user->id);
+            $lockedUser->update(['active' => $validated['active']]);
+
+            if (! $lockedUser->active) {
+                $lockedUser->tokens()->delete();
+                $lockedUser->devices()->update(['active' => false]);
+            }
+        }, attempts: 3);
+        $user->refresh();
 
         return redirect()
             ->route('settings.users.index')

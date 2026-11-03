@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Modules\Auth\Services;
 
+use App\Models\Device;
 use App\Models\User;
 use App\Modules\Auth\Services\AccountLockoutService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,7 +17,6 @@ class AccountLockoutServiceTest extends TestCase
         $this->travelTo('2026-09-01 12:00:00');
         $user = User::factory()->create();
         $service = new AccountLockoutService;
-
         for ($attempt = 0; $attempt < 5; $attempt++) {
             $user = $service->recordFailedAttempt($user);
         }
@@ -85,6 +85,12 @@ class AccountLockoutServiceTest extends TestCase
             'remember_token' => 'previous-token',
         ]);
         $service = new AccountLockoutService;
+        Device::query()->create([
+            'user_id' => $user->id,
+            'device_uuid' => '10000000-0000-4000-8000-000000000020',
+            'active' => true,
+        ]);
+        $user->createToken('device:10000000-0000-4000-8000-000000000020', ['offline:sync'], now()->addDay());
 
         $user = $service->recordPasswordChanged($user);
 
@@ -94,5 +100,7 @@ class AccountLockoutServiceTest extends TestCase
         $this->assertSame('2026-09-01 12:00:00', $user->password_changed_at?->format('Y-m-d H:i:s'));
         $this->assertNotSame('previous-token', $user->remember_token);
         $this->assertSame(60, strlen((string) $user->remember_token));
+        $this->assertDatabaseCount('personal_access_tokens', 0);
+        $this->assertFalse($user->devices()->firstOrFail()->active);
     }
 }

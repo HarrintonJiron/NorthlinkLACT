@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Modules\Ruteros\Models\Rutero;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\Concerns\CreatesAcopioFixtures;
@@ -128,6 +127,25 @@ class RuteroModuleTest extends TestCase
                 ->component('Ruteros/Show')
                 ->where('returnTo', '/routes/'.$route->id)
             );
+    }
+
+    public function test_rutero_rejects_external_return_paths(): void
+    {
+        $route = $this->createRoute();
+        $rutero = $this->createRutero($route);
+
+        $this->get('/ruteros/'.$rutero->id.'?return_to='.urlencode('//evil.example'))
+            ->assertInertia(fn (Assert $page) => $page->where('returnTo', null));
+
+        $payload = $rutero->only([
+            'owner_name', 'owner_identity_number', 'owner_phone', 'vehicle_description',
+            'vehicle_plate', 'driver_name', 'driver_identity_number', 'driver_phone',
+        ]);
+
+        $this->put('/ruteros/'.$rutero->id, [
+            ...$payload,
+            'return_to' => '/%5cevil.example',
+        ])->assertRedirect(route('ruteros.show', $rutero));
     }
 
     public function test_sumni_reads_owner_and_driver_from_the_rutero(): void

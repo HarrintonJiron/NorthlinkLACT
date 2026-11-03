@@ -88,7 +88,7 @@ class EmployeeControllerTest extends TestCase
 
     public function test_can_register_attendance_and_deduction_from_employee_profile(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $employee = Employee::factory()->create();
 
         $this->post(route('employees.employee.attendances.store', $employee), [
@@ -143,7 +143,7 @@ class EmployeeControllerTest extends TestCase
 
     public function test_can_upload_document_to_employee_profile(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $employee = Employee::factory()->create();
 
         $this->post(route('employees.documents.store', $employee), [

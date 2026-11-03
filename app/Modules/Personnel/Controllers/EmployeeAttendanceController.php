@@ -27,7 +27,7 @@ class EmployeeAttendanceController extends Controller
 
         if ($request->hasFile('justification')) {
             $file = $request->file('justification');
-            $path = $file->store("employee-attendances/{$targetEmployeeId}", 'public');
+            $path = $file->store("employee-attendances/{$targetEmployeeId}", 'local');
             $payload['justification_path'] = $path;
             $payload['justification_name'] = $file->getClientOriginalName();
         }
@@ -53,7 +53,7 @@ class EmployeeAttendanceController extends Controller
         abort_unless($attendance->employee_id === $employee->id, 404);
 
         if ($attendance->justification_path) {
-            Storage::disk('public')->delete($attendance->justification_path);
+            Storage::disk('local')->delete($attendance->justification_path);
         }
 
         $attendance->delete();

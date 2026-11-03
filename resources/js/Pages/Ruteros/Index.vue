@@ -18,6 +18,7 @@ const props = defineProps({
 
 const showCreateModal = ref(false)
 const searchQuery = ref('')
+const maxVisibleItems = 30
 
 const filteredRuteros = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
@@ -41,6 +42,8 @@ const filteredRuteros = computed(() => {
       .some((value) => String(value).toLowerCase().includes(query))
   )
 })
+
+const visibleRuteros = computed(() => filteredRuteros.value.slice(0, maxVisibleItems))
 
 const handleCreate = (form) => {
   form.post('/ruteros', {
@@ -89,11 +92,13 @@ const handleCreate = (form) => {
             class="pl-10 pr-4 py-2 bg-[#F5F5F7] border-none rounded-full focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 text-sm w-full sm:w-72 text-[#1D1D1F] placeholder-[#8E8E93]"
           />
         </div>
-        <p class="text-sm text-[#8E8E93]">{{ filteredRuteros.length }} ruteros</p>
+        <p class="text-sm text-[#8E8E93]">
+          Mostrando {{ visibleRuteros.length }} de {{ filteredRuteros.length }} ruteros
+        </p>
       </div>
 
-      <div v-if="filteredRuteros.length" class="divide-y divide-[#E5E5E5]">
-        <div v-for="rutero in filteredRuteros" :key="rutero.id" class="p-4 hover:bg-[#F5F5F7]">
+      <div v-if="filteredRuteros.length" class="max-h-[38rem] divide-y divide-[#E5E5E5] overflow-y-auto">
+        <div v-for="rutero in visibleRuteros" :key="rutero.id" class="p-4 hover:bg-[#F5F5F7]">
           <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center space-x-4">
               <div class="bg-[#E5F1FF] p-3 rounded-xl">

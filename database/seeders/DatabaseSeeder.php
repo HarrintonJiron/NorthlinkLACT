@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(EmployeeRoleSeeder::class);
         $this->call(ModulePermissionSeeder::class);
+        $this->call(PersonnelDemoSeeder::class);
+        $this->call(AcopioDemoSeeder::class);
+        $this->call(PlatformDemoSeeder::class);
 
         if (! app()->isLocal()) {
             return;
@@ -32,5 +35,10 @@ class DatabaseSeeder extends Seeder
                 'is_admin' => true,
             ],
         );
+
+        // Ejecutar MassiveDataSeeder solo si se especifica la variable de entorno
+        if (env('SEED_MASSIVE_DATA', false)) {
+            $this->call(MassiveDataSeeder::class);
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Modules\Inventory\Models\InventoryMovement;
 use App\Modules\Inventory\Models\InventoryProduct;
 use App\Modules\Inventory\Models\InventoryUnit;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -141,6 +142,7 @@ class InventoryModuleTest extends TestCase
             'name' => 'Queso fresco',
             'unit_id' => $kg->id,
             'stock' => 25,
+            'adjustment_reason' => 'Conteo físico de cierre',
             'min_stock' => 5,
             'active' => true,
         ])
@@ -326,7 +328,7 @@ class InventoryModuleTest extends TestCase
             'code' => 'PRD-0001',
             'name' => 'Temporal',
             'unit_id' => $unit->id,
-            'stock' => 5,
+            'stock' => 0,
             'min_stock' => 1,
             'active' => true,
         ]);
@@ -449,6 +451,7 @@ class InventoryModuleTest extends TestCase
             'name' => 'Actualizado',
             'unit_id' => $unit->id,
             'stock' => 15,
+            'adjustment_reason' => 'Conteo físico actualizado',
             'min_stock' => 2,
             'active' => true,
             'code' => 'HACK-999',
@@ -487,6 +490,7 @@ class InventoryModuleTest extends TestCase
             'name' => 'Producto legacy actualizado',
             'unit_id' => $unit->id,
             'stock' => 8,
+            'adjustment_reason' => 'Entrada verificada en almacén',
             'min_stock' => 2,
             'active' => true,
         ])
@@ -550,5 +554,73 @@ class InventoryModuleTest extends TestCase
         $this->assertDatabaseHas('inventory_products', ['name' => 'Individual', 'code' => 'PRD-0001']);
         $this->assertDatabaseHas('inventory_products', ['name' => 'Bulk A', 'code' => 'PRD-0002']);
         $this->assertDatabaseHas('inventory_products', ['name' => 'Bulk B', 'code' => 'PRD-0003']);
+    }
+
+    public function test_initial_stock_and_adjustments_create_immutable_kardex(): void
+    {
+        $this->get('/inventory')->assertOk();
+        $unit = InventoryUnit::query()->where('code', 'L')->firstOrFail();
+
+        $this->post('/inventory/products', [
+            'name' => 'Leche para proceso',
+            'unit_id' => $unit->id,
+            'stock' => 100,
+            'min_stock' => 20,
+        ])->assertRedirect('/inventory');
+
+        $product = InventoryProduct::query()->where('name', 'Leche para proceso')->firstOrFail();
+        $initial = InventoryMovement::query()->where('product_id', $product->id)->firstOrFail();
+
+        $this->assertSame('initial', $initial->type);
+        $this->assertSame(1, $initial->direction);
+        $this->assertSame('0.000', $initial->previous_stock);
+        $this->assertSame('100.000', $initial->new_stock);
+
+        $this->put('/inventory/products/'.$product->id, [
+            'name' => $product->name,
+            'unit_id' => $unit->id,
+            'stock' => 75,
+            'min_stock' => 20,
+            'active' => true,
+            'adjustment_reason' => 'Salida verificada a producción',
+        ])->assertRedirect('/inventory')->assertSessionHas('success');
+
+        $adjustment = InventoryMovement::query()->where('product_id', $product->id)->latest('id')->firstOrFail();
+        $this->assertSame('adjustment', $adjustment->type);
+        $this->assertSame(-1, $adjustment->direction);
+        $this->assertSame('25.000', $adjustment->quantity);
+        $this->assertSame('100.000', $adjustment->previous_stock);
+        $this->assertSame('75.000', $adjustment->new_stock);
+        $this->assertSame('75.000', $product->fresh()->stock);
+        $this->assertDatabaseHas('inventory_movements', ['id' => $initial->id, 'new_stock' => 100]);
+    }
+
+    public function test_stock_change_requires_reason_and_product_with_history_cannot_be_deleted(): void
+    {
+        $this->get('/inventory')->assertOk();
+        $unit = InventoryUnit::query()->where('code', 'KG')->firstOrFail();
+
+        $this->post('/inventory/products', [
+            'name' => 'Queso terminado',
+            'unit_id' => $unit->id,
+            'stock' => 20,
+            'min_stock' => 5,
+        ])->assertRedirect('/inventory');
+
+        $product = InventoryProduct::query()->where('name', 'Queso terminado')->firstOrFail();
+
+        $this->from('/inventory')->put('/inventory/products/'.$product->id, [
+            'name' => $product->name,
+            'unit_id' => $unit->id,
+            'stock' => 18,
+            'min_stock' => 5,
+            'active' => true,
+        ])->assertRedirect('/inventory')->assertSessionHasErrors(['adjustment_reason']);
+
+        $this->assertSame('20.000', $product->fresh()->stock);
+        $this->from('/inventory')->delete('/inventory/products/'.$product->id)
+            ->assertRedirect('/inventory')
+            ->assertSessionHasErrors(['product']);
+        $this->assertNull($product->fresh()->deleted_at);
     }
 }

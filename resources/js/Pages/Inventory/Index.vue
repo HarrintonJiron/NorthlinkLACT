@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { router } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 import AppShell from '../../Components/AppShell.vue'
 import InventoryProductModal from '../../Components/InventoryProductModal.vue'
 import InventoryBulkProductModal from '../../Components/InventoryBulkProductModal.vue'
@@ -14,6 +14,9 @@ import {
   AlertTriangle,
   Ruler,
   Calendar,
+  History,
+  ArrowUpRight,
+  ArrowDownRight,
 } from '@lucide/vue'
 
 const props = defineProps({
@@ -39,6 +42,11 @@ const props = defineProps({
       by_unit: [],
     }),
   },
+  movements: {
+    type: Array,
+    default: () => [],
+  },
+  pagination: { type: Object, default: () => ({ links: [], total: 0 }) },
 })
 
 const searchQuery = ref('')
@@ -46,6 +54,7 @@ const showModal = ref(false)
 const showBulkModal = ref(false)
 const showLowStockModal = ref(false)
 const editingProduct = ref(null)
+const maxVisibleItems = 30
 
 const filteredProducts = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
@@ -65,6 +74,8 @@ const filteredProducts = computed(() => {
       .some((value) => String(value).toLowerCase().includes(query))
   )
 })
+
+const visibleProducts = computed(() => filteredProducts.value.slice(0, maxVisibleItems))
 
 const lowStockProducts = computed(() =>
   (props.products || [])
@@ -88,6 +99,14 @@ const formatDate = (value) => {
     month: 'short',
     year: 'numeric',
   })
+}
+
+const formatDateTime = (value) => {
+  if (!value) return '—'
+  return new Intl.DateTimeFormat('es-NI', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(new Date(value))
 }
 
 const isExpired = (product) => {
@@ -164,10 +183,12 @@ const toggleProduct = (product) => {
             class="pl-10 pr-4 py-2 bg-[#F5F5F7] border-none rounded-full focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 text-sm w-full text-[#1D1D1F] placeholder-[#8E8E93]"
           />
         </div>
-        <p class="text-sm text-[#8E8E93]">{{ filteredProducts.length }} productos</p>
+        <p class="text-sm text-[#8E8E93]">
+          Mostrando {{ visibleProducts.length }} de {{ filteredProducts.length }} productos
+        </p>
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="max-h-[38rem] overflow-auto">
         <table class="w-full text-sm">
           <thead class="bg-[#F5F5F7] text-left text-xs uppercase tracking-wide text-[#8E8E93]">
             <tr>
@@ -181,7 +202,7 @@ const toggleProduct = (product) => {
           </thead>
           <tbody class="divide-y divide-[#E5E5E5]">
             <tr
-              v-for="product in filteredProducts"
+              v-for="product in visibleProducts"
               :key="product.id"
               class="hover:bg-[#F5F5F7]"
             >
@@ -267,7 +288,64 @@ const toggleProduct = (product) => {
           </tbody>
         </table>
       </div>
+      <div v-if="pagination.links?.length > 3" class="flex items-center justify-between border-t border-[#E5E5E5] px-4 py-3"><p class="text-xs text-[#8E8E93]">{{ pagination.from || 0 }}–{{ pagination.to || 0 }} de {{ pagination.total }}</p><div class="flex gap-1"><Link v-for="link in pagination.links.filter((item) => item.url)" :key="link.label" :href="link.url" :class="['rounded-lg px-3 py-1.5 text-xs', link.active ? 'bg-[#007AFF] text-white' : 'bg-[#F5F5F7] text-[#6E6E73]']" v-html="link.label" /></div></div>
     </div>
+
+    <section class="mt-5 rounded-[28px] border border-[#E5E5E5] bg-white overflow-hidden shadow-sm">
+      <div class="p-4 border-b border-[#E5E5E5] flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="rounded-xl bg-[#F1EAFE] p-2.5">
+            <History class="w-5 h-5 text-[#7C3AED]" />
+          </div>
+          <div>
+            <h2 class="font-semibold text-[#1D1D1F]">Kardex reciente</h2>
+            <p class="text-xs text-[#8E8E93]">Últimos 30 movimientos, sin sobrescribir el historial.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-h-[28rem] overflow-auto">
+        <table class="w-full text-sm">
+          <thead class="sticky top-0 bg-[#F5F5F7] text-left text-xs uppercase tracking-wide text-[#8E8E93]">
+            <tr>
+              <th class="px-4 py-3">Fecha</th>
+              <th class="px-3 py-3">Producto</th>
+              <th class="px-3 py-3">Movimiento</th>
+              <th class="px-3 py-3 text-right">Cantidad</th>
+              <th class="px-3 py-3 text-right">Saldo</th>
+              <th class="px-3 py-3">Responsable / motivo</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#E5E5E5]">
+            <tr v-for="movement in movements" :key="movement.id" class="hover:bg-[#FAFAFA]">
+              <td class="px-4 py-3 whitespace-nowrap text-[#6E6E73]">{{ formatDateTime(movement.created_at) }}</td>
+              <td class="px-3 py-3">
+                <p class="font-medium text-[#1D1D1F]">{{ movement.product?.name || 'Producto no disponible' }}</p>
+                <p class="text-xs text-[#8E8E93]">{{ movement.product?.code }}</p>
+              </td>
+              <td class="px-3 py-3">
+                <span class="rounded-full px-2.5 py-1 text-xs font-semibold" :class="movement.direction > 0 ? 'bg-[#E8F8E8] text-[#1D7A32]' : 'bg-[#FFECEB] text-[#C9342E]'">
+                  {{ movement.type === 'initial' ? 'Saldo inicial' : 'Ajuste' }}
+                </span>
+              </td>
+              <td class="px-3 py-3 text-right font-semibold tabular-nums" :class="movement.direction > 0 ? 'text-[#1D7A32]' : 'text-[#C9342E]'">
+                <ArrowUpRight v-if="movement.direction > 0" class="inline w-4 h-4" />
+                <ArrowDownRight v-else class="inline w-4 h-4" />
+                {{ movement.direction > 0 ? '+' : '-' }}{{ formatQty(movement.quantity) }}
+              </td>
+              <td class="px-3 py-3 text-right tabular-nums text-[#1D1D1F]">{{ formatQty(movement.new_stock) }}</td>
+              <td class="px-3 py-3 min-w-56">
+                <p class="text-[#1D1D1F]">{{ movement.reason }}</p>
+                <p class="text-xs text-[#8E8E93]">{{ movement.user?.name || movement.user?.username || 'Sistema' }}</p>
+              </td>
+            </tr>
+            <tr v-if="!movements.length">
+              <td colspan="6" class="px-4 py-10 text-center text-[#8E8E93]">Todavía no hay movimientos registrados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
     <InventoryProductModal
       :show="showModal"

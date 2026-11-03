@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Modules\Admin;
 
+use App\Models\Device;
 use App\Models\User;
 use App\Modules\Admin\Models\Permission;
 use App\Modules\Personnel\Models\Employee;
@@ -292,6 +293,12 @@ class UserControllerTest extends TestCase
     public function test_update_status_toggles_user_active_state(): void
     {
         $user = User::factory()->create(['active' => true]);
+        Device::query()->create([
+            'user_id' => $user->id,
+            'device_uuid' => '10000000-0000-4000-8000-000000000030',
+            'active' => true,
+        ]);
+        $user->createToken('device:10000000-0000-4000-8000-000000000030', ['offline:sync'], now()->addDay());
 
         $this->patch(route('settings.users.status.update', $user), ['active' => false])
             ->assertRedirect(route('settings.users.index'))
@@ -299,6 +306,8 @@ class UserControllerTest extends TestCase
 
         $user->refresh();
         $this->assertFalse($user->active);
+        $this->assertDatabaseCount('personal_access_tokens', 0);
+        $this->assertFalse($user->devices()->firstOrFail()->active);
 
         $this->patch(route('settings.users.status.update', $user), ['active' => true])
             ->assertRedirect(route('settings.users.index'))

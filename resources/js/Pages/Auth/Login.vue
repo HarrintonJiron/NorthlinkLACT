@@ -1,5 +1,6 @@
 <script setup>
 import { Head, useForm } from '@inertiajs/vue3'
+import { ensureOfflineOwner } from '@/offline/sumniOffline'
 
 const form = useForm({
   username: '',
@@ -8,6 +9,7 @@ const form = useForm({
 
 const submit = () => {
   form.post('/login', {
+    onSuccess: () => ensureOfflineOwner(form.username.trim().toLowerCase()).catch(() => {}),
     onFinish: () => form.reset('password'),
   })
 }
@@ -22,7 +24,7 @@ const submit = () => {
 
     <section class="relative w-full max-w-md rounded-3xl border border-white/20 bg-[#173E2C]/90 p-8 shadow-2xl shadow-black/35 backdrop-blur-md">
       <div class="mb-8 text-center">
-        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-[#D8E7C5]">Northlink LACT</p>
+        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-[#D8E7C5]">Northlink Quebar</p>
         <h1 class="mt-3 text-3xl font-semibold tracking-tight text-white">Iniciar sesión</h1>
         <p class="mt-2 text-sm text-[#D7E3D8]">Gestión eficiente del acopio de leche.</p>
       </div>

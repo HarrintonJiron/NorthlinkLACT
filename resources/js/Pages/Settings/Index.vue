@@ -9,6 +9,7 @@ import {
   Settings,
   ShieldCheck,
   Users,
+  History,
 } from '@lucide/vue'
 
 const options = [
@@ -25,18 +26,32 @@ const options = [
     description: 'Define qué puede hacer cada perfil del sistema.',
     icon: ShieldCheck,
     accent: 'bg-[#F2EAFE] text-[#AF52DE]',
+    href: '/settings/roles',
+    enabled: true,
   },
   {
     title: 'Empresa',
     description: 'Administra datos fiscales y preferencias generales.',
     icon: Building2,
     accent: 'bg-[#E9F8EE] text-[#34C759]',
+    href: '/settings/organization',
+    enabled: true,
   },
   {
     title: 'Plantas y sedes',
     description: 'Organiza ubicaciones y centros operativos.',
     icon: MapPinned,
     accent: 'bg-[#FFF3E6] text-[#FF9500]',
+    href: '/settings/organization',
+    enabled: true,
+  },
+  {
+    title: 'Auditoría',
+    description: 'Consulta quién cambió qué, cuándo y desde dónde.',
+    icon: History,
+    accent: 'bg-amber-50 text-amber-700',
+    href: '/settings/audit',
+    enabled: true,
   },
 ]
 </script>
@@ -55,7 +70,7 @@ const options = [
             Configuración
           </h1>
           <p class="mt-1 text-sm text-[#6E6E73]">
-            Administra el acceso y la estructura de Northlink LACT.
+            Administra el acceso y la estructura de Northlink Quebar.
           </p>
         </div>
       </div>

@@ -11,4 +11,6 @@ return [
         'base_seconds' => (int) env('AUTH_LOCKOUT_BASE_SECONDS', 60),
         'max_seconds' => (int) env('AUTH_LOCKOUT_MAX_SECONDS', 900),
     ],
+
+    'offline_token_days' => (int) env('AUTH_OFFLINE_TOKEN_DAYS', 7),
 ];

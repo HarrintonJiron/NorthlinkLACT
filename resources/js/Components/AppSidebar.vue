@@ -99,7 +99,7 @@ const isExpanded = (section) => {
         </div>
         <div>
           <h1 class="font-display font-bold text-lg text-white">Northlink</h1>
-          <p class="text-xs text-[#8E8E93]">LACT</p>
+          <p class="text-xs text-[#8E8E93]">Quebar</p>
         </div>
       </div>
     </div>

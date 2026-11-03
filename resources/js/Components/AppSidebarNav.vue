@@ -1,7 +1,7 @@
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
-import { Package, Droplets, MapPin, Truck, Users, Wallet, Factory, UserCheck, Calculator, BarChart3, Settings } from '@lucide/vue'
+import { Package, Droplets, MapPin, Truck, Users, Wallet, Factory, UserCheck, Calculator, BarChart3, Settings, ClipboardList, CreditCard, Send } from '@lucide/vue'
 
 const props = defineProps({
   currentRoute: String
@@ -18,7 +18,10 @@ const navigation = computed(() => [
   { name: 'Recolecciones', href: '/collections', icon: Droplets, module: 'collections' },
   { name: 'Productores', href: '/producers', icon: Users, module: 'producers' },
   { name: 'Finanzas', href: '/finanzas', icon: Wallet, module: 'finances', activePrefixes: ['/finanzas', '/payment'] },
+  { name: 'Planillas Pago', href: '/payment-sheets', icon: ClipboardList, module: 'finances' },
+  { name: 'Pagos', href: '/payments', icon: CreditCard, module: 'finances' },
   { name: 'Producción', href: '/production', icon: Factory, module: 'production' },
+  { name: 'Remisiones', href: '/dispatches', icon: Send, module: 'production' },
   { name: 'Inventario', href: '/inventory', icon: Factory, module: 'inventory' },
   { name: 'Personal', href: '/employees', icon: UserCheck, module: 'personnel' },
   { name: 'Nómina', href: '/payroll', icon: Calculator, module: 'payroll' },
@@ -49,7 +52,7 @@ const isCurrent = (item) => {
         </div>
         <div>
           <h1 class="font-display font-bold text-lg text-[#1D1D1F]">Northlink</h1>
-          <p class="text-xs text-[#8E8E93]">LACT</p>
+          <p class="text-xs text-[#8E8E93]">Quebar</p>
         </div>
       </div>
     </div>

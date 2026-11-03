@@ -2,15 +2,23 @@
 
 namespace App\Modules\Producers\Models;
 
+use Database\Factories\Modules\Producers\ProducerFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Producer extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
+
+    protected static function newFactory(): ProducerFactory
+    {
+        return ProducerFactory::new();
+    }
 
     protected $fillable = [
         'code',
+        'external_uuid',
         'full_name',
         'identity_number',
         'phone',

@@ -14,6 +14,18 @@ class EnsureUserIsActive
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if (! $request->user()) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Unauthenticated.'], 401);
+            }
+
+            $loginUrl = config('app.force_https')
+                ? rtrim(config('app.url'), '/').'/login'
+                : route('login');
+
+            return redirect()->guest($loginUrl);
+        }
+
         if ($request->user()?->active) {
             return $next($request);
         }

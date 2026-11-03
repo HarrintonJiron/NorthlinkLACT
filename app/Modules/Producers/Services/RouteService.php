@@ -2,6 +2,7 @@
 
 namespace App\Modules\Producers\Services;
 
+use App\Models\User;
 use App\Modules\Admin\Models\Company;
 use App\Modules\Admin\Models\Plant;
 use App\Modules\Audit\Models\AuditEvent;
@@ -10,6 +11,7 @@ use App\Modules\Producers\Models\MilkPrice;
 use App\Modules\Producers\Models\Producer;
 use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Requests\StoreRouteRequest;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class RouteService
@@ -17,8 +19,8 @@ class RouteService
     public function create(StoreRouteRequest $request): Route
     {
         return DB::transaction(function () use ($request) {
-            $company = $this->resolveCompany();
-            $plant = $this->resolvePlant($company);
+            $company = $this->resolveCompany($request->user());
+            $plant = $this->resolvePlant($company, $request->user());
 
             $route = Route::create([
                 'company_id' => $company->id,
@@ -39,15 +41,16 @@ class RouteService
         return $this->generateCode();
     }
 
-    public function stats(): array
+    public function stats(User $user): array
     {
-        $total = Route::query()->count();
-        $active = Route::query()->where('active', true)->count();
-        $inactive = Route::query()->where('active', false)->count();
-        $newThisMonth = Route::query()
+        $routes = $this->accessibleQuery($user);
+        $total = (clone $routes)->count();
+        $active = (clone $routes)->where('active', true)->count();
+        $inactive = (clone $routes)->where('active', false)->count();
+        $newThisMonth = (clone $routes)
             ->where('created_at', '>=', now()->startOfMonth())
             ->count();
-        $newLastMonth = Route::query()
+        $newLastMonth = (clone $routes)
             ->whereBetween('created_at', [
                 now()->subMonth()->startOfMonth(),
                 now()->subMonth()->endOfMonth(),
@@ -71,7 +74,7 @@ class RouteService
             ]);
         }
 
-        Route::query()
+        (clone $routes)
             ->where('created_at', '>=', now()->startOfMonth()->subMonths(11))
             ->get(['created_at'])
             ->groupBy(fn (Route $route) => $route->created_at->format('Y-m'))
@@ -84,16 +87,24 @@ class RouteService
             });
 
         $today = now()->toDateString();
+        $routeIds = (clone $routes)->select('routes.id');
         $litersToday = (float) MilkCollection::query()
+            ->whereIn('route_id', $routeIds)
             ->whereDate('collection_date', $today)
             ->sum('liters');
-        $price = (float) (MilkPrice::query()->effectiveOn(now())->value('price_per_liter') ?? 0);
+        $price = (float) (MilkPrice::query()
+            ->whereIn('company_id', (clone $routes)->select('routes.company_id'))
+            ->effectiveOn(now())
+            ->value('price_per_liter') ?? 0);
         $recaudoToday = round($litersToday * $price, 2);
         $visitasToday = MilkCollection::query()
+            ->whereIn('route_id', (clone $routes)->select('routes.id'))
             ->whereDate('collection_date', $today)
             ->count();
         $solicitudes = Producer::query()
             ->whereDoesntHave('activeAssignment')
+            ->whereHas('assignments.route', fn (Builder $query) => $query
+                ->whereIn('routes.id', (clone $routes)->select('routes.id')))
             ->count();
         $expectedVisits = max($active, 1);
         $cashOpen = now()->hour < 18;
@@ -170,18 +181,59 @@ class RouteService
         return sprintf('RUT-%04d', ($lastNumber ?? 0) + 1);
     }
 
-    protected function resolveCompany(): Company
+    public function accessibleQuery(User $user): Builder
     {
+        $query = Route::query();
+
+        if ($user->is_admin) {
+            return $query;
+        }
+
+        return $query->whereExists(fn ($access) => $access
+            ->selectRaw('1')
+            ->from('company_user')
+            ->whereColumn('company_user.company_id', 'routes.company_id')
+            ->where('company_user.user_id', $user->id)
+            ->where(fn ($plant) => $plant
+                ->whereNull('company_user.plant_id')
+                ->orWhereColumn('company_user.plant_id', 'routes.plant_id')));
+    }
+
+    public function userCanAccess(User $user, Route $route): bool
+    {
+        return $this->accessibleQuery($user)->whereKey($route->id)->exists();
+    }
+
+    protected function resolveCompany(User $user): Company
+    {
+        if (! $user->is_admin) {
+            return $user->companies()->where('companies.active', true)->firstOrFail();
+        }
+
         return Company::query()->first() ?? Company::create([
-            'name' => 'Northlink LACT',
-            'legal_name' => 'Northlink LACT',
+            'name' => 'Northlink Quebar',
+            'legal_name' => 'Northlink Quebar',
             'tax_id' => 'N/A',
             'active' => true,
         ]);
     }
 
-    protected function resolvePlant(Company $company): Plant
+    protected function resolvePlant(Company $company, User $user): Plant
     {
+        if (! $user->is_admin) {
+            $plantId = $user->companies()
+                ->where('companies.id', $company->id)
+                ->value('company_user.plant_id');
+
+            if ($plantId) {
+                return Plant::query()
+                    ->whereKey($plantId)
+                    ->where('company_id', $company->id)
+                    ->where('active', true)
+                    ->firstOrFail();
+            }
+        }
+
         return Plant::query()->where('company_id', $company->id)->first()
             ?? Plant::create([
                 'company_id' => $company->id,
