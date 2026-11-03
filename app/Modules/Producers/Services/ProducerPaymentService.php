@@ -6,7 +6,9 @@ use App\Models\User;
 use App\Modules\Audit\Models\AuditEvent;
 use App\Modules\Finanzas\Models\FinanceTransaction;
 use App\Modules\Finanzas\Services\FinanzasService;
+use App\Modules\Producers\Models\MilkPrice;
 use App\Modules\Producers\Models\ProducerPaymentBatch;
+use App\Modules\Producers\Models\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -50,6 +52,58 @@ class ProducerPaymentService
             $this->audit($batch, $user, 'closed', 'Planilla semanal cerrada');
 
             return $batch->load('items');
+        });
+    }
+
+    public function setWeeklyPrice(string $weekEnd, string $pricePerLiter, string $reason, User $user): MilkPrice
+    {
+        return DB::transaction(function () use ($weekEnd, $pricePerLiter, $reason, $user): MilkPrice {
+            $range = $this->producers->weekRange($weekEnd);
+
+            if (ProducerPaymentBatch::query()->whereDate('week_end', $range['end'])->lockForUpdate()->exists()) {
+                throw ValidationException::withMessages(['week_end' => 'La planilla ya está cerrada y su precio no puede modificarse.']);
+            }
+
+            $currentPrice = MilkPrice::query()
+                ->effectiveOn($range['end'])
+                ->orderByDesc('effective_from')
+                ->orderByDesc('id')
+                ->first();
+            $route = Route::query()->orderBy('id')->first();
+            $companyId = $currentPrice?->company_id ?? $route?->company_id;
+            $plantId = $currentPrice?->plant_id ?? $route?->plant_id;
+
+            if (! $companyId) {
+                throw ValidationException::withMessages(['price_per_liter' => 'Configura primero la empresa y la planta de acopio.']);
+            }
+
+            $weeklyPrice = MilkPrice::query()->firstOrNew([
+                'company_id' => $companyId,
+                'plant_id' => $plantId,
+                'effective_from' => $range['start'],
+                'effective_until' => $range['end'],
+            ]);
+            $oldValues = $weeklyPrice->exists ? $weeklyPrice->toArray() : null;
+            $weeklyPrice->fill([
+                'price_per_liter' => $pricePerLiter,
+                'active' => true,
+            ])->save();
+
+            AuditEvent::query()->create([
+                'user_id' => $user->id,
+                'company_id' => $companyId,
+                'plant_id' => $plantId,
+                'entity_type' => MilkPrice::class,
+                'entity_id' => $weeklyPrice->id,
+                'action' => $oldValues ? 'updated' : 'created',
+                'description' => "Precio de planilla {$range['start']} a {$range['end']}: {$reason}",
+                'old_values' => $oldValues,
+                'new_values' => $weeklyPrice->fresh()->toArray(),
+                'ip_address' => request()?->ip(),
+                'user_agent' => request()?->userAgent(),
+            ]);
+
+            return $weeklyPrice->refresh();
         });
     }
 

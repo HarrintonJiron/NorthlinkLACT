@@ -28,6 +28,10 @@ const props = defineProps({
     type: [Number, String],
     default: 0,
   },
+  paymentBatch: {
+    type: Object,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['close', 'edit-adjustment'])
@@ -207,7 +211,17 @@ const editAdjustment = () => emit('edit-adjustment', props.producer)
           >
             Cerrar
           </button>
+          <a
+            v-if="paymentBatch"
+            :href="`/payment-sheets/${paymentBatch.id}/producers/${producer.id}/ticket`"
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center justify-center px-4 py-2.5 bg-[#1D1D1F] text-white rounded-xl hover:bg-black text-sm font-semibold"
+          >
+            Imprimir ticket 80 mm
+          </a>
           <button
+            v-if="!paymentBatch"
             type="button"
             @click="editAdjustment"
             class="inline-flex items-center justify-center px-4 py-2.5 bg-[#007AFF] text-white rounded-xl hover:bg-[#0056CC] text-sm font-semibold"

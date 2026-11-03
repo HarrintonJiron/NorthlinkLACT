@@ -112,7 +112,9 @@ Route::middleware(['auth', 'user.active'])->group(function () {
 
     Route::prefix('payment-sheets')->name('payment-sheets.')->middleware('module.permission:finances')->group(function () {
         Route::get('/', [ProducerController::class, 'paymentSheets'])->name('index');
+        Route::put('/price', [ProducerController::class, 'updateWeeklyMilkPrice'])->name('price.update');
         Route::post('/close', [ProducerController::class, 'closePaymentSheet'])->name('close');
+        Route::get('/{batch}/producers/{producer}/ticket', [ProducerController::class, 'paymentTicket'])->name('ticket');
         Route::patch('/{batch}/pay', [ProducerController::class, 'payPaymentSheet'])->name('pay');
     });
 

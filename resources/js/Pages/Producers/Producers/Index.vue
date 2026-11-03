@@ -1,7 +1,7 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import AppShell from '../../../Components/AppShell.vue'
-import { router } from '@inertiajs/vue3'
+import { router, useForm } from '@inertiajs/vue3'
 import { Search, Printer, Pencil, Eye, LockKeyhole, BadgeCheck } from '@lucide/vue'
 import ProducerModal from '../../../Components/ProducerModal.vue'
 import ProducerWeekAdjustmentModal from '../../../Components/ProducerWeekAdjustmentModal.vue'
@@ -60,6 +60,21 @@ const selectedProducer = ref(null)
 const routeFilter = ref(props.filters.route_id ? String(props.filters.route_id) : '')
 const weekFilter = ref(props.filters.week || '')
 const maxVisibleItems = 30
+const priceForm = useForm({
+  week_end: props.report.week?.end || props.filters.week || '',
+  price_per_liter: props.report.price || '',
+  reason: '',
+})
+
+watch(
+  () => [props.report.week?.end, props.report.price],
+  ([weekEnd, price]) => {
+    priceForm.week_end = weekEnd || ''
+    priceForm.price_per_liter = price || ''
+    priceForm.reason = ''
+    priceForm.clearErrors()
+  },
+)
 
 const money = (value) =>
   `C$ ${Number(value || 0).toLocaleString('es-NI', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -136,6 +151,13 @@ const payPaymentSheet = () => {
   router.patch(`/payment-sheets/${props.paymentBatch.id}/pay`, {}, { preserveScroll: true })
 }
 
+const updateWeeklyPrice = () => {
+  priceForm.put('/payment-sheets/price', {
+    preserveScroll: true,
+    onSuccess: () => { priceForm.reason = '' },
+  })
+}
+
 const openCreateModal = () => {
   showCreateModal.value = true
 }
@@ -187,6 +209,15 @@ const printReport = () => {
     <div v-if="mode === 'payment-sheets'" class="mb-4 rounded-2xl border border-blue-200 bg-blue-50 px-5 py-4 print:hidden">
       <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><p class="font-display text-lg font-bold text-slate-950">Planillas semanales de productores</p><p class="mt-1 text-sm text-slate-600">Revisa litros, precio aplicado, adelantos y total de pago antes del cierre formal.</p></div><div class="flex flex-wrap gap-2"><span v-if="paymentBatch" class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold" :class="paymentBatch.status === 'paid' ? 'text-emerald-700' : 'text-violet-700'"><BadgeCheck class="size-4" />{{ paymentBatch.status === 'paid' ? 'Pagada' : 'Cerrada' }} · {{ paymentBatch.code }}</span><button v-if="!paymentBatch" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-violet-700 px-4 text-sm font-bold text-white" @click="closePaymentSheet"><LockKeyhole class="size-4" />Cerrar planilla</button><button v-else-if="paymentBatch.status === 'closed'" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-bold text-white" @click="payPaymentSheet"><BadgeCheck class="size-4" />Marcar pagada</button></div></div>
     </div>
+
+    <form v-if="mode === 'payment-sheets' && !paymentBatch" class="mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 print:hidden" @submit.prevent="updateWeeklyPrice">
+      <div class="grid gap-3 lg:grid-cols-[minmax(0,13rem)_minmax(0,1fr)_auto] lg:items-end">
+        <label class="block"><span class="mb-1 block text-xs font-bold uppercase tracking-wide text-amber-900">Precio de esta planilla por litro</span><div class="flex items-center rounded-xl border border-amber-300 bg-white px-3"><span class="font-bold text-slate-600">C$</span><input v-model="priceForm.price_per_liter" type="number" min="0.01" max="10000" step="0.01" required class="min-h-11 w-full border-0 bg-transparent px-2 text-lg font-bold outline-none" /></div><p v-if="priceForm.errors.price_per_liter" class="mt-1 text-xs font-semibold text-red-700">{{ priceForm.errors.price_per_liter }}</p></label>
+        <label class="block"><span class="mb-1 block text-xs font-bold uppercase tracking-wide text-amber-900">Motivo o autorización</span><input v-model="priceForm.reason" type="text" minlength="5" maxlength="500" required placeholder="Ej. Precio autorizado por gerencia para la semana" class="min-h-11 w-full rounded-xl border border-amber-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-amber-300" /><p v-if="priceForm.errors.reason || priceForm.errors.week_end" class="mt-1 text-xs font-semibold text-red-700">{{ priceForm.errors.reason || priceForm.errors.week_end }}</p></label>
+        <button type="submit" :disabled="priceForm.processing" class="min-h-11 rounded-xl bg-amber-700 px-5 text-sm font-bold text-white hover:bg-amber-800 disabled:opacity-50">{{ priceForm.processing ? 'Guardando…' : 'Guardar precio' }}</button>
+      </div>
+      <p class="mt-2 text-xs text-amber-900">Se aplicará a todos los productores de la planilla que cierra el jueves {{ report.week.end }}. Los ajustes individuales conservan su propio precio. Al cerrar la planilla, los importes quedan congelados.</p>
+    </form>
 
     <ProducerStatsPanel
       :stats="stats"
@@ -379,6 +410,7 @@ const printReport = () => {
       :week="report.week"
       :days="report.days"
       :base-price="report.price"
+      :payment-batch="paymentBatch"
       @close="closeDetailModal"
       @edit-adjustment="openAdjustmentFromDetail"
     />

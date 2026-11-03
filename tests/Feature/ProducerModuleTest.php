@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Modules\Audit\Models\AuditEvent;
+use App\Modules\Producers\Models\MilkPrice;
 use App\Modules\Producers\Models\Producer;
 use App\Modules\Producers\Models\ProducerPaymentBatch;
 use App\Modules\Producers\Models\ProducerRouteAssignment;
@@ -95,6 +97,80 @@ class ProducerModuleTest extends TestCase
             'advance_amount' => 25,
         ])->assertRedirect(route('payment-sheets.index'))->assertSessionHasErrors(['week_end']);
         $this->assertDatabaseMissing('producer_week_adjustments', ['producer_id' => $producer->id]);
+    }
+
+    public function test_weekly_price_can_be_changed_before_thursday_closure_and_is_audited(): void
+    {
+        $this->createPrice(18.5);
+        $route = $this->createRoute();
+        $producer = $this->createProducer($route);
+        $this->collectMilk($producer, 10, now()->toDateString());
+        $weekEnd = app(ProducerService::class)->currentPayThursday()->toDateString();
+
+        $this->put(route('payment-sheets.price.update'), [
+            'week_end' => $weekEnd,
+            'price_per_liter' => 21.75,
+            'reason' => 'Precio autorizado por gerencia',
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $weeklyPrice = MilkPrice::query()
+            ->whereDate('effective_until', $weekEnd)
+            ->orderByDesc('id')
+            ->firstOrFail();
+        $this->assertSame('21.7500', $weeklyPrice->price_per_liter);
+        $this->assertDatabaseHas('audit_events', [
+            'entity_type' => MilkPrice::class,
+            'entity_id' => $weeklyPrice->id,
+            'user_id' => $this->user->id,
+        ]);
+
+        $this->get(route('payment-sheets.index', ['week' => $weekEnd]))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('report.price', 21.75)
+                ->where('report.rows.0.amount', 217.5));
+
+        $this->post(route('payment-sheets.close'), ['week_end' => $weekEnd])->assertRedirect();
+        $this->from(route('payment-sheets.index'))->put(route('payment-sheets.price.update'), [
+            'week_end' => $weekEnd,
+            'price_per_liter' => 22,
+            'reason' => 'Intento posterior al cierre',
+        ])->assertRedirect(route('payment-sheets.index'))->assertSessionHasErrors('week_end');
+    }
+
+    public function test_weekly_price_requires_a_thursday_and_a_reason(): void
+    {
+        $this->createPrice();
+
+        $this->from(route('payment-sheets.index'))->put(route('payment-sheets.price.update'), [
+            'week_end' => '2026-11-04',
+            'price_per_liter' => 20,
+            'reason' => 'x',
+        ])->assertRedirect(route('payment-sheets.index'))
+            ->assertSessionHasErrors(['week_end', 'reason']);
+    }
+
+    public function test_closed_payment_sheet_has_an_80mm_producer_ticket(): void
+    {
+        $this->createPrice(20);
+        $route = $this->createRoute(['code' => 'RUT-TICKET']);
+        $producer = $this->createProducer($route, ['full_name' => 'Productor del Ticket']);
+        $this->collectMilk($producer, 12.5, now()->toDateString());
+        $weekEnd = app(ProducerService::class)->currentPayThursday()->toDateString();
+        $this->post(route('payment-sheets.close'), ['week_end' => $weekEnd])->assertRedirect();
+        $batch = ProducerPaymentBatch::query()->firstOrFail();
+
+        $this->get(route('payment-sheets.ticket', [$batch, $producer]))
+            ->assertOk()
+            ->assertSee('LÁCTEOS QUEBAR')
+            ->assertSee('Productor del Ticket')
+            ->assertSee('RUT-TICKET')
+            ->assertSee('Imprimir 80 mm')
+            ->assertSee('@page { size: 80mm auto;', false);
+
+        $otherProducer = $this->createProducer($route);
+        $this->get(route('payment-sheets.ticket', [$batch, $otherProducer]))->assertNotFound();
+        $this->assertSame(1, AuditEvent::query()->where('entity_type', ProducerPaymentBatch::class)->count());
     }
 
     public function test_paid_payment_sheet_creates_traceable_finance_payment_once(): void

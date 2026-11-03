@@ -13,6 +13,7 @@ use App\Modules\Producers\Requests\CloseProducerPaymentBatchRequest;
 use App\Modules\Producers\Requests\StoreProducerRequest;
 use App\Modules\Producers\Requests\StoreProducerWeekAdjustmentRequest;
 use App\Modules\Producers\Requests\UpdateProducerRequest;
+use App\Modules\Producers\Requests\UpdateWeeklyMilkPriceRequest;
 use App\Modules\Producers\Services\ProducerPaymentService;
 use App\Modules\Producers\Services\ProducerService;
 use App\Support\InternalReturnPath;
@@ -71,6 +72,39 @@ class ProducerController extends Controller
         $this->producerPaymentService->markPaid($batch, request()->user());
 
         return back()->with('success', 'Planilla pagada y movimiento financiero generado.');
+    }
+
+    public function updateWeeklyMilkPrice(UpdateWeeklyMilkPriceRequest $request)
+    {
+        $this->producerPaymentService->setWeeklyPrice(
+            $request->validated('week_end'),
+            (string) $request->validated('price_per_liter'),
+            $request->validated('reason'),
+            $request->user(),
+        );
+
+        return back()->with('success', 'Precio de la planilla actualizado y registrado en auditoría.');
+    }
+
+    public function paymentTicket(ProducerPaymentBatch $batch, Producer $producer)
+    {
+        $item = $batch->items()
+            ->where('producer_id', $producer->id)
+            ->firstOrFail();
+
+        $route = $item->route()->with('company')->first();
+        $user = request()->user();
+        if (! $user->is_admin && (! $route || ! $user->companies()->whereKey($route->company_id)->exists())) {
+            abort(404);
+        }
+
+        return view('producers.payment-ticket', [
+            'batch' => $batch,
+            'item' => $item,
+            'producer' => $producer,
+            'route' => $route,
+            'company' => $route?->company,
+        ]);
     }
 
     public function create()

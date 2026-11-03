@@ -160,7 +160,11 @@ class ProducerService
     public function weeklyPayroll(?int $routeId, ?string $week = null): array
     {
         $range = $this->weekRange($week);
-        $price = (float) (MilkPrice::query()->effectiveOn($range['end'])->value('price_per_liter') ?? 0);
+        $price = (float) (MilkPrice::query()
+            ->effectiveOn($range['end'])
+            ->orderByDesc('effective_from')
+            ->orderByDesc('id')
+            ->value('price_per_liter') ?? 0);
 
         $producers = Producer::query()
             ->with('activeAssignment.route')
