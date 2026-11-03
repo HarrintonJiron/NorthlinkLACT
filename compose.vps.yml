@@ -43,6 +43,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    volumes:
+      - northlink_lact_storage:/var/www/html/storage/app
     networks:
       - internal
 
@@ -60,6 +62,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    volumes:
+      - northlink_lact_storage:/var/www/html/storage/app
     networks:
       - internal
 
@@ -101,6 +105,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    volumes:
+      - northlink_lact_storage:/var/www/html/storage/app
     networks:
       - internal
       - coolify
@@ -131,6 +137,7 @@ volumes:
   northlink_lact_test_postgres:
   northlink_lact_test_redis:
   northlink_lact_backups:
+  northlink_lact_storage:
 
 networks:
   internal:
