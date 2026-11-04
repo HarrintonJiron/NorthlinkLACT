@@ -13,6 +13,7 @@ const mobileMenuOpen = ref(false)
 const activeDropdown = ref(null)
 const page = usePage()
 const allowedModules = computed(() => page.props.auth?.modules || [])
+const fieldProducerNotifications = computed(() => page.props.notifications?.field_producers || { count: 0, items: [] })
 const canAccess = (module) => !module || allowedModules.value.includes('*') || allowedModules.value.includes(module)
 
 const navigation = computed(() => [
@@ -165,10 +166,67 @@ const logout = async () => {
             />
           </div>
 
-          <button type="button" class="hidden sm:block p-2.5 rounded-xl hover:bg-[#F5F5F7] transition-colors relative">
-            <Bell class="w-5 h-5 text-[#8E8E93]" />
-            <span class="absolute top-1 right-1 w-2 h-2 bg-[#FF3B30] rounded-full"></span>
-          </button>
+          <div class="relative hidden sm:block">
+            <button
+              type="button"
+              class="relative rounded-xl p-2.5 transition-colors hover:bg-[#F5F5F7]"
+              :aria-expanded="activeDropdown === 'notifications'"
+              aria-label="Notificaciones"
+              @click="toggleDropdown('notifications')"
+            >
+              <Bell class="h-5 w-5 text-[#8E8E93]" />
+              <span
+                v-if="fieldProducerNotifications.count"
+                class="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#FF3B30] px-1 text-[10px] font-bold text-white"
+              >
+                {{ fieldProducerNotifications.count > 99 ? '99+' : fieldProducerNotifications.count }}
+              </span>
+            </button>
+
+            <div
+              v-if="activeDropdown === 'notifications'"
+              class="absolute right-0 top-full mt-2 w-96 overflow-hidden rounded-2xl border border-[#E5E5E5] bg-white shadow-xl"
+            >
+              <div class="border-b border-[#E5E5E5] px-4 py-3">
+                <p class="font-semibold text-[#1D1D1F]">Notificaciones</p>
+                <p class="text-xs text-[#6E6E73]">Altas rápidas pendientes de completar</p>
+              </div>
+
+              <div v-if="fieldProducerNotifications.items.length" class="max-h-96 overflow-y-auto py-1">
+                <Link
+                  v-for="notification in fieldProducerNotifications.items"
+                  :key="notification.id"
+                  :href="notification.href"
+                  class="block border-b border-[#F5F5F7] px-4 py-3 transition-colors last:border-0 hover:bg-[#F5F5F7]"
+                  @click="closeDropdown"
+                >
+                  <div class="flex items-start gap-3">
+                    <span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#FF9500]"></span>
+                    <div class="min-w-0">
+                      <p class="text-sm font-semibold text-[#1D1D1F]">Nuevo cliente: {{ notification.name }}</p>
+                      <p class="mt-0.5 text-xs text-[#6E6E73]">
+                        {{ notification.phone || 'Sin teléfono' }} · {{ notification.route || 'Sin ruta' }}
+                      </p>
+                      <p class="mt-1 text-xs font-medium text-[#007AFF]">Completar expediente del productor</p>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              <p v-else class="px-4 py-6 text-center text-sm text-[#6E6E73]">
+                No hay altas rápidas pendientes.
+              </p>
+
+              <Link
+                v-if="fieldProducerNotifications.count > fieldProducerNotifications.items.length"
+                href="/producers"
+                class="block border-t border-[#E5E5E5] px-4 py-3 text-center text-sm font-medium text-[#007AFF] hover:bg-[#F5F5F7]"
+                @click="closeDropdown"
+              >
+                Ver todos los productores
+              </Link>
+            </div>
+          </div>
 
           <button type="button" class="hidden sm:block p-2.5 rounded-xl hover:bg-[#F5F5F7] transition-colors">
             <HelpCircle class="w-5 h-5 text-[#8E8E93]" />

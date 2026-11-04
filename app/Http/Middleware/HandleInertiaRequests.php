@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Modules\Producers\Models\Producer;
+use App\Modules\Producers\Services\RouteService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -48,6 +50,53 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'success' => $request->session()->get('success'),
                 'error' => $request->session()->get('error'),
+            ],
+            'notifications' => fn () => $this->notifications($request),
+        ];
+    }
+
+    /**
+     * @return array{field_producers: array{count: int, items: array<int, array<string, mixed>>}}
+     */
+    private function notifications(Request $request): array
+    {
+        $empty = ['field_producers' => ['count' => 0, 'items' => []]];
+        $user = $request->user();
+
+        if (! $user || (! $user->is_admin && ! $user->hasPermission('access_producers'))) {
+            return $empty;
+        }
+
+        $accessibleRouteIds = app(RouteService::class)
+            ->accessibleQuery($user)
+            ->select('routes.id');
+
+        $query = Producer::query()
+            ->whereNotNull('external_uuid')
+            ->where('code', 'like', 'CAMPO-%')
+            ->whereNull('identity_number')
+            ->whereHas('activeAssignment', fn ($assignment) => $assignment
+                ->whereIn('route_id', $accessibleRouteIds));
+
+        $items = (clone $query)
+            ->with('activeAssignment.route:id,code,name')
+            ->latest('created_at')
+            ->limit(5)
+            ->get(['id', 'code', 'full_name', 'phone', 'created_at'])
+            ->map(fn (Producer $producer) => [
+                'id' => $producer->id,
+                'name' => $producer->full_name,
+                'phone' => $producer->phone,
+                'route' => $producer->activeAssignment?->route?->name,
+                'created_at' => $producer->created_at?->toIso8601String(),
+                'href' => route('producers.edit', $producer),
+            ])
+            ->all();
+
+        return [
+            'field_producers' => [
+                'count' => (clone $query)->count(),
+                'items' => $items,
             ],
         ];
     }
