@@ -133,7 +133,7 @@ class OfflineJourneyTest extends TestCase
         $this->assertDatabaseCount('personal_access_tokens', 0);
     }
 
-    public function test_journey_requires_bound_device_uuid(): void
+    public function test_journey_uses_device_uuid_from_bound_token_for_legacy_clients(): void
     {
         $user = User::factory()->create(['active' => true]);
         $device = Device::query()->create([
@@ -147,7 +147,27 @@ class OfflineJourneyTest extends TestCase
 
         $this->withToken($token)
             ->getJson(route('api.offline.journey', ['date' => now()->toDateString()]))
-            ->assertUnprocessable()
-            ->assertJsonValidationErrors('device_uuid');
+            ->assertOk()
+            ->assertJsonCount(0, 'routes');
+    }
+
+    public function test_journey_rejects_device_uuid_that_does_not_match_bound_token(): void
+    {
+        $user = User::factory()->create(['active' => true]);
+        $device = Device::query()->create([
+            'user_id' => $user->id,
+            'device_uuid' => '10000000-0000-4000-8000-000000000014',
+            'name' => 'Equipo vinculado',
+            'platform' => 'android',
+            'active' => true,
+        ]);
+        $token = $user->createToken('device:'.$device->device_uuid, ['offline:sync'], now()->addDay())->plainTextToken;
+
+        $this->withToken($token)
+            ->getJson(route('api.offline.journey', [
+                'date' => now()->toDateString(),
+                'device_uuid' => '10000000-0000-4000-8000-000000000099',
+            ]))
+            ->assertForbidden();
     }
 }

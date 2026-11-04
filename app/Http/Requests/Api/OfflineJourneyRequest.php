@@ -2,11 +2,25 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Models\Device;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
 class OfflineJourneyRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('device_uuid')) {
+            return;
+        }
+
+        $device = $this->attributes->get('offline_device');
+
+        if ($device instanceof Device) {
+            $this->merge(['device_uuid' => $device->device_uuid]);
+        }
+    }
+
     public function authorize(): bool
     {
         return (bool) $this->user()?->active;
