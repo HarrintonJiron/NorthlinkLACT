@@ -108,6 +108,41 @@ class OfflineSyncTest extends TestCase
         $this->assertNotNull($this->user->tokens()->firstOrFail()->expires_at);
     }
 
+    public function test_device_can_rotate_between_active_operator_accounts(): void
+    {
+        $firstToken = $this->postJson(route('api.offline.login'), $this->loginPayload())
+            ->assertOk()
+            ->json('token');
+
+        $replacement = User::factory()->create([
+            'username' => 'relevo',
+            'password' => Hash::make('ClaveRelevo2026'),
+            'active' => true,
+        ]);
+
+        $this->postJson(route('api.offline.login'), [
+            ...$this->loginPayload(),
+            'username' => 'relevo',
+            'password' => 'ClaveRelevo2026',
+        ])
+            ->assertOk()
+            ->assertJsonPath('user.username', 'relevo');
+
+        $this->assertDatabaseHas('devices', [
+            'device_uuid' => self::DEVICE_UUID,
+            'user_id' => $replacement->id,
+            'active' => true,
+        ]);
+        $this->assertDatabaseMissing('personal_access_tokens', [
+            'tokenable_id' => $this->user->id,
+            'name' => 'device:'.self::DEVICE_UUID,
+        ]);
+
+        $this->withToken($firstToken)
+            ->postJson(route('api.offline.sync'), $this->syncPayload())
+            ->assertUnauthorized();
+    }
+
     public function test_failed_offline_login_uses_account_lockout_state(): void
     {
         config(['auth_security.lockout.threshold' => 2]);

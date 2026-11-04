@@ -45,16 +45,16 @@ class OfflineAuthController extends Controller
             ->where('device_uuid', $request->validated('device_uuid'))
             ->first();
 
-        if ($device && $device->user_id !== $user->id) {
-            return response()->json([
-                'message' => 'El dispositivo ya está vinculado a otra cuenta.',
-            ], 409);
-        }
-
         if ($device && ! $device->active) {
             return response()->json([
                 'message' => 'El dispositivo fue desactivado. Un administrador debe autorizarlo nuevamente.',
             ], 403);
+        }
+
+        if ($device && $device->user_id !== $user->id) {
+            $device->user?->tokens()
+                ->where('name', 'device:'.$device->device_uuid)
+                ->delete();
         }
 
         $device = Device::query()->updateOrCreate(

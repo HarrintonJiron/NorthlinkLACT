@@ -28,6 +28,7 @@ class PlatformDemoSeeder extends Seeder
     {
         $this->call(ModulePermissionSeeder::class);
         $this->call(AcopioDemoSeeder::class);
+        $this->call(SunmiRuteroDemoSeeder::class);
 
         DB::transaction(function (): void {
             $admin = $this->adminUser();

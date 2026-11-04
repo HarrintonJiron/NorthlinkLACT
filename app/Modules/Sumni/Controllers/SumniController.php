@@ -216,14 +216,6 @@ class SumniController extends Controller
             ->where('device_uuid', $validated['device_uuid'])
             ->first();
 
-        if ($device && $device->user_id !== $user->id) {
-            return response()->json([
-                'sync_status' => 'conflict',
-                'message' => 'Este dispositivo ya está vinculado a otra cuenta.',
-                'conflicts' => [],
-            ], 409);
-        }
-
         Device::query()->updateOrCreate(
             ['device_uuid' => $validated['device_uuid']],
             [
