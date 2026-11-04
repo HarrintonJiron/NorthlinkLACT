@@ -202,7 +202,7 @@ class ProducerService
             ->whereDate('collection_date', '>=', $range['start'])
             ->whereDate('collection_date', '<=', $range['end'])
             ->when($routeId, fn ($query) => $query->where('route_id', $routeId))
-            ->get(['producer_id', 'collection_date', 'liters', 'temperature'])
+            ->get(['producer_id', 'collection_date', 'liters', 'density', 'temperature'])
             ->groupBy('producer_id');
 
         $adjustments = ProducerWeekAdjustment::query()
@@ -223,8 +223,9 @@ class ProducerService
                 if (array_key_exists($date, $daily)) {
                     $daily[$date] = round($daily[$date] + (float) $collection->liters, 2);
                 }
-                if ($collection->temperature !== null) {
-                    $densities[] = (float) $collection->temperature;
+                $density = $collection->density ?? $collection->temperature;
+                if ($density !== null) {
+                    $densities[] = (float) $density;
                 }
             }
 

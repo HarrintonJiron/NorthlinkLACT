@@ -51,6 +51,7 @@ const visitClass = (status) => ({
   rechazado: 'bg-rose-50 text-rose-700 ring-rose-200',
   pendiente: 'bg-amber-50 text-amber-700 ring-amber-200',
 }[status] || 'bg-slate-100 text-slate-700 ring-slate-200')
+const collectionDensity = (collection) => collection.density ?? collection.temperature ?? null
 </script>
 
 <template>
@@ -113,7 +114,7 @@ const visitClass = (status) => ({
             </div>
             <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
               <div><p class="text-xs font-medium uppercase tracking-wide text-slate-400">Volumen</p><p class="font-bold text-slate-950">{{ Number(collection.liters).toLocaleString('es-NI') }} L</p></div>
-              <div v-if="collection.density"><p class="text-xs font-medium uppercase tracking-wide text-slate-400">Densidad</p><p class="font-semibold text-slate-800">{{ collection.density }}</p></div>
+              <div v-if="collectionDensity(collection) !== null"><p class="text-xs font-medium uppercase tracking-wide text-slate-400">Densidad</p><p class="font-semibold text-slate-800">{{ collectionDensity(collection) }}</p></div>
               <div><p class="text-xs font-medium uppercase tracking-wide text-slate-400">Origen</p><p class="inline-flex items-center gap-1 font-semibold text-slate-700"><Smartphone v-if="collection.route_run_id" class="size-4 text-emerald-600" />{{ collection.route_run_id ? 'Rutero offline' : 'Plataforma' }}</p></div>
             </div>
             <div class="flex items-center justify-between gap-3 lg:justify-end">

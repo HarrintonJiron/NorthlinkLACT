@@ -83,7 +83,7 @@ class SumniController extends Controller
         $todayLiters = MilkCollection::query()
             ->where('route_id', $route->id)
             ->whereDate('collection_date', $today)
-            ->get(['producer_id', 'liters', 'temperature'])
+            ->get(['producer_id', 'liters', 'density', 'temperature'])
             ->keyBy('producer_id');
 
         $clients = Producer::query()
@@ -101,7 +101,9 @@ class SumniController extends Controller
                     'phone' => $producer->phone,
                     'code' => $producer->code,
                     'today_liters' => $collection ? (float) $collection->liters : null,
-                    'today_density' => $collection && $collection->temperature !== null ? (float) $collection->temperature : null,
+                    'today_density' => $collection && ($collection->density ?? $collection->temperature) !== null
+                        ? (float) ($collection->density ?? $collection->temperature)
+                        : null,
                     'recorded_today' => $collection !== null,
                 ];
             })
