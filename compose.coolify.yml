@@ -1,0 +1,160 @@
+x-app-environment: &app-environment
+  APP_NAME: ${APP_NAME:-Lacteos Quebar}
+  APP_ENV: production
+  APP_KEY: ${APP_KEY:?}
+  APP_DEBUG: "false"
+  APP_URL: ${APP_URL:?}
+  ASSET_URL: ${ASSET_URL:-${APP_URL}}
+  FORCE_HTTPS: "true"
+  TRUSTED_PROXIES: ${TRUSTED_PROXIES:-*}
+  APP_LOCALE: ${APP_LOCALE:-es}
+  APP_FALLBACK_LOCALE: ${APP_FALLBACK_LOCALE:-es}
+  APP_TIMEZONE: ${APP_TIMEZONE:-America/Managua}
+  LOG_CHANNEL: ${LOG_CHANNEL:-stderr}
+  LOG_LEVEL: ${LOG_LEVEL:-warning}
+  DB_CONNECTION: pgsql
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  DB_DATABASE: ${DB_DATABASE:?}
+  DB_USERNAME: ${DB_USERNAME:?}
+  DB_PASSWORD: ${DB_PASSWORD:?}
+  DB_TIMEZONE: ${DB_TIMEZONE:-America/Managua}
+  SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+  SESSION_LIFETIME: ${SESSION_LIFETIME:-120}
+  SESSION_ENCRYPT: ${SESSION_ENCRYPT:-true}
+  SESSION_SECURE_COOKIE: "true"
+  SESSION_SAME_SITE: ${SESSION_SAME_SITE:-lax}
+  CACHE_STORE: ${CACHE_STORE:-redis}
+  QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  USE_VITE_DEV_SERVER: "false"
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:?}
+      POSTGRES_USER: ${DB_USERNAME:?}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - internal
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.vps
+    restart: unless-stopped
+    environment:
+      <<: *app-environment
+      APP_ROLE: web
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - app_storage:/var/www/html/storage/app
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:8080/up || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - internal
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.vps
+    restart: unless-stopped
+    environment:
+      <<: *app-environment
+      APP_ROLE: worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - app_storage:/var/www/html/storage/app
+    networks:
+      - internal
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.vps
+    restart: unless-stopped
+    environment:
+      <<: *app-environment
+      APP_ROLE: scheduler
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - app_storage:/var/www/html/storage/app
+    networks:
+      - internal
+
+  backup:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGDATABASE: ${DB_DATABASE:?}
+      PGUSER: ${DB_USERNAME:?}
+      PGPASSWORD: ${DB_PASSWORD:?}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - backups:/backups
+    command: >-
+      sh -c 'while true; do
+      pg_dump --format=custom --no-owner --no-acl --file=/backups/northlink-$$(date +%Y%m%d-%H%M%S).dump
+      && find /backups -type f -name "*.dump" -mtime +14 -delete;
+      sleep 86400;
+      done'
+    networks:
+      - internal
+
+volumes:
+  postgres_data:
+    external: true
+    name: northlink-lact-test_northlink_lact_test_postgres
+  redis_data:
+    external: true
+    name: northlink-lact-test_northlink_lact_test_redis
+  app_storage:
+    external: true
+    name: northlink-lact-test_northlink_lact_storage
+  backups:
+    external: true
+    name: northlink-lact-test_northlink_lact_backups
+
+networks:
+  internal:
+    internal: true
