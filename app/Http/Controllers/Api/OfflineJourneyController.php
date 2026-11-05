@@ -54,7 +54,10 @@ class OfflineJourneyController extends Controller
         $paidThroughByProducer = ProducerPaymentItem::query()
             ->join('producer_payment_batches', 'producer_payment_batches.id', '=', 'producer_payment_items.batch_id')
             ->whereIn('producer_payment_items.producer_id', $producerIds)
-            ->whereIn('producer_payment_batches.status', ProducerPaymentBatch::STATUSES)
+            ->whereIn('producer_payment_batches.status', [
+                ProducerPaymentBatch::STATUS_CLOSED,
+                ProducerPaymentBatch::STATUS_PAID,
+            ])
             ->groupBy('producer_payment_items.producer_id')
             ->selectRaw('producer_payment_items.producer_id, MAX(producer_payment_batches.week_end) AS paid_through')
             ->pluck('paid_through', 'producer_id')
