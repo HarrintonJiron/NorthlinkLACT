@@ -32,6 +32,9 @@ class OfflineJourneyController extends Controller
             ->with([
                 'plant:id,name,code',
                 'rutero:id,route_id,driver_name,vehicle_plate',
+                'operatorAssignments' => fn ($query) => $query
+                    ->where('user_id', $userId)
+                    ->whereDate('assigned_date', $date),
                 'assignments' => fn ($query) => $query
                     ->whereDate('assigned_at', '<=', $date)
                     ->where(fn ($assignment) => $assignment
@@ -44,30 +47,34 @@ class OfflineJourneyController extends Controller
             ->orderBy('code')
             ->get(['id', 'company_id', 'plant_id', 'code', 'name']);
 
-        $manifestRoutes = $routes->map(fn (Route $route): array => [
-            'id' => $route->id,
-            'code' => $route->code,
-            'name' => $route->name,
-            'plant' => $route->plant ? [
-                'id' => $route->plant->id,
-                'code' => $route->plant->code,
-                'name' => $route->plant->name,
-            ] : null,
-            'driver_name' => $route->rutero?->driver_name,
-            'vehicle_plate' => $route->rutero?->vehicle_plate,
-            'producers' => $route->assignments->values()->map(fn ($assignment, int $index): array => [
-                'id' => $assignment->producer->id,
-                'code' => $assignment->producer->code,
-                'full_name' => $assignment->producer->full_name,
-                'identity_number' => $assignment->producer->identity_number,
-                'phone' => $assignment->producer->phone,
-                'address' => $assignment->producer->address,
-                'community' => $assignment->producer->community,
-                'latitude' => $assignment->producer->latitude,
-                'longitude' => $assignment->producer->longitude,
-                'sequence' => $index + 1,
-            ])->all(),
-        ])->values()->all();
+        $manifestRoutes = $routes->map(function (Route $route): array {
+            $operatorAssignment = $route->operatorAssignments->first();
+
+            return [
+                'id' => $route->id,
+                'code' => $route->code,
+                'name' => $route->name,
+                'plant' => $route->plant ? [
+                    'id' => $route->plant->id,
+                    'code' => $route->plant->code,
+                    'name' => $route->plant->name,
+                ] : null,
+                'driver_name' => $route->rutero?->driver_name,
+                'vehicle_plate' => $operatorAssignment?->vehicle_plate ?? $route->rutero?->vehicle_plate,
+                'producers' => $route->assignments->values()->map(fn ($assignment, int $index): array => [
+                    'id' => $assignment->producer->id,
+                    'code' => $assignment->producer->code,
+                    'full_name' => $assignment->producer->full_name,
+                    'identity_number' => $assignment->producer->identity_number,
+                    'phone' => $assignment->producer->phone,
+                    'address' => $assignment->producer->address,
+                    'community' => $assignment->producer->community,
+                    'latitude' => $assignment->producer->latitude,
+                    'longitude' => $assignment->producer->longitude,
+                    'sequence' => $index + 1,
+                ])->all(),
+            ];
+        })->values()->all();
 
         $manifestVersion = hash('sha256', json_encode([
             'date' => $date,

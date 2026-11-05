@@ -82,17 +82,16 @@ class SunmiRuteroDemoSeeder extends Seeder
                 ]);
 
                 foreach ($dates as $date) {
-                    RouteOperatorAssignment::query()
-                        ->where('route_id', $route->id)
-                        ->whereDate('assigned_date', $date)
-                        ->where('user_id', '!=', $user->id)
-                        ->delete();
-
                     RouteOperatorAssignment::query()->updateOrCreate(
-                        ['user_id' => $user->id, 'assigned_date' => $date],
                         [
                             'route_id' => $route->id,
+                            'user_id' => $user->id,
+                            'assigned_date' => $date,
+                        ],
+                        [
                             'assigned_by' => User::query()->where('is_admin', true)->value('id') ?? $user->id,
+                            'vehicle_plate' => $route->rutero?->vehicle_plate,
+                            'is_shared_test' => false,
                         ],
                     );
                 }

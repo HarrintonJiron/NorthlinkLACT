@@ -102,4 +102,56 @@ class QuebarPilotSeederTest extends TestCase
             ->assertJsonPath('routes.0.name', 'Dipina')
             ->assertJsonCount(41, 'routes.0.producers');
     }
+
+    public function test_bethel_kubaly_can_be_shared_with_every_rutero_without_replacing_primary_routes(): void
+    {
+        $this->artisan('acopio:reset-pilot', ['--confirm' => 'REINICIAR-ACOPIO'])->assertSuccessful();
+
+        $this->artisan('acopio:share-route', ['route' => 'QBR-05'])
+            ->expectsOutputToContain('Bethel Kubaly agregada a 17 ruteros')
+            ->assertSuccessful();
+
+        $bethel = Route::query()->where('code', 'QBR-05')->firstOrFail();
+        $rutero11 = User::query()->where('username', 'rutero11')->firstOrFail();
+
+        $this->assertSame(17, RouteOperatorAssignment::query()
+            ->where('route_id', $bethel->id)
+            ->whereDate('assigned_date', today())
+            ->count());
+        $this->assertSame(2, RouteOperatorAssignment::query()
+            ->where('user_id', $rutero11->id)
+            ->whereDate('assigned_date', today())
+            ->count());
+        $rutero11Bethel = RouteOperatorAssignment::query()
+            ->where('route_id', $bethel->id)
+            ->where('user_id', $rutero11->id)
+            ->whereDate('assigned_date', today())
+            ->firstOrFail();
+        $this->assertSame('PIL-11', $rutero11Bethel->vehicle_plate);
+        $this->assertTrue($rutero11Bethel->is_shared_test);
+
+        $deviceUuid = '70000000-0000-4000-8000-000000000011';
+        $login = $this->postJson(route('api.offline.login'), [
+            'username' => 'rutero11',
+            'password' => 'RuteroNorthlink2026!',
+            'device_uuid' => $deviceUuid,
+            'device_name' => 'SUNMI piloto 11',
+            'platform' => 'android',
+        ])->assertOk();
+
+        Auth::guard('web')->logout();
+        $this->app['auth']->forgetGuards();
+        $this->flushSession();
+
+        $response = $this->withToken($login->json('token'))
+            ->getJson(route('api.offline.journey', [
+                'date' => today()->toDateString(),
+                'device_uuid' => $deviceUuid,
+            ]))
+            ->assertOk()
+            ->assertJsonCount(2, 'routes');
+
+        $bethelManifest = collect($response->json('routes'))->firstWhere('code', 'QBR-05');
+        $this->assertSame('PIL-11', $bethelManifest['vehicle_plate']);
+    }
 }
