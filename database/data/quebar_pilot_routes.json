@@ -1,0 +1,2572 @@
+[
+  {
+    "code": "QBR-01",
+    "name": "Dipina",
+    "producers": [
+      {
+        "name": "Miguel Ramirez",
+        "identity": null
+      },
+      {
+        "name": "Julio Cesar Miranda Castro",
+        "identity": null
+      },
+      {
+        "name": "Moises Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Darwin Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Byron Cruz",
+        "identity": null
+      },
+      {
+        "name": "Genara Mairena",
+        "identity": null
+      },
+      {
+        "name": "Erminia Soza",
+        "identity": null
+      },
+      {
+        "name": "Salvador Laguna Morales",
+        "identity": null
+      },
+      {
+        "name": "Rodrigo Videa",
+        "identity": null
+      },
+      {
+        "name": "Adela Zamoran",
+        "identity": null
+      },
+      {
+        "name": "Nemesio Salinas",
+        "identity": null
+      },
+      {
+        "name": "Jairo Blandin",
+        "identity": null
+      },
+      {
+        "name": "Meyklin López",
+        "identity": null
+      },
+      {
+        "name": "Franklin Lopez Lopez",
+        "identity": null
+      },
+      {
+        "name": "Sergio Lopez",
+        "identity": null
+      },
+      {
+        "name": "Jose del Carmen Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Levi Lopez",
+        "identity": null
+      },
+      {
+        "name": "Wilber Lopez",
+        "identity": null
+      },
+      {
+        "name": "Nery Geovany Fajardo Salgado",
+        "identity": "454-250586-0001R"
+      },
+      {
+        "name": "Orlando Reyes",
+        "identity": null
+      },
+      {
+        "name": "Abel Blandin",
+        "identity": null
+      },
+      {
+        "name": "Jader Castillo",
+        "identity": null
+      },
+      {
+        "name": "Rigo Mendoza",
+        "identity": null
+      },
+      {
+        "name": "Yeyson Valdivia",
+        "identity": null
+      },
+      {
+        "name": "Eddy Gutierrez",
+        "identity": null
+      },
+      {
+        "name": "Deysi Padilla",
+        "identity": null
+      },
+      {
+        "name": "Jessica Rivera",
+        "identity": null
+      },
+      {
+        "name": "Reynaldo",
+        "identity": null
+      },
+      {
+        "name": "Magnoa López Garcia",
+        "identity": null
+      },
+      {
+        "name": "Alfonso Cruz",
+        "identity": null
+      },
+      {
+        "name": "Julio Mendoza",
+        "identity": null
+      },
+      {
+        "name": "Cristina",
+        "identity": null
+      },
+      {
+        "name": "Luis Blandon",
+        "identity": null
+      },
+      {
+        "name": "Janier Rivera",
+        "identity": null
+      },
+      {
+        "name": "Nelly Soza",
+        "identity": null
+      },
+      {
+        "name": "Larry Rivera",
+        "identity": null
+      },
+      {
+        "name": "Maritza",
+        "identity": null
+      },
+      {
+        "name": "Benigno Valles",
+        "identity": null
+      },
+      {
+        "name": "Agusto Lopez",
+        "identity": null
+      },
+      {
+        "name": "Victorino Barrera",
+        "identity": null
+      },
+      {
+        "name": "Ector Mendez",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-02",
+    "name": "San Lucas",
+    "producers": [
+      {
+        "name": "Amada Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Armando Sanchez",
+        "identity": null
+      },
+      {
+        "name": "Carlos Centeno",
+        "identity": null
+      },
+      {
+        "name": "Catalino Sanchez",
+        "identity": null
+      },
+      {
+        "name": "Darling Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Edwin Adonis Hernandez Treminio",
+        "identity": null
+      },
+      {
+        "name": "Enrique Mairena",
+        "identity": null
+      },
+      {
+        "name": "Ernestos Mairena",
+        "identity": null
+      },
+      {
+        "name": "Hector Pereira",
+        "identity": null
+      },
+      {
+        "name": "Jarvin Herrera",
+        "identity": null
+      },
+      {
+        "name": "Jesus Zelaya",
+        "identity": null
+      },
+      {
+        "name": "Jose Maria Sanchez Aleman",
+        "identity": null
+      },
+      {
+        "name": "Jose Raul Lopez",
+        "identity": null
+      },
+      {
+        "name": "Juan Pablo Diaz",
+        "identity": null
+      },
+      {
+        "name": "Mario Lopez",
+        "identity": null
+      },
+      {
+        "name": "Noel Chavarría",
+        "identity": null
+      },
+      {
+        "name": "Omar Pereira",
+        "identity": null
+      },
+      {
+        "name": "Oscar López",
+        "identity": null
+      },
+      {
+        "name": "Santana Zelaya",
+        "identity": null
+      },
+      {
+        "name": "William Espinalez",
+        "identity": null
+      },
+      {
+        "name": "William Lopez",
+        "identity": null
+      },
+      {
+        "name": "Ronald",
+        "identity": null
+      },
+      {
+        "name": "Itamar",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-03",
+    "name": "Yaoska",
+    "producers": [
+      {
+        "name": "Alejandro Sanchez",
+        "identity": null
+      },
+      {
+        "name": "Ana Julia Figueroa Olivas",
+        "identity": null
+      },
+      {
+        "name": "Antonio Rayo",
+        "identity": null
+      },
+      {
+        "name": "Carlos Espinoza",
+        "identity": null
+      },
+      {
+        "name": "Claudio Jose Mendoza Tellez",
+        "identity": null
+      },
+      {
+        "name": "Edgar Xavier Rugama Zuniga",
+        "identity": null
+      },
+      {
+        "name": "Edgard Rivera",
+        "identity": null
+      },
+      {
+        "name": "Feliciano Reyes",
+        "identity": null
+      },
+      {
+        "name": "Fernando Valdez Quiroz",
+        "identity": null
+      },
+      {
+        "name": "German Valdez",
+        "identity": null
+      },
+      {
+        "name": "Guadalupe Picado Laguna",
+        "identity": null
+      },
+      {
+        "name": "Jilma Maria Pineda",
+        "identity": null
+      },
+      {
+        "name": "Josè Inés Flores",
+        "identity": null
+      },
+      {
+        "name": "Leoncia Tercero",
+        "identity": null
+      },
+      {
+        "name": "Lewis Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Martin Montiel",
+        "identity": null
+      },
+      {
+        "name": "Martin Rayo Castillo",
+        "identity": null
+      },
+      {
+        "name": "Melkin Gonzales",
+        "identity": null
+      },
+      {
+        "name": "Mision Cristiana/Alvaro Antonio",
+        "identity": null
+      },
+      {
+        "name": "Moises Moreno",
+        "identity": null
+      },
+      {
+        "name": "Oscar Escoto # 1",
+        "identity": null
+      },
+      {
+        "name": "Oscar Escoto # 2",
+        "identity": null
+      },
+      {
+        "name": "Patricia Fabiola Ferrufino Garcia",
+        "identity": null
+      },
+      {
+        "name": "Petronila Espinoza",
+        "identity": null
+      },
+      {
+        "name": "Ramon Blandon Rugama",
+        "identity": null
+      },
+      {
+        "name": "Saul Moreno",
+        "identity": null
+      },
+      {
+        "name": "Trino Rivas Solano",
+        "identity": null
+      },
+      {
+        "name": "Uriel Sànchez",
+        "identity": null
+      },
+      {
+        "name": "Wosvaldo de Jesus Vega Trujillo",
+        "identity": null
+      },
+      {
+        "name": "Zoila Flores",
+        "identity": null
+      },
+      {
+        "name": "Patricia Fabiola Ferrufino Garcia # 2",
+        "identity": null
+      },
+      {
+        "name": "Luís Ramirez",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-04",
+    "name": "Kubaly",
+    "producers": [
+      {
+        "name": "Abisai Perez Tinoco",
+        "identity": null
+      },
+      {
+        "name": "Abraham Perez Tinoco",
+        "identity": "454-010692-0000M"
+      },
+      {
+        "name": "Antonio Lopez Acevedo",
+        "identity": "289-040571-0000G"
+      },
+      {
+        "name": "Audiel Eliezer Pineda Arauz",
+        "identity": null
+      },
+      {
+        "name": "Audy Irene Flores Maltez",
+        "identity": "441-051280-0004D"
+      },
+      {
+        "name": "Carmen Ernesto Tinoco Arauz",
+        "identity": null
+      },
+      {
+        "name": "Deyling Martinez",
+        "identity": null
+      },
+      {
+        "name": "Elmer Pineda",
+        "identity": null
+      },
+      {
+        "name": "Evaristo Luciano Ramirez G",
+        "identity": null
+      },
+      {
+        "name": "Evers Alejandro Tinoco Armas",
+        "identity": "089-261071-0003M"
+      },
+      {
+        "name": "Geovany Benavidez",
+        "identity": "454-160395-0003M"
+      },
+      {
+        "name": "Isaac Tinoco Armas",
+        "identity": null
+      },
+      {
+        "name": "Jimmy Benavidez",
+        "identity": null
+      },
+      {
+        "name": "Jonnys Tinoco Armas",
+        "identity": null
+      },
+      {
+        "name": "José Domingo Espinoza Zelaya",
+        "identity": "454-240993-0005G"
+      },
+      {
+        "name": "Jose Luis Arauz Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Josue Perez Tinoco",
+        "identity": null
+      },
+      {
+        "name": "Juan Carlos Tinoco Armas",
+        "identity": null
+      },
+      {
+        "name": "Jubelki Jesus Martinez Rivera",
+        "identity": null
+      },
+      {
+        "name": "Kairo Lanzas",
+        "identity": "454-181193-0004F"
+      },
+      {
+        "name": "Maria Eudocia Tinoco Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Maria Martinez",
+        "identity": null
+      },
+      {
+        "name": "Marlene Maltez",
+        "identity": null
+      },
+      {
+        "name": "Mauro Armas Moreno",
+        "identity": null
+      },
+      {
+        "name": "Mayra Ofelia Lopez Cerros",
+        "identity": null
+      },
+      {
+        "name": "Meyling Anabetsi Espinoza Martinez",
+        "identity": "289-050275-0000S"
+      },
+      {
+        "name": "Nelson Martinez",
+        "identity": null
+      },
+      {
+        "name": "Pedro Espinoza",
+        "identity": null
+      },
+      {
+        "name": "Pedro Luis Pineda Diaz",
+        "identity": null
+      },
+      {
+        "name": "Santa Maria Urrutia Rivera",
+        "identity": null
+      },
+      {
+        "name": "Santos Arauz Zelaya",
+        "identity": null
+      },
+      {
+        "name": "Santos Javier Palma Valdivia",
+        "identity": null
+      },
+      {
+        "name": "Victoria Martinez",
+        "identity": "285-021162-0001W"
+      },
+      {
+        "name": "Lewis Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Jesner Briones",
+        "identity": null
+      },
+      {
+        "name": "Janeth Arauz",
+        "identity": null
+      },
+      {
+        "name": "Francisco Salgado",
+        "identity": null
+      },
+      {
+        "name": "Juana Baquedano",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-05",
+    "name": "Bethel Kubaly",
+    "producers": [
+      {
+        "name": "Alba Nubia Calderón Palma",
+        "identity": null
+      },
+      {
+        "name": "Carlos Aráuz/Claudia A Vega B",
+        "identity": null
+      },
+      {
+        "name": "Darwin Antonio Herrera Sanchez",
+        "identity": null
+      },
+      {
+        "name": "Hector García",
+        "identity": null
+      },
+      {
+        "name": "Henry Ponce",
+        "identity": null
+      },
+      {
+        "name": "Jackson Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Jader Ramirez",
+        "identity": null
+      },
+      {
+        "name": "Jimmy Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Johny Jose Rugama Fajardo",
+        "identity": null
+      },
+      {
+        "name": "Jonny Alfredo Gonzalez Castro",
+        "identity": null
+      },
+      {
+        "name": "Jorge Luis Rivera Aguirre",
+        "identity": null
+      },
+      {
+        "name": "Jose Maria Ramirez Gutierres",
+        "identity": null
+      },
+      {
+        "name": "Katherin Pineda",
+        "identity": null
+      },
+      {
+        "name": "Maria de la Concepcion Acuña Castellon",
+        "identity": null
+      },
+      {
+        "name": "Mariano Garcia",
+        "identity": null
+      },
+      {
+        "name": "Miriam Martinez",
+        "identity": null
+      },
+      {
+        "name": "Nuria Blandon",
+        "identity": null
+      },
+      {
+        "name": "Otto Nixon Gonzalez Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Ricardo Ponce",
+        "identity": null
+      },
+      {
+        "name": "Simon Espinoza /Jeffrey M Espinoiza F",
+        "identity": null
+      },
+      {
+        "name": "Teodora Herrera",
+        "identity": null
+      },
+      {
+        "name": "Abener Lazo Rayo",
+        "identity": null
+      },
+      {
+        "name": "Amado Lazo",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-06",
+    "name": "Santa María Kubaly",
+    "producers": [
+      {
+        "name": "Alicia del Carmen Palma Valdivia",
+        "identity": "164-100765-0004V"
+      },
+      {
+        "name": "Amado Lazo Rayo",
+        "identity": "454-291089-0008N"
+      },
+      {
+        "name": "Ana Celia Mendoza Luna",
+        "identity": "454-291179-0003E"
+      },
+      {
+        "name": "Andres Palma",
+        "identity": null
+      },
+      {
+        "name": "Andres Torrez",
+        "identity": null
+      },
+      {
+        "name": "Ariel Torrez Arauz",
+        "identity": "454-190482-0001T"
+      },
+      {
+        "name": "Berman Palma",
+        "identity": null
+      },
+      {
+        "name": "Camila Palma Cruz/",
+        "identity": "089-180767-0000T"
+      },
+      {
+        "name": "Denis Martìnez",
+        "identity": null
+      },
+      {
+        "name": "Dionisio Palma Valdivia",
+        "identity": "454-091087-0002K"
+      },
+      {
+        "name": "Dominga Luna",
+        "identity": null
+      },
+      {
+        "name": "Eddy García",
+        "identity": null
+      },
+      {
+        "name": "Elmer Espinoza Caliz",
+        "identity": "454-080187-0002Y"
+      },
+      {
+        "name": "Felix Pedro Blandon Zeledón",
+        "identity": "441-290667-0001J"
+      },
+      {
+        "name": "Francisco Blandon Zeledon",
+        "identity": "441-020574-0004J"
+      },
+      {
+        "name": "Francisco Cruz",
+        "identity": null
+      },
+      {
+        "name": "Francisco Margarito Blandon M",
+        "identity": null
+      },
+      {
+        "name": "Francisco Olivas",
+        "identity": null
+      },
+      {
+        "name": "Freddy Jose Garcia Molina",
+        "identity": "454-170885-0003B"
+      },
+      {
+        "name": "Fredys José Garcia",
+        "identity": null
+      },
+      {
+        "name": "Isaac Rizo",
+        "identity": null
+      },
+      {
+        "name": "Isabel Palma Valdivia",
+        "identity": "454-161183-0003E"
+      },
+      {
+        "name": "Jaime Montenegro Torrez",
+        "identity": "454-130407-1004D"
+      },
+      {
+        "name": "Joaquìn Cruz",
+        "identity": null
+      },
+      {
+        "name": "Johny Mondragon",
+        "identity": null
+      },
+      {
+        "name": "Josefa Diaz",
+        "identity": null
+      },
+      {
+        "name": "Lino Moran",
+        "identity": "164-120672-0002D"
+      },
+      {
+        "name": "Luis Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Marbely Torrez Arauz",
+        "identity": null
+      },
+      {
+        "name": "Marcos Javier Blandon",
+        "identity": "454-090390-0001W"
+      },
+      {
+        "name": "Noel Guevara Diaz",
+        "identity": null
+      },
+      {
+        "name": "Norman Mendoza",
+        "identity": "454-080690-0000N"
+      },
+      {
+        "name": "Pastora Cruz",
+        "identity": null
+      },
+      {
+        "name": "Payo Montenegro",
+        "identity": "164-090849-0001J"
+      },
+      {
+        "name": "Porfirio Sequeira Molinares",
+        "identity": null
+      },
+      {
+        "name": "Ramiro Espinoza Ruvi",
+        "identity": "446-170265-0000D"
+      },
+      {
+        "name": "Rusbel Caliz",
+        "identity": "289-100352-0002M"
+      },
+      {
+        "name": "Santamaria Mondragon Chevez",
+        "identity": null
+      },
+      {
+        "name": "Santos Epifania Diaz",
+        "identity": "491-150573-0002K"
+      },
+      {
+        "name": "Sarai Arauz Zelaya",
+        "identity": "327-080452-0002A"
+      },
+      {
+        "name": "Sotero Espinales",
+        "identity": "246-130586-1001K"
+      },
+      {
+        "name": "Tomas Garcia",
+        "identity": null
+      },
+      {
+        "name": "Valentina Diaz Galindo",
+        "identity": null
+      },
+      {
+        "name": "Vilma Damaris Martinez Palma",
+        "identity": "164-171256-0000N"
+      },
+      {
+        "name": "Naun Gonzales",
+        "identity": "164-070597-1000K"
+      },
+      {
+        "name": "Candido Mendoza",
+        "identity": null
+      },
+      {
+        "name": "Keny Roberto Montenegro Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Maria Maldonado",
+        "identity": null
+      },
+      {
+        "name": "Elias Martinez",
+        "identity": null
+      },
+      {
+        "name": "Elias",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-07",
+    "name": "Las Quebradas",
+    "producers": [
+      {
+        "name": "Adela Figueroa",
+        "identity": null
+      },
+      {
+        "name": "Alejandro Rosales",
+        "identity": null
+      },
+      {
+        "name": "Alvaro Chavarria",
+        "identity": null
+      },
+      {
+        "name": "Arnulfo Maldonado",
+        "identity": null
+      },
+      {
+        "name": "Byron Chavarria",
+        "identity": null
+      },
+      {
+        "name": "Carlos Hernandez",
+        "identity": null
+      },
+      {
+        "name": "David González",
+        "identity": null
+      },
+      {
+        "name": "Eduardo Herrera",
+        "identity": null
+      },
+      {
+        "name": "Elvin Vallejo",
+        "identity": null
+      },
+      {
+        "name": "Evenor González",
+        "identity": null
+      },
+      {
+        "name": "Fidencio García",
+        "identity": null
+      },
+      {
+        "name": "Javier Centeno",
+        "identity": null
+      },
+      {
+        "name": "Joel Salgado",
+        "identity": null
+      },
+      {
+        "name": "Jose Hernandez",
+        "identity": null
+      },
+      {
+        "name": "Jose Maria Centeno",
+        "identity": null
+      },
+      {
+        "name": "Luis Ovando",
+        "identity": null
+      },
+      {
+        "name": "Marcelino Perez",
+        "identity": null
+      },
+      {
+        "name": "Marcial Torrez",
+        "identity": null
+      },
+      {
+        "name": "Nelson Herrera",
+        "identity": null
+      },
+      {
+        "name": "Noel Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Ramiro Robleto",
+        "identity": null
+      },
+      {
+        "name": "Ramon Lazo",
+        "identity": null
+      },
+      {
+        "name": "Rene Castillo",
+        "identity": null
+      },
+      {
+        "name": "Rene Rocha",
+        "identity": null
+      },
+      {
+        "name": "Ruben Canteno",
+        "identity": null
+      },
+      {
+        "name": "Santos Herrera",
+        "identity": null
+      },
+      {
+        "name": "Sergio Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Teodoro Torrez",
+        "identity": null
+      },
+      {
+        "name": "Tomas Rosales",
+        "identity": null
+      },
+      {
+        "name": "Vicente Centeno",
+        "identity": null
+      },
+      {
+        "name": "Wilmer Loza Molina",
+        "identity": null
+      },
+      {
+        "name": "Wilmer Mendoza",
+        "identity": null
+      },
+      {
+        "name": "Yenner Gusman",
+        "identity": null
+      },
+      {
+        "name": "German Escalante",
+        "identity": null
+      },
+      {
+        "name": "William Cruz",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-08",
+    "name": "Waslalita El Naranjo",
+    "producers": [
+      {
+        "name": "Abel Orozco",
+        "identity": null
+      },
+      {
+        "name": "Adan Centeno",
+        "identity": null
+      },
+      {
+        "name": "Amalec Esmirna Espinoza Velasquez",
+        "identity": "454-281084-0002S"
+      },
+      {
+        "name": "Amilkar Salinas",
+        "identity": null
+      },
+      {
+        "name": "Aracely Salinas Aguirre",
+        "identity": "454-100999-1003D"
+      },
+      {
+        "name": "Armando Castro",
+        "identity": null
+      },
+      {
+        "name": "Bismar Flores",
+        "identity": null
+      },
+      {
+        "name": "Cecilio de Jesus Cruz Palma",
+        "identity": null
+      },
+      {
+        "name": "Cristobal Alvarado",
+        "identity": "164-221163-0000E"
+      },
+      {
+        "name": "Darling Uriel Duarte Rivera",
+        "identity": null
+      },
+      {
+        "name": "Denis Arancibia",
+        "identity": "246-060294-0007B"
+      },
+      {
+        "name": "Deysi Flores",
+        "identity": null
+      },
+      {
+        "name": "Duglas Zeas",
+        "identity": null
+      },
+      {
+        "name": "Fidel Urbina",
+        "identity": null
+      },
+      {
+        "name": "Hollman Martinez Quiroz",
+        "identity": null
+      },
+      {
+        "name": "Israel de Jesus Centeno Zeledón",
+        "identity": "454-040378-0000A"
+      },
+      {
+        "name": "Javier Hernandez",
+        "identity": "454-220890-0001H"
+      },
+      {
+        "name": "Jhelsin Enrique Garcia López",
+        "identity": null
+      },
+      {
+        "name": "Jilmer Orozco",
+        "identity": "454-180901-1002C"
+      },
+      {
+        "name": "Jose Lanzas",
+        "identity": null
+      },
+      {
+        "name": "José Luis Centeno Perez",
+        "identity": null
+      },
+      {
+        "name": "Jose Maria Cordoba",
+        "identity": "449-110381-0005S"
+      },
+      {
+        "name": "Juan Carlos Moreno Cardenas",
+        "identity": null
+      },
+      {
+        "name": "Juan Davila Ortiz",
+        "identity": "492-160877-0006G"
+      },
+      {
+        "name": "Juan Matute Guido",
+        "identity": "454-150570-0001G"
+      },
+      {
+        "name": "Juan Pablo Hernandez Gomez",
+        "identity": "246-110769-0000X"
+      },
+      {
+        "name": "Julio Gonzales",
+        "identity": "454-231285-0002P"
+      },
+      {
+        "name": "Kenia Gonzalez Centeno",
+        "identity": null
+      },
+      {
+        "name": "Leodan Rodriguez",
+        "identity": "454-271198-1001G"
+      },
+      {
+        "name": "Lucrecia Perez",
+        "identity": null
+      },
+      {
+        "name": "Manuel Siles",
+        "identity": null
+      },
+      {
+        "name": "Marcial Otoniel Navarrete Garmendia",
+        "identity": null
+      },
+      {
+        "name": "Mario Orozco",
+        "identity": "454-080895-0003C"
+      },
+      {
+        "name": "Mavin Duarte",
+        "identity": null
+      },
+      {
+        "name": "Melvin Cruz",
+        "identity": null
+      },
+      {
+        "name": "Michael Danilo Tercero Blandón",
+        "identity": null
+      },
+      {
+        "name": "Nasario Dävila Dávila",
+        "identity": "454-151004-1000J"
+      },
+      {
+        "name": "Nelvin Vargas",
+        "identity": "454-221047-0000D"
+      },
+      {
+        "name": "Pedro Antonio Bargas Olivas",
+        "identity": null
+      },
+      {
+        "name": "Rafael Enrrique Mejía Salina",
+        "identity": "488-181048-0000F"
+      },
+      {
+        "name": "Ramon Cordero",
+        "identity": "492-260977-0001E"
+      },
+      {
+        "name": "Rosendo Arauz",
+        "identity": null
+      },
+      {
+        "name": "Samuel Asencio",
+        "identity": null
+      },
+      {
+        "name": "Teresa Maradiaga",
+        "identity": null
+      },
+      {
+        "name": "Tomas Pineda",
+        "identity": null
+      },
+      {
+        "name": "Toribia Rivera",
+        "identity": null
+      },
+      {
+        "name": "Uriel Paez",
+        "identity": null
+      },
+      {
+        "name": "Wilmon Sànchez",
+        "identity": null
+      },
+      {
+        "name": "Yelson Rivas",
+        "identity": null
+      },
+      {
+        "name": "Francisco Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Yobani Centeno",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-09",
+    "name": "Piedras Bolas",
+    "producers": [
+      {
+        "name": "Alexis López",
+        "identity": null
+      },
+      {
+        "name": "Aminadac Orozco",
+        "identity": null
+      },
+      {
+        "name": "Angel Palma",
+        "identity": null
+      },
+      {
+        "name": "Armando Mendoza",
+        "identity": null
+      },
+      {
+        "name": "Byron Rivera",
+        "identity": null
+      },
+      {
+        "name": "Carlos Gonzàlez",
+        "identity": null
+      },
+      {
+        "name": "Eddy Murillo",
+        "identity": null
+      },
+      {
+        "name": "Enrique Zeledon",
+        "identity": null
+      },
+      {
+        "name": "Erling Chevez",
+        "identity": null
+      },
+      {
+        "name": "Ezequiel Martinez",
+        "identity": null
+      },
+      {
+        "name": "Filadelfo Gomez",
+        "identity": null
+      },
+      {
+        "name": "Francisco Rivas",
+        "identity": null
+      },
+      {
+        "name": "Jaime Zelaya",
+        "identity": null
+      },
+      {
+        "name": "Janet Molina",
+        "identity": null
+      },
+      {
+        "name": "Jasmina Flores",
+        "identity": null
+      },
+      {
+        "name": "Jose Tinoco",
+        "identity": null
+      },
+      {
+        "name": "Juan Carlos Rivera",
+        "identity": null
+      },
+      {
+        "name": "Juan Martìnez",
+        "identity": null
+      },
+      {
+        "name": "Manuel Matey",
+        "identity": null
+      },
+      {
+        "name": "Marcos Rodriguez",
+        "identity": null
+      },
+      {
+        "name": "Mauricio Aguinaga",
+        "identity": null
+      },
+      {
+        "name": "Medardo Flores",
+        "identity": null
+      },
+      {
+        "name": "Moncho Maradiaga",
+        "identity": null
+      },
+      {
+        "name": "Narcizo Salgado",
+        "identity": null
+      },
+      {
+        "name": "Ofelia Solano",
+        "identity": null
+      },
+      {
+        "name": "Omar Barahona",
+        "identity": null
+      },
+      {
+        "name": "Jarvin Zelaya",
+        "identity": null
+      },
+      {
+        "name": "Pedro Cruz",
+        "identity": null
+      },
+      {
+        "name": "Rene Chavarria",
+        "identity": null
+      },
+      {
+        "name": "Ricardo Chevez",
+        "identity": null
+      },
+      {
+        "name": "Ronald Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Rufo Loza",
+        "identity": null
+      },
+      {
+        "name": "Sandra Centeno",
+        "identity": null
+      },
+      {
+        "name": "Saturnio Rodriguez",
+        "identity": null
+      },
+      {
+        "name": "Teofilo Castro",
+        "identity": null
+      },
+      {
+        "name": "Urbelinda Ocampo",
+        "identity": null
+      },
+      {
+        "name": "Uriel Chavarria",
+        "identity": null
+      },
+      {
+        "name": "Vicente Chevez",
+        "identity": null
+      },
+      {
+        "name": "Wilder Cruz",
+        "identity": null
+      },
+      {
+        "name": "Wilmer Arauz",
+        "identity": null
+      },
+      {
+        "name": "Wilmer Rodriguez",
+        "identity": null
+      },
+      {
+        "name": "Yender Lòpez",
+        "identity": null
+      },
+      {
+        "name": "Danilo Olivas",
+        "identity": null
+      },
+      {
+        "name": "Adrian Valdivia",
+        "identity": null
+      },
+      {
+        "name": "Rafael Molina",
+        "identity": null
+      },
+      {
+        "name": "Jader Mendoza",
+        "identity": null
+      },
+      {
+        "name": "Carlos Mairena",
+        "identity": null
+      },
+      {
+        "name": "Julio Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "wilmer Gonzalez",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-10",
+    "name": "Sofana",
+    "producers": [
+      {
+        "name": "Abrahan Rodriguez",
+        "identity": null
+      },
+      {
+        "name": "Alfonzo Muñoz",
+        "identity": null
+      },
+      {
+        "name": "Ariel Rayo Humberto Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Arnoldo Rayo",
+        "identity": null
+      },
+      {
+        "name": "Basilio del Socorro Zeledon Castro",
+        "identity": null
+      },
+      {
+        "name": "Byron Zamoran",
+        "identity": null
+      },
+      {
+        "name": "Cresencio Barrera / Dominga Lopez",
+        "identity": null
+      },
+      {
+        "name": "Daniel Hernandez",
+        "identity": null
+      },
+      {
+        "name": "David Mendez",
+        "identity": null
+      },
+      {
+        "name": "Elder Hernandez",
+        "identity": null
+      },
+      {
+        "name": "Erick Guzman",
+        "identity": null
+      },
+      {
+        "name": "Felix Octavio",
+        "identity": null
+      },
+      {
+        "name": "Freddy Arauz",
+        "identity": null
+      },
+      {
+        "name": "Jaime Jarquin # 1",
+        "identity": null
+      },
+      {
+        "name": "Javier Barrera",
+        "identity": null
+      },
+      {
+        "name": "Joaquin Treminio",
+        "identity": null
+      },
+      {
+        "name": "Juan Carlos Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Juan Garcia",
+        "identity": null
+      },
+      {
+        "name": "Kelvin Sadiel Lizano Jarquin",
+        "identity": null
+      },
+      {
+        "name": "Lidia",
+        "identity": null
+      },
+      {
+        "name": "Manyel Lopez Figueroa",
+        "identity": null
+      },
+      {
+        "name": "Marcos Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Matilde",
+        "identity": null
+      },
+      {
+        "name": "Miguel Angel Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Moises Reyes",
+        "identity": null
+      },
+      {
+        "name": "Natanael Zeledon",
+        "identity": null
+      },
+      {
+        "name": "Neli Velazque",
+        "identity": null
+      },
+      {
+        "name": "Noel Ramos",
+        "identity": null
+      },
+      {
+        "name": "Oscar Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Pedro Pablo Diaz",
+        "identity": null
+      },
+      {
+        "name": "Roger Miranda",
+        "identity": null
+      },
+      {
+        "name": "Rosa Tercero",
+        "identity": null
+      },
+      {
+        "name": "Ruth Zamora",
+        "identity": null
+      },
+      {
+        "name": "Sandra Mairena",
+        "identity": null
+      },
+      {
+        "name": "Santiago Figerora",
+        "identity": null
+      },
+      {
+        "name": "Walter Zamoran",
+        "identity": null
+      },
+      {
+        "name": "Yeyson Hunter",
+        "identity": null
+      },
+      {
+        "name": "Virgilio Miranda",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-11",
+    "name": "Central #2",
+    "producers": [
+      {
+        "name": "Bernarda Castillo F",
+        "identity": null
+      },
+      {
+        "name": "Bolivar Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Daniel Ramos",
+        "identity": null
+      },
+      {
+        "name": "Donald Davila",
+        "identity": null
+      },
+      {
+        "name": "Dora Masis",
+        "identity": null
+      },
+      {
+        "name": "Eduardo Polanco",
+        "identity": null
+      },
+      {
+        "name": "Elias Ochoa",
+        "identity": null
+      },
+      {
+        "name": "Evert Masis",
+        "identity": null
+      },
+      {
+        "name": "Francisco Jarquin",
+        "identity": null
+      },
+      {
+        "name": "Francisco Torrez",
+        "identity": null
+      },
+      {
+        "name": "Henry Jarquin",
+        "identity": null
+      },
+      {
+        "name": "Henry Tyson Telleria",
+        "identity": null
+      },
+      {
+        "name": "Israel Torrez",
+        "identity": null
+      },
+      {
+        "name": "Jharinton Martinez",
+        "identity": null
+      },
+      {
+        "name": "Jocsan Uriel Lanzas Dávila",
+        "identity": null
+      },
+      {
+        "name": "Jose Noel García Roquez",
+        "identity": null
+      },
+      {
+        "name": "Jose Zeas",
+        "identity": null
+      },
+      {
+        "name": "Kesley America Lanzas Dávila",
+        "identity": null
+      },
+      {
+        "name": "Lucio Mercado",
+        "identity": null
+      },
+      {
+        "name": "Luis Itzael Torrez",
+        "identity": null
+      },
+      {
+        "name": "Luis Ramirez",
+        "identity": null
+      },
+      {
+        "name": "Miguel Torrez",
+        "identity": null
+      },
+      {
+        "name": "Pedro Urbina",
+        "identity": null
+      },
+      {
+        "name": "Rigoberto Davila",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-12",
+    "name": "El Chilamate",
+    "producers": [
+      {
+        "name": "Alex Moreno",
+        "identity": null
+      },
+      {
+        "name": "America Sofia Zeledon",
+        "identity": null
+      },
+      {
+        "name": "Bernabe Alexis Benavidez",
+        "identity": null
+      },
+      {
+        "name": "Bismar Gutierrez",
+        "identity": null
+      },
+      {
+        "name": "Clemente Rodriguez",
+        "identity": null
+      },
+      {
+        "name": "Denis Aguirre",
+        "identity": null
+      },
+      {
+        "name": "Eddy Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Ever Tórrez",
+        "identity": null
+      },
+      {
+        "name": "Jaime Lopez Martinez",
+        "identity": null
+      },
+      {
+        "name": "Juan Pablo Herrera",
+        "identity": null
+      },
+      {
+        "name": "Melkin López",
+        "identity": null
+      },
+      {
+        "name": "Pablo Antonio Rugama",
+        "identity": null
+      },
+      {
+        "name": "Petronila",
+        "identity": null
+      },
+      {
+        "name": "Reynaldo Lagos",
+        "identity": null
+      },
+      {
+        "name": "Rolando Altamirano",
+        "identity": null
+      },
+      {
+        "name": "Trinidad del Señor Herrera",
+        "identity": null
+      },
+      {
+        "name": "Vidal Aguirre",
+        "identity": null
+      },
+      {
+        "name": "Wendy Arcadia Lopez Agurcia",
+        "identity": null
+      },
+      {
+        "name": "William Gutierrez",
+        "identity": null
+      },
+      {
+        "name": "Reyna Paula J",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-13",
+    "name": "San Rafael Kum",
+    "producers": [
+      {
+        "name": "Abismael Evers Castro López",
+        "identity": null
+      },
+      {
+        "name": "Alexander Rugama",
+        "identity": null
+      },
+      {
+        "name": "Ana Navarro",
+        "identity": null
+      },
+      {
+        "name": "Antonia Lopez",
+        "identity": null
+      },
+      {
+        "name": "Carlos Mercados",
+        "identity": null
+      },
+      {
+        "name": "Cesar Rayo",
+        "identity": null
+      },
+      {
+        "name": "Denis Suarez",
+        "identity": null
+      },
+      {
+        "name": "Elias Rugama",
+        "identity": null
+      },
+      {
+        "name": "Erick Tinoco",
+        "identity": null
+      },
+      {
+        "name": "Erling Ariel Garcia Espinoza",
+        "identity": null
+      },
+      {
+        "name": "Escarleth Salgado",
+        "identity": null
+      },
+      {
+        "name": "Fidel Rayo",
+        "identity": null
+      },
+      {
+        "name": "Isaac Torrez Morales /Daniel Torrez",
+        "identity": null
+      },
+      {
+        "name": "José López",
+        "identity": null
+      },
+      {
+        "name": "Marcia Gomez",
+        "identity": null
+      },
+      {
+        "name": "Omar Baltodano",
+        "identity": null
+      },
+      {
+        "name": "Reynaldo Jarquin",
+        "identity": null
+      },
+      {
+        "name": "Sadan Rayo",
+        "identity": null
+      },
+      {
+        "name": "Santos Rugama",
+        "identity": null
+      },
+      {
+        "name": "Dixon Sequeyra",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-14",
+    "name": "La Tumba",
+    "producers": [
+      {
+        "name": "Agustin Lopez",
+        "identity": null
+      },
+      {
+        "name": "Alex Ramos",
+        "identity": null
+      },
+      {
+        "name": "Angela Oneyda Castro Montenegro",
+        "identity": "441-270176-0003A"
+      },
+      {
+        "name": "Antonio Arauz",
+        "identity": null
+      },
+      {
+        "name": "Aydalina Amaya",
+        "identity": null
+      },
+      {
+        "name": "Bilma Amador Mejias",
+        "identity": "241-271285-1000D"
+      },
+      {
+        "name": "Carmenza Urbina F",
+        "identity": null
+      },
+      {
+        "name": "Castulo Barrera Muñoz",
+        "identity": "454-221059-0000N"
+      },
+      {
+        "name": "Constantino Lopez",
+        "identity": null
+      },
+      {
+        "name": "Daniel Manzanares",
+        "identity": null
+      },
+      {
+        "name": "Deyvin Arteta",
+        "identity": null
+      },
+      {
+        "name": "Doris Montenegro Rayo",
+        "identity": "454-161069-0002X"
+      },
+      {
+        "name": "Edelia Zamoran",
+        "identity": null
+      },
+      {
+        "name": "Enrique Mendoza Luquez",
+        "identity": "449-180171-0006A"
+      },
+      {
+        "name": "Ervin Tenorio",
+        "identity": null
+      },
+      {
+        "name": "Felipe Martinez",
+        "identity": null
+      },
+      {
+        "name": "Florencio Gonzalez Rodriguez",
+        "identity": "444-290446-0000L"
+      },
+      {
+        "name": "Gabriel Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Geronimo Montoya",
+        "identity": null
+      },
+      {
+        "name": "Ignacio Gonzalez López",
+        "identity": "454-310754-0000Q"
+      },
+      {
+        "name": "Jader Saul Zamoran Guzman",
+        "identity": "454-010788-0002S"
+      },
+      {
+        "name": "German Vargas",
+        "identity": null
+      },
+      {
+        "name": "Jeyding Zamoran Guzman",
+        "identity": "454-190492-0002Q"
+      },
+      {
+        "name": "Jorling Roque",
+        "identity": null
+      },
+      {
+        "name": "Jorvin Saul Zamoran Guzman",
+        "identity": "454-180394-0000T"
+      },
+      {
+        "name": "José Adonis Montoya Zeledón/",
+        "identity": "454-010600-1001A"
+      },
+      {
+        "name": "Jose Angel Flores Gomez",
+        "identity": "443-080174-0002D"
+      },
+      {
+        "name": "Jose Eldibrando Tinoco Rayo",
+        "identity": "442-250990-0002N"
+      },
+      {
+        "name": "Juan Figueroa",
+        "identity": null
+      },
+      {
+        "name": "Juana Sanchez",
+        "identity": "442-251165-0000K"
+      },
+      {
+        "name": "Leonidas García",
+        "identity": null
+      },
+      {
+        "name": "Melvin Juren Lanza Davila",
+        "identity": null
+      },
+      {
+        "name": "Manuel Tinoco",
+        "identity": null
+      },
+      {
+        "name": "Martha Lorena Castro López",
+        "identity": "454-051184-0003A"
+      },
+      {
+        "name": "Maximino Arauz",
+        "identity": null
+      },
+      {
+        "name": "Medardo Gonzalez Ochoa",
+        "identity": "454-200587-0001A"
+      },
+      {
+        "name": "Milder Castro",
+        "identity": null
+      },
+      {
+        "name": "Nilvia Ruiz",
+        "identity": null
+      },
+      {
+        "name": "Odalis del Carmen Rodriguez Castro",
+        "identity": "441-130671-0004F"
+      },
+      {
+        "name": "Paulo Maldonado",
+        "identity": null
+      },
+      {
+        "name": "Pedro Ramon Castro",
+        "identity": null
+      },
+      {
+        "name": "Rafael Figueroa Guido",
+        "identity": "441-240277-0001S"
+      },
+      {
+        "name": "Ramon Castro",
+        "identity": null
+      },
+      {
+        "name": "Reyna Azucena Castro López",
+        "identity": "454-251189-0002Q"
+      },
+      {
+        "name": "Rigoberto Maldonado",
+        "identity": null
+      },
+      {
+        "name": "Rodolfo Gonzalez Ochoa",
+        "identity": null
+      },
+      {
+        "name": "Roger Paz",
+        "identity": "454-140778-0000X"
+      },
+      {
+        "name": "Ruben Danilo Maldonado Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Samuel García",
+        "identity": "454-261190-0004P"
+      },
+      {
+        "name": "Santiago Arauz",
+        "identity": null
+      },
+      {
+        "name": "Yerlin Castro",
+        "identity": null
+      },
+      {
+        "name": "Sobeyda Ocampo",
+        "identity": null
+      },
+      {
+        "name": "Helvin Hernandez",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-15",
+    "name": "Kiawas",
+    "producers": [
+      {
+        "name": "Alexi Lopez",
+        "identity": null
+      },
+      {
+        "name": "Alexis Rugama",
+        "identity": null
+      },
+      {
+        "name": "Alfredo Duarte",
+        "identity": null
+      },
+      {
+        "name": "Alvaro Hernandez",
+        "identity": null
+      },
+      {
+        "name": "Angel Varga",
+        "identity": null
+      },
+      {
+        "name": "Ariel Hernandez",
+        "identity": null
+      },
+      {
+        "name": "Enots Arauz Espinoza",
+        "identity": null
+      },
+      {
+        "name": "Erasmo Sunsin",
+        "identity": null
+      },
+      {
+        "name": "Ervin Zeledon",
+        "identity": null
+      },
+      {
+        "name": "Faustino Lira",
+        "identity": null
+      },
+      {
+        "name": "Genaro Alvarez Molinarez",
+        "identity": null
+      },
+      {
+        "name": "Gilber Castillo",
+        "identity": null
+      },
+      {
+        "name": "Gloria Alvisuga",
+        "identity": null
+      },
+      {
+        "name": "Jaime Ruiz",
+        "identity": null
+      },
+      {
+        "name": "Jeffrey Maudiel Espinoza Funes",
+        "identity": null
+      },
+      {
+        "name": "Juana Hernandez",
+        "identity": null
+      },
+      {
+        "name": "Maynor Castillo",
+        "identity": null
+      },
+      {
+        "name": "Miriam Rugama",
+        "identity": null
+      },
+      {
+        "name": "Oscar Enrique Cruz Arauz",
+        "identity": null
+      },
+      {
+        "name": "Osling Blandon",
+        "identity": null
+      },
+      {
+        "name": "Pedro Palacio",
+        "identity": null
+      },
+      {
+        "name": "Roberto Rayo",
+        "identity": null
+      },
+      {
+        "name": "Roberto Ruiz",
+        "identity": null
+      },
+      {
+        "name": "Roger Oporta",
+        "identity": null
+      },
+      {
+        "name": "Santiago Rayo",
+        "identity": null
+      },
+      {
+        "name": "Santo Castellon",
+        "identity": null
+      },
+      {
+        "name": "Santos Gumercindo Palacios Hernandez",
+        "identity": null
+      },
+      {
+        "name": "Santos Palacios Tinoco",
+        "identity": null
+      },
+      {
+        "name": "Socorro Cantarero",
+        "identity": null
+      },
+      {
+        "name": "Marcos Aviles",
+        "identity": null
+      },
+      {
+        "name": "Maria Loaysiga",
+        "identity": null
+      },
+      {
+        "name": "Jose Ramon Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Reyna Coronado",
+        "identity": null
+      },
+      {
+        "name": "Javier Zeledon",
+        "identity": null
+      },
+      {
+        "name": "Rosario Diaz",
+        "identity": null
+      },
+      {
+        "name": "Oracio Valdez",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-16",
+    "name": "Las Barandas",
+    "producers": [
+      {
+        "name": "Alexander Perez",
+        "identity": null
+      },
+      {
+        "name": "Anacelia Castillo",
+        "identity": null
+      },
+      {
+        "name": "Andres Centeno",
+        "identity": null
+      },
+      {
+        "name": "Angel Figueroa",
+        "identity": null
+      },
+      {
+        "name": "Antonia Martìnez",
+        "identity": null
+      },
+      {
+        "name": "Argentina Arostegui Palacio",
+        "identity": null
+      },
+      {
+        "name": "Arlen Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Aydalina Martinez",
+        "identity": null
+      },
+      {
+        "name": "Bladimir Martinez",
+        "identity": null
+      },
+      {
+        "name": "Byron Castro Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Byron Mendoza",
+        "identity": null
+      },
+      {
+        "name": "Byron Ochoa",
+        "identity": null
+      },
+      {
+        "name": "Byron Toruño Martínez",
+        "identity": null
+      },
+      {
+        "name": "Calistro Ubilla",
+        "identity": null
+      },
+      {
+        "name": "Carla Somoza",
+        "identity": null
+      },
+      {
+        "name": "Carlos Castro",
+        "identity": null
+      },
+      {
+        "name": "Consuelo Oporta",
+        "identity": null
+      },
+      {
+        "name": "David Pineda",
+        "identity": null
+      },
+      {
+        "name": "Denis Velasquez",
+        "identity": null
+      },
+      {
+        "name": "Elsa Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Engel Josue Castro",
+        "identity": null
+      },
+      {
+        "name": "Enrique Vanegas",
+        "identity": null
+      },
+      {
+        "name": "Esnayder Martinez",
+        "identity": null
+      },
+      {
+        "name": "Evaristo Lopez",
+        "identity": null
+      },
+      {
+        "name": "Feliciano Jarquin",
+        "identity": null
+      },
+      {
+        "name": "Freddy Figueroa",
+        "identity": null
+      },
+      {
+        "name": "Gadiel Espinoza",
+        "identity": null
+      },
+      {
+        "name": "Ilda Fuentes",
+        "identity": null
+      },
+      {
+        "name": "Isidro Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Ivan Martinez",
+        "identity": null
+      },
+      {
+        "name": "Jader Muñoz",
+        "identity": null
+      },
+      {
+        "name": "Javier Zamora",
+        "identity": null
+      },
+      {
+        "name": "Jefrin Perez",
+        "identity": null
+      },
+      {
+        "name": "Jehu Antonio Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "José Aristides",
+        "identity": null
+      },
+      {
+        "name": "José Centeno",
+        "identity": null
+      },
+      {
+        "name": "Jose Ivan Talavera",
+        "identity": null
+      },
+      {
+        "name": "Jose Martin Castil",
+        "identity": null
+      },
+      {
+        "name": "Jose Roda",
+        "identity": null
+      },
+      {
+        "name": "Josue Fuentes",
+        "identity": null
+      },
+      {
+        "name": "Leyner Martinez",
+        "identity": null
+      },
+      {
+        "name": "Luis Blandon",
+        "identity": null
+      },
+      {
+        "name": "Luis Montenegro",
+        "identity": null
+      },
+      {
+        "name": "Luisa Arauz",
+        "identity": null
+      },
+      {
+        "name": "Marcos Molina",
+        "identity": null
+      },
+      {
+        "name": "Mario Blandón",
+        "identity": null
+      },
+      {
+        "name": "Mario Castro",
+        "identity": null
+      },
+      {
+        "name": "Mario Valdivia",
+        "identity": null
+      },
+      {
+        "name": "Matha Castil Blanco",
+        "identity": null
+      },
+      {
+        "name": "Melkin Martinez",
+        "identity": null
+      },
+      {
+        "name": "Jelsin Garcia",
+        "identity": null
+      },
+      {
+        "name": "Melvin Caballero",
+        "identity": null
+      },
+      {
+        "name": "Misael Martinez",
+        "identity": null
+      },
+      {
+        "name": "Moises Fonseca",
+        "identity": null
+      },
+      {
+        "name": "Norvin Ortega",
+        "identity": null
+      },
+      {
+        "name": "Olga Flores",
+        "identity": null
+      },
+      {
+        "name": "Pedro Gonzalez",
+        "identity": null
+      },
+      {
+        "name": "Petrona Zamora",
+        "identity": null
+      },
+      {
+        "name": "René López",
+        "identity": null
+      },
+      {
+        "name": "Reyna Díaz",
+        "identity": null
+      },
+      {
+        "name": "Ricardo Figueroa",
+        "identity": null
+      },
+      {
+        "name": "Ricardo Fuentes",
+        "identity": null
+      },
+      {
+        "name": "Rolando Jose Duarte",
+        "identity": null
+      },
+      {
+        "name": "Rosibel Lopez",
+        "identity": null
+      },
+      {
+        "name": "Salatiel Arosteguí",
+        "identity": null
+      },
+      {
+        "name": "Sergio Peralta",
+        "identity": null
+      },
+      {
+        "name": "Silvio Flores",
+        "identity": null
+      },
+      {
+        "name": "Vicente Pauth",
+        "identity": null
+      },
+      {
+        "name": "Walter Ochoa",
+        "identity": null
+      },
+      {
+        "name": "Wilmer Gutierrez",
+        "identity": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-17",
+    "name": "Los Mangos",
+    "producers": [
+      {
+        "name": "Ruperto Chavarria Arauz",
+        "identity": null
+      },
+      {
+        "name": "Ebal Chavarria Borges",
+        "identity": null
+      },
+      {
+        "name": "Francisco Javier Salgado Aguirre",
+        "identity": null
+      },
+      {
+        "name": "Elvin Salgado Castillo",
+        "identity": null
+      },
+      {
+        "name": "Dania Centeno",
+        "identity": null
+      },
+      {
+        "name": "Eddy Blancher",
+        "identity": null
+      },
+      {
+        "name": "Luis Orozco",
+        "identity": null
+      },
+      {
+        "name": "Oscar Ugarte",
+        "identity": null
+      },
+      {
+        "name": "Lester Zelaya",
+        "identity": null
+      },
+      {
+        "name": "Victor Orozco",
+        "identity": null
+      },
+      {
+        "name": "Inmer Chavarria",
+        "identity": null
+      },
+      {
+        "name": "Alcidez Arauz Valle",
+        "identity": null
+      },
+      {
+        "name": "Moises Salgado",
+        "identity": null
+      },
+      {
+        "name": "Arlen Siles",
+        "identity": null
+      }
+    ]
+  }
+]
