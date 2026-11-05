@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Modules\Admin\Models\Company;
 use App\Modules\Admin\Models\Plant;
 use App\Modules\Producers\Models\Producer;
+use App\Modules\Producers\Models\ProducerPaymentBatch;
 use App\Modules\Producers\Models\ProducerRouteAssignment;
 use App\Modules\Producers\Models\Route;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -53,6 +54,32 @@ class OfflineJourneyTest extends TestCase
             'assigned_at' => now()->subDay()->toDateString(),
             'assigned_by' => $user->id,
         ]);
+        $batch = ProducerPaymentBatch::query()->create([
+            'code' => 'PPR-'.now()->toDateString(),
+            'week_start' => now()->subDays(6)->toDateString(),
+            'week_end' => now()->toDateString(),
+            'status' => ProducerPaymentBatch::STATUS_CLOSED,
+            'producer_count' => 1,
+            'total_liters' => 50,
+            'gross_amount' => 500,
+            'advance_amount' => 0,
+            'net_amount' => 500,
+            'closed_by' => $user->id,
+            'closed_at' => now(),
+        ]);
+        $batch->items()->create([
+            'producer_id' => $producer->id,
+            'route_id' => $route->id,
+            'producer_code' => $producer->code,
+            'producer_name' => $producer->full_name,
+            'route_code' => $route->code,
+            'liters' => 50,
+            'price_per_liter' => 10,
+            'gross_amount' => 500,
+            'advance_amount' => 0,
+            'net_amount' => 500,
+            'daily_liters' => [],
+        ]);
         RouteOperatorAssignment::query()->create([
             'route_id' => $route->id,
             'user_id' => $user->id,
@@ -78,6 +105,7 @@ class OfflineJourneyTest extends TestCase
             ->assertJsonPath('routes.0.id', $route->id)
             ->assertJsonPath('routes.0.producers.0.id', $producer->id)
             ->assertJsonPath('routes.0.producers.0.sequence', 1)
+            ->assertJsonPath('routes.0.producers.0.paid_through', now()->toDateString())
             ->assertJsonStructure(['date', 'manifest_version', 'downloaded_at']);
     }
 

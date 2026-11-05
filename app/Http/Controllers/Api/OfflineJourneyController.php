@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\OfflineJourneyRequest;
+use App\Modules\Producers\Models\ProducerPaymentBatch;
+use App\Modules\Producers\Models\ProducerPaymentItem;
 use App\Modules\Producers\Models\Route;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Carbon;
 
 class OfflineJourneyController extends Controller
 {
@@ -47,7 +50,17 @@ class OfflineJourneyController extends Controller
             ->orderBy('code')
             ->get(['id', 'company_id', 'plant_id', 'code', 'name']);
 
-        $manifestRoutes = $routes->map(function (Route $route): array {
+        $producerIds = $routes->flatMap(fn (Route $route) => $route->assignments->pluck('producer_id'))->unique();
+        $paidThroughByProducer = ProducerPaymentItem::query()
+            ->join('producer_payment_batches', 'producer_payment_batches.id', '=', 'producer_payment_items.batch_id')
+            ->whereIn('producer_payment_items.producer_id', $producerIds)
+            ->whereIn('producer_payment_batches.status', ProducerPaymentBatch::STATUSES)
+            ->groupBy('producer_payment_items.producer_id')
+            ->selectRaw('producer_payment_items.producer_id, MAX(producer_payment_batches.week_end) AS paid_through')
+            ->pluck('paid_through', 'producer_id')
+            ->map(fn ($paidThrough): string => Carbon::parse($paidThrough)->toDateString());
+
+        $manifestRoutes = $routes->map(function (Route $route) use ($paidThroughByProducer): array {
             $operatorAssignment = $route->operatorAssignments->first();
 
             return [
@@ -72,6 +85,7 @@ class OfflineJourneyController extends Controller
                     'latitude' => $assignment->producer->latitude,
                     'longitude' => $assignment->producer->longitude,
                     'sequence' => $index + 1,
+                    'paid_through' => $paidThroughByProducer->get($assignment->producer->id),
                 ])->all(),
             ];
         })->values()->all();
