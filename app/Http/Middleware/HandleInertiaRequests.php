@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Modules\Producers\Models\MilkCollection;
 use App\Modules\Producers\Models\Producer;
 use App\Modules\Producers\Services\RouteService;
 use Illuminate\Http\Request;
@@ -56,11 +57,14 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * @return array{field_producers: array{count: int, items: array<int, array<string, mixed>>}}
+     * @return array<string, array{count: int, items: array<int, array<string, mixed>>}>
      */
     private function notifications(Request $request): array
     {
-        $empty = ['field_producers' => ['count' => 0, 'items' => []]];
+        $empty = [
+            'field_producers' => ['count' => 0, 'items' => []],
+            'correction_requests' => ['count' => 0, 'items' => []],
+        ];
         $user = $request->user();
 
         if (! $user || (! $user->is_admin && ! $user->hasPermission('access_producers'))) {
@@ -93,10 +97,38 @@ class HandleInertiaRequests extends Middleware
             ])
             ->all();
 
+        $correctionQuery = MilkCollection::query()
+            ->where('correction_status', MilkCollection::CORRECTION_REQUESTED)
+            ->whereIn('route_id', $accessibleRouteIds);
+
+        $correctionItems = (clone $correctionQuery)
+            ->with([
+                'producer:id,full_name',
+                'route:id,name',
+                'correctionRequestedBy:id,name',
+            ])
+            ->latest('correction_requested_at')
+            ->limit(5)
+            ->get(['id', 'producer_id', 'route_id', 'correction_reason', 'correction_requested_at', 'correction_requested_by'])
+            ->map(fn (MilkCollection $collection) => [
+                'id' => $collection->id,
+                'producer' => $collection->producer?->full_name,
+                'route' => $collection->route?->name,
+                'operator' => $collection->correctionRequestedBy?->name,
+                'reason' => $collection->correction_reason,
+                'requested_at' => $collection->correction_requested_at?->toIso8601String(),
+                'href' => route('collections.index', ['search' => $collection->producer?->full_name]),
+            ])
+            ->all();
+
         return [
             'field_producers' => [
                 'count' => (clone $query)->count(),
                 'items' => $items,
+            ],
+            'correction_requests' => [
+                'count' => (clone $correctionQuery)->count(),
+                'items' => $correctionItems,
             ],
         ];
     }

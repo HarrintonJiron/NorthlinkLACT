@@ -15,6 +15,10 @@ class MilkCollection extends Model
 {
     use HasFactory;
 
+    public const CORRECTION_REQUESTED = 'requested';
+
+    public const CORRECTION_RESOLVED = 'resolved';
+
     protected static function newFactory(): MilkCollectionFactory
     {
         return MilkCollectionFactory::new();
@@ -42,6 +46,10 @@ class MilkCollection extends Model
         'device_id',
         'sync_status',
         'synced_at',
+        'correction_status',
+        'correction_reason',
+        'correction_requested_at',
+        'correction_requested_by',
     ];
 
     protected function casts(): array
@@ -56,6 +64,7 @@ class MilkCollection extends Model
             'acidity' => 'decimal:2',
             'fat_percentage' => 'decimal:2',
             'synced_at' => 'datetime',
+            'correction_requested_at' => 'datetime',
         ];
     }
 
@@ -97,6 +106,11 @@ class MilkCollection extends Model
     public function verifiedBy()
     {
         return $this->belongsTo(User::class, 'verified_by');
+    }
+
+    public function correctionRequestedBy()
+    {
+        return $this->belongsTo(User::class, 'correction_requested_by');
     }
 
     public function scopeForRouteAndDate($query, $routeId, $date)

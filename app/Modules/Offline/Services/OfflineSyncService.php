@@ -123,6 +123,7 @@ class OfflineSyncService
 
                 $created = 0;
                 $alreadySynced = 0;
+                $correctionRequestsRecorded = 0;
 
                 foreach ($collections as $collectionPayload) {
                     $existing = MilkCollection::query()
@@ -135,6 +136,9 @@ class OfflineSyncService
                             'print_copy_count' => max($existing->print_copy_count, $collectionPayload['print_copy_count'] ?? 0),
                             'synced_at' => now(),
                         ]);
+                        if ($this->recordCorrectionRequest($existing, $user, $collectionPayload['correction_reason'] ?? null)) {
+                            $correctionRequestsRecorded++;
+                        }
                         $alreadySynced++;
 
                         continue;
@@ -165,6 +169,9 @@ class OfflineSyncService
                     ]);
 
                     $this->auditCollection($collection, $user);
+                    if ($this->recordCorrectionRequest($collection, $user, $collectionPayload['correction_reason'] ?? null)) {
+                        $correctionRequestsRecorded++;
+                    }
                     $created++;
                 }
 
@@ -175,6 +182,7 @@ class OfflineSyncService
                     'route_run_uuid' => $routeRun->external_uuid,
                     'created' => $created,
                     'already_synced' => $alreadySynced,
+                    'correction_requests_recorded' => $correctionRequestsRecorded,
                     'conflicts' => [],
                     'registered_producers' => collect($registeredProducers)->map(fn (int $id, string $uuid): array => [
                         'external_uuid' => $uuid,
@@ -375,5 +383,46 @@ class OfflineSyncService
             'ip_address' => request()->ip(),
             'user_agent' => request()->userAgent(),
         ]);
+    }
+
+    private function recordCorrectionRequest(MilkCollection $collection, User $user, ?string $reason): bool
+    {
+        $reason = trim((string) $reason);
+
+        if ($reason === '') {
+            return false;
+        }
+
+        if (
+            $collection->correction_status === MilkCollection::CORRECTION_REQUESTED
+            && $collection->correction_reason === $reason
+        ) {
+            return false;
+        }
+
+        $collection->update([
+            'correction_status' => MilkCollection::CORRECTION_REQUESTED,
+            'correction_reason' => $reason,
+            'correction_requested_at' => now(),
+            'correction_requested_by' => $user->id,
+        ]);
+
+        AuditEvent::query()->create([
+            'user_id' => $user->id,
+            'company_id' => $collection->company_id,
+            'plant_id' => $collection->plant_id,
+            'entity_type' => MilkCollection::class,
+            'entity_id' => $collection->id,
+            'action' => 'correction_requested',
+            'description' => 'Rutero solicitó revisión o corrección de un acopio',
+            'new_values' => [
+                'status' => MilkCollection::CORRECTION_REQUESTED,
+                'reason' => $reason,
+            ],
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+
+        return true;
     }
 }

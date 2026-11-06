@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Modules\Producers\Models\MilkCollection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\Concerns\CreatesAcopioFixtures;
@@ -55,5 +56,31 @@ class FieldProducerNotificationTest extends TestCase
             ->assertInertia(fn (Assert $page) => $page
                 ->where('notifications.field_producers.count', 0)
                 ->has('notifications.field_producers.items', 0));
+    }
+
+    public function test_rutero_correction_request_is_shared_as_an_admin_notification(): void
+    {
+        $route = $this->createRoute(['name' => 'Ruta Bethel Kubaly']);
+        $producer = $this->createProducer($route, ['full_name' => 'Productor con incidencia']);
+        $collection = MilkCollection::factory()->create([
+            'company_id' => $this->company->id,
+            'plant_id' => $this->plant->id,
+            'route_id' => $route->id,
+            'producer_id' => $producer->id,
+            'collected_by' => $this->user->id,
+            'correction_status' => MilkCollection::CORRECTION_REQUESTED,
+            'correction_reason' => 'Revisar litros digitados.',
+            'correction_requested_at' => now(),
+            'correction_requested_by' => $this->user->id,
+        ]);
+
+        $this->get('/collections')
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('notifications.correction_requests.count', 1)
+                ->where('notifications.correction_requests.items.0.id', $collection->id)
+                ->where('notifications.correction_requests.items.0.producer', 'Productor con incidencia')
+                ->where('notifications.correction_requests.items.0.route', 'Ruta Bethel Kubaly')
+                ->where('notifications.correction_requests.items.0.reason', 'Revisar litros digitados.'));
     }
 }

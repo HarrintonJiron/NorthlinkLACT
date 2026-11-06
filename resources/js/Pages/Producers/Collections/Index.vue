@@ -108,9 +108,10 @@ const collectionDensity = (collection) => collection.density ?? collection.tempe
         <div v-if="collections.data.length" class="max-h-[46rem] divide-y divide-slate-100 overflow-y-auto">
           <article v-for="collection in collections.data" :key="collection.id" class="grid gap-3 p-4 transition hover:bg-slate-50 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)_auto] lg:items-center">
             <div class="min-w-0">
-              <div class="flex flex-wrap items-center gap-2"><Link :href="`/collections/${collection.id}`" class="truncate font-bold text-slate-950 hover:text-emerald-700">{{ collection.producer?.full_name }}</Link><span class="rounded-full px-2 py-1 text-xs font-semibold ring-1 ring-inset" :class="visitClass(collection.visit_status)">{{ visitLabel(collection.visit_status) }}</span></div>
+              <div class="flex flex-wrap items-center gap-2"><Link :href="`/collections/${collection.id}`" class="truncate font-bold text-slate-950 hover:text-emerald-700">{{ collection.producer?.full_name }}</Link><span class="rounded-full px-2 py-1 text-xs font-semibold ring-1 ring-inset" :class="visitClass(collection.visit_status)">{{ visitLabel(collection.visit_status) }}</span><span v-if="collection.correction_status === 'requested'" class="rounded-full bg-rose-100 px-2 py-1 text-xs font-bold text-rose-700">Corrección solicitada</span></div>
               <p class="mt-1 text-sm text-slate-600">{{ collection.producer?.code }} · {{ collection.route?.code }} · {{ collection.route?.name }}</p>
               <p class="mt-1 text-xs text-slate-500">{{ collection.plant?.name }} · {{ formatDate(collection.collection_date) }}</p>
+              <p v-if="collection.correction_status === 'requested'" class="mt-2 rounded-lg bg-rose-50 px-3 py-2 text-xs font-medium text-rose-800">Motivo: {{ collection.correction_reason }}</p>
             </div>
             <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
               <div><p class="text-xs font-medium uppercase tracking-wide text-slate-400">Volumen</p><p class="font-bold text-slate-950">{{ Number(collection.liters).toLocaleString('es-NI') }} L</p></div>

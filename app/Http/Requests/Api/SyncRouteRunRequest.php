@@ -51,6 +51,7 @@ class SyncRouteRunRequest extends FormRequest
             'collections.*.acidity' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'collections.*.fat_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'collections.*.notes' => ['nullable', 'string', 'max:2000'],
+            'collections.*.correction_reason' => ['nullable', 'string', 'min:5', 'max:1000'],
         ];
     }
 

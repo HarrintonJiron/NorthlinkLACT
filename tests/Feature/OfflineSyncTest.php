@@ -6,6 +6,8 @@ use App\Models\RouteOperatorAssignment;
 use App\Models\User;
 use App\Modules\Admin\Models\Company;
 use App\Modules\Admin\Models\Plant;
+use App\Modules\Audit\Models\AuditEvent;
+use App\Modules\Producers\Models\MilkCollection;
 use App\Modules\Producers\Models\Producer;
 use App\Modules\Producers\Models\ProducerRouteAssignment;
 use App\Modules\Producers\Models\Route;
@@ -225,6 +227,40 @@ class OfflineSyncTest extends TestCase
             'producer_id' => $this->producer->id,
             'sync_status' => 'synced',
         ]);
+    }
+
+    public function test_rutero_correction_request_is_synchronized_and_audited_idempotently(): void
+    {
+        $token = $this->deviceToken();
+        $payload = $this->syncPayload();
+        $payload['collections'][0]['correction_reason'] = 'El rutero digitó una densidad incorrecta.';
+
+        $this->withToken($token)
+            ->postJson(route('api.offline.sync'), $payload)
+            ->assertOk()
+            ->assertJsonPath('correction_requests_recorded', 1);
+
+        $this->assertDatabaseHas('milk_collections', [
+            'external_uuid' => self::COLLECTION_UUID,
+            'correction_status' => 'requested',
+            'correction_reason' => 'El rutero digitó una densidad incorrecta.',
+            'correction_requested_by' => $this->user->id,
+        ]);
+        $this->assertDatabaseHas('audit_events', [
+            'entity_type' => MilkCollection::class,
+            'action' => 'correction_requested',
+            'user_id' => $this->user->id,
+        ]);
+
+        $this->withToken($token)
+            ->postJson(route('api.offline.sync'), $payload)
+            ->assertOk()
+            ->assertJsonPath('correction_requests_recorded', 0);
+
+        $this->assertSame(1, AuditEvent::query()
+            ->where('entity_type', MilkCollection::class)
+            ->where('action', 'correction_requested')
+            ->count());
     }
 
     public function test_changed_payload_for_existing_collection_uuid_returns_conflict(): void

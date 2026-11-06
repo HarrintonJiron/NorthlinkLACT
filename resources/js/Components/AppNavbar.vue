@@ -14,6 +14,8 @@ const activeDropdown = ref(null)
 const page = usePage()
 const allowedModules = computed(() => page.props.auth?.modules || [])
 const fieldProducerNotifications = computed(() => page.props.notifications?.field_producers || { count: 0, items: [] })
+const correctionRequestNotifications = computed(() => page.props.notifications?.correction_requests || { count: 0, items: [] })
+const notificationCount = computed(() => fieldProducerNotifications.value.count + correctionRequestNotifications.value.count)
 const canAccess = (module) => !module || allowedModules.value.includes('*') || allowedModules.value.includes(module)
 
 const navigation = computed(() => [
@@ -176,10 +178,10 @@ const logout = async () => {
             >
               <Bell class="h-5 w-5 text-[#8E8E93]" />
               <span
-                v-if="fieldProducerNotifications.count"
+                v-if="notificationCount"
                 class="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-[#FF3B30] px-1 text-[10px] font-bold text-white"
               >
-                {{ fieldProducerNotifications.count > 99 ? '99+' : fieldProducerNotifications.count }}
+                {{ notificationCount > 99 ? '99+' : notificationCount }}
               </span>
             </button>
 
@@ -189,7 +191,26 @@ const logout = async () => {
             >
               <div class="border-b border-[#E5E5E5] px-4 py-3">
                 <p class="font-semibold text-[#1D1D1F]">Notificaciones</p>
-                <p class="text-xs text-[#6E6E73]">Altas rápidas pendientes de completar</p>
+                <p class="text-xs text-[#6E6E73]">Incidencias de campo y altas rápidas</p>
+              </div>
+
+              <div v-if="correctionRequestNotifications.items.length" class="max-h-96 overflow-y-auto py-1">
+                <Link
+                  v-for="notification in correctionRequestNotifications.items"
+                  :key="`correction-${notification.id}`"
+                  :href="notification.href"
+                  class="block border-b border-[#F5F5F7] bg-red-50/60 px-4 py-3 transition-colors hover:bg-red-50"
+                  @click="closeDropdown"
+                >
+                  <div class="flex items-start gap-3">
+                    <span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-[#FF3B30]"></span>
+                    <div class="min-w-0">
+                      <p class="text-sm font-semibold text-[#1D1D1F]">Corrección solicitada: {{ notification.producer }}</p>
+                      <p class="mt-0.5 text-xs text-[#6E6E73]">{{ notification.operator || 'Rutero' }} · {{ notification.route || 'Sin ruta' }}</p>
+                      <p class="mt-1 line-clamp-2 text-xs font-medium text-red-700">{{ notification.reason }}</p>
+                    </div>
+                  </div>
+                </Link>
               </div>
 
               <div v-if="fieldProducerNotifications.items.length" class="max-h-96 overflow-y-auto py-1">
