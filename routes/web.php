@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ModuleReportController;
 use App\Http\Controllers\ReportCenterController;
+use App\Http\Controllers\SumniDeviceController;
 use App\Modules\Admin\Controllers\OrganizationSettingsController;
 use App\Modules\Admin\Controllers\RoleController;
 use App\Modules\Admin\Controllers\UserController;
@@ -56,6 +57,7 @@ Route::middleware(['auth', 'user.active'])->group(function () {
 
     Route::prefix('sumni')->name('sumni.')->middleware('module.permission:sumni')->group(function () {
         Route::get('/', [SumniController::class, 'index'])->name('index');
+        Route::patch('/devices/{device}/toggle', [SumniDeviceController::class, 'toggle'])->name('devices.toggle');
         Route::get('/{route}', [SumniController::class, 'show'])->name('show')->where('route', '[0-9]+');
         Route::post('/{route}/producers', [SumniController::class, 'storeProducer'])->name('producers.store')->where('route', '[0-9]+');
         Route::post('/{route}/offline-sync', [SumniController::class, 'syncOffline'])->name('offline-sync')->where('route', '[0-9]+');
@@ -78,6 +80,9 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::post('/{route}/collections', [RouteController::class, 'storeCollection'])->name('collections.store');
         Route::post('/{route}/assign-rutero', [RouteController::class, 'assignRutero'])->name('rutero.assign');
         Route::delete('/{route}/rutero', [RouteController::class, 'unassignRutero'])->name('rutero.unassign');
+        Route::post('/{route}/move-producers', [RouteController::class, 'moveProducers'])->name('producers.move');
+        Route::post('/{route}/split', [RouteController::class, 'split'])->name('split');
+        Route::post('/{route}/merge', [RouteController::class, 'merge'])->name('merge');
         Route::put('/{route}', [RouteController::class, 'update'])->name('update');
         Route::get('/{route}', [RouteController::class, 'show'])->name('show');
     });
@@ -86,6 +91,7 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::get('/', [MilkCollectionController::class, 'index'])->name('index');
         Route::get('/create', [MilkCollectionController::class, 'create'])->name('create');
         Route::post('/', [MilkCollectionController::class, 'store'])->name('store');
+        Route::patch('/{collection}/correction', [MilkCollectionController::class, 'resolveCorrection'])->name('correction.resolve');
         Route::get('/{collection}', [MilkCollectionController::class, 'show'])->name('show');
     });
 
@@ -116,6 +122,7 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::post('/close', [ProducerController::class, 'closePaymentSheet'])->name('close');
         Route::get('/{batch}/producers/{producer}/ticket', [ProducerController::class, 'paymentTicket'])->name('ticket');
         Route::patch('/{batch}/price', [ProducerController::class, 'reviseClosedPaymentPrice'])->name('price.revise');
+        Route::patch('/{batch}/status', [ProducerController::class, 'transitionPaymentSheet'])->name('status');
         Route::patch('/{batch}/pay', [ProducerController::class, 'payPaymentSheet'])->name('pay');
     });
 

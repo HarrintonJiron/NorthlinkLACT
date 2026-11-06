@@ -5,6 +5,7 @@ namespace App\Modules\Producers\Services;
 use App\Models\User;
 use App\Modules\Audit\Models\AuditEvent;
 use App\Modules\Producers\Models\MilkCollection;
+use App\Modules\Producers\Models\ProducerPaymentBatch;
 use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Requests\StoreMilkCollectionRequest;
 use App\Modules\Producers\Requests\StoreRouteCollectionRequest;
@@ -106,6 +107,61 @@ class MilkCollectionService
             (float) $request->validated('liters'),
             $request->user()
         );
+    }
+
+    public function resolveCorrection(MilkCollection $collection, array $data, User $user): MilkCollection
+    {
+        if ($collection->correction_status !== MilkCollection::CORRECTION_REQUESTED) {
+            throw new \RuntimeException('Este acopio no tiene una corrección pendiente.');
+        }
+
+        $belongsToClosedBatch = ProducerPaymentBatch::query()
+            ->whereDate('week_start', '<=', $collection->collection_date)
+            ->whereDate('week_end', '>=', $collection->collection_date)
+            ->whereHas('items', fn ($query) => $query->where('producer_id', $collection->producer_id))
+            ->exists();
+
+        if ($belongsToClosedBatch) {
+            throw new \RuntimeException('El acopio pertenece a una planilla cerrada. Debe corregirse mediante un ajuste financiero, no sobrescribiendo el registro.');
+        }
+
+        return DB::transaction(function () use ($collection, $data, $user): MilkCollection {
+            $locked = MilkCollection::query()->lockForUpdate()->findOrFail($collection->id);
+            $oldValues = $locked->only(['liters', 'density', 'notes', 'correction_status']);
+
+            $locked->update([
+                'liters' => $data['liters'],
+                'density' => $data['density'] ?? null,
+                'notes' => $data['notes'] ?? null,
+                'correction_status' => MilkCollection::CORRECTION_RESOLVED,
+                'correction_resolved_at' => now(),
+                'correction_resolved_by' => $user->id,
+                'correction_resolution_notes' => $data['resolution_notes'],
+                'verified_by' => $user->id,
+            ]);
+
+            AuditEvent::query()->create([
+                'user_id' => $user->id,
+                'company_id' => $locked->company_id,
+                'plant_id' => $locked->plant_id,
+                'entity_type' => MilkCollection::class,
+                'entity_id' => $locked->id,
+                'action' => 'correction_resolved',
+                'description' => 'Corrección administrativa de acopio solicitada desde campo',
+                'old_values' => $oldValues,
+                'new_values' => $locked->fresh()->only([
+                    'liters',
+                    'density',
+                    'notes',
+                    'correction_status',
+                    'correction_resolution_notes',
+                ]),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+
+            return $locked->fresh();
+        });
     }
 
     protected function auditCreate(MilkCollection $collection, $user): void

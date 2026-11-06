@@ -158,6 +158,19 @@ const payPaymentSheet = () => {
   router.patch(`/payment-sheets/${props.paymentBatch.id}/pay`, {}, { preserveScroll: true })
 }
 
+const transitionPaymentSheet = (status) => {
+  const action = status === 'reviewed' ? 'revisar' : 'aprobar'
+  if (!window.confirm(`¿Confirmas que deseas ${action} esta planilla?`)) return
+  router.patch(`/payment-sheets/${props.paymentBatch.id}/status`, { status }, { preserveScroll: true })
+}
+
+const paymentBatchStatus = computed(() => ({
+  closed: 'Cerrada',
+  reviewed: 'Revisada',
+  approved: 'Aprobada',
+  paid: 'Pagada',
+}[props.paymentBatch?.status] || props.paymentBatch?.status || ''))
+
 const updateWeeklyPrice = () => {
   priceForm.put('/payment-sheets/price', {
     preserveScroll: true,
@@ -222,7 +235,16 @@ const printReport = () => {
 <template>
   <AppShell>
     <div v-if="mode === 'payment-sheets'" class="mb-4 rounded-2xl border border-blue-200 bg-blue-50 px-5 py-4 print:hidden">
-      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><p class="font-display text-lg font-bold text-slate-950">Planillas semanales de productores</p><p class="mt-1 text-sm text-slate-600">Revisa litros, precio aplicado, adelantos y total de pago antes del cierre formal.</p></div><div class="flex flex-wrap gap-2"><span v-if="paymentBatch" class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold" :class="paymentBatch.status === 'paid' ? 'text-emerald-700' : 'text-violet-700'"><BadgeCheck class="size-4" />{{ paymentBatch.status === 'paid' ? 'Pagada' : 'Cerrada' }} · {{ paymentBatch.code }}</span><button v-if="!paymentBatch" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-violet-700 px-4 text-sm font-bold text-white" @click="closePaymentSheet"><LockKeyhole class="size-4" />Cerrar planilla</button><button v-else-if="paymentBatch.status === 'closed'" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-bold text-white" @click="payPaymentSheet"><BadgeCheck class="size-4" />Marcar pagada</button></div></div>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div><p class="font-display text-lg font-bold text-slate-950">Planillas semanales de productores</p><p class="mt-1 text-sm text-slate-600">Revisa litros, precio aplicado, adelantos y total de pago antes del cierre formal.</p></div>
+        <div class="flex flex-wrap gap-2">
+          <span v-if="paymentBatch" class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold" :class="paymentBatch.status === 'paid' ? 'text-emerald-700' : 'text-violet-700'"><BadgeCheck class="size-4" />{{ paymentBatchStatus }} · {{ paymentBatch.code }}</span>
+          <button v-if="!paymentBatch" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-violet-700 px-4 text-sm font-bold text-white" @click="closePaymentSheet"><LockKeyhole class="size-4" />Cerrar planilla</button>
+          <button v-else-if="paymentBatch.status === 'closed'" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-blue-700 px-4 text-sm font-bold text-white" @click="transitionPaymentSheet('reviewed')"><BadgeCheck class="size-4" />Marcar revisada</button>
+          <button v-else-if="paymentBatch.status === 'reviewed'" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-violet-700 px-4 text-sm font-bold text-white" @click="transitionPaymentSheet('approved')"><BadgeCheck class="size-4" />Aprobar pago</button>
+          <button v-else-if="paymentBatch.status === 'approved'" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-emerald-600 px-4 text-sm font-bold text-white" @click="payPaymentSheet"><BadgeCheck class="size-4" />Marcar pagada</button>
+        </div>
+      </div>
     </div>
 
     <form v-if="mode === 'payment-sheets' && !paymentBatch" class="mb-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 print:hidden" @submit.prevent="updateWeeklyPrice">
@@ -240,7 +262,7 @@ const printReport = () => {
         <label class="block"><span class="mb-1 block text-xs font-bold uppercase tracking-wide text-orange-900">Motivo obligatorio</span><input v-model="closedPriceForm.reason" type="text" minlength="5" maxlength="500" required placeholder="Ej. Corrección autorizada por gerencia" class="min-h-11 w-full rounded-xl border border-orange-300 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-orange-300" /><p v-if="closedPriceForm.errors.reason || closedPriceForm.errors.batch" class="mt-1 text-xs font-semibold text-red-700">{{ closedPriceForm.errors.reason || closedPriceForm.errors.batch }}</p></label>
         <button type="submit" :disabled="closedPriceForm.processing" class="min-h-11 rounded-xl bg-orange-700 px-5 text-sm font-bold text-white hover:bg-orange-800 disabled:opacity-50">{{ closedPriceForm.processing ? 'Recalculando…' : 'Corregir y recalcular' }}</button>
       </div>
-      <p class="mt-2 text-xs text-orange-900">La corrección cambia el precio base y recalcula bruto y neto. Los precios individuales por calidad se conservan. Una planilla pagada no puede modificarse.</p>
+      <p class="mt-2 text-xs text-orange-900">La corrección cambia el precio base y recalcula bruto y neto. Los precios individuales por calidad se conservan. Después de marcar la planilla como revisada ya no puede modificarse.</p>
     </form>
 
     <ProducerStatsPanel

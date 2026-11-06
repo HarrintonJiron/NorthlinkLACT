@@ -217,6 +217,8 @@ class ProducerModuleTest extends TestCase
             'action' => 'price_revised',
         ]);
 
+        $this->patch(route('payment-sheets.status', $batch), ['status' => 'reviewed'])->assertRedirect();
+        $this->patch(route('payment-sheets.status', $batch), ['status' => 'approved'])->assertRedirect();
         $this->patch(route('payment-sheets.pay', $batch))->assertRedirect();
         $this->from(route('payment-sheets.index'))->patch(route('payment-sheets.price.revise', $batch), [
             'price_per_liter' => 23,
@@ -234,6 +236,13 @@ class ProducerModuleTest extends TestCase
         $this->post(route('payment-sheets.close'), ['week_end' => $weekEnd])->assertRedirect();
         $batch = ProducerPaymentBatch::query()->firstOrFail();
 
+        $this->from(route('payment-sheets.index'))->patch(route('payment-sheets.pay', $batch))
+            ->assertRedirect(route('payment-sheets.index'))->assertSessionHasErrors(['batch']);
+
+        $this->patch(route('payment-sheets.status', $batch), ['status' => 'reviewed'])
+            ->assertRedirect()->assertSessionHas('success');
+        $this->patch(route('payment-sheets.status', $batch), ['status' => 'approved'])
+            ->assertRedirect()->assertSessionHas('success');
         $this->patch(route('payment-sheets.pay', $batch))->assertRedirect()->assertSessionHas('success');
         $batch->refresh();
         $this->assertSame('paid', $batch->status);
@@ -249,6 +258,47 @@ class ProducerModuleTest extends TestCase
         $this->from(route('payment-sheets.index'))->patch(route('payment-sheets.pay', $batch))
             ->assertRedirect(route('payment-sheets.index'))->assertSessionHasErrors(['batch']);
         $this->assertDatabaseCount('finance_transactions', 1);
+    }
+
+    public function test_payment_sheet_requires_ordered_review_and_approval_with_audit_trail(): void
+    {
+        $this->createPrice(20);
+        $route = $this->createRoute();
+        $producer = $this->createProducer($route);
+        $this->collectMilk($producer, 10, now()->toDateString());
+        $weekEnd = app(ProducerService::class)->currentPayThursday()->toDateString();
+        $this->post(route('payment-sheets.close'), ['week_end' => $weekEnd])->assertRedirect();
+        $batch = ProducerPaymentBatch::query()->firstOrFail();
+
+        $this->from(route('payment-sheets.index'))->patch(route('payment-sheets.status', $batch), ['status' => 'approved'])
+            ->assertRedirect(route('payment-sheets.index'))->assertSessionHasErrors(['batch']);
+
+        $this->patch(route('payment-sheets.status', $batch), ['status' => 'reviewed'])->assertRedirect();
+        $batch->refresh();
+        $this->assertSame('reviewed', $batch->status);
+        $this->assertSame($this->user->id, $batch->reviewed_by);
+        $this->assertNotNull($batch->reviewed_at);
+
+        $this->from(route('payment-sheets.index'))->patch(route('payment-sheets.price.revise', $batch), [
+            'price_per_liter' => 21,
+            'reason' => 'Intento posterior a la revisión',
+        ])->assertRedirect(route('payment-sheets.index'))->assertSessionHasErrors(['batch']);
+
+        $this->patch(route('payment-sheets.status', $batch), ['status' => 'approved'])->assertRedirect();
+        $batch->refresh();
+        $this->assertSame('approved', $batch->status);
+        $this->assertSame($this->user->id, $batch->approved_by);
+        $this->assertNotNull($batch->approved_at);
+        $this->assertDatabaseHas('audit_events', [
+            'entity_type' => ProducerPaymentBatch::class,
+            'entity_id' => $batch->id,
+            'action' => 'reviewed',
+        ]);
+        $this->assertDatabaseHas('audit_events', [
+            'entity_type' => ProducerPaymentBatch::class,
+            'entity_id' => $batch->id,
+            'action' => 'approved',
+        ]);
     }
 
     public function test_weekly_payroll_only_includes_current_friday_to_thursday(): void

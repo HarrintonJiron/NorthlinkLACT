@@ -5,6 +5,9 @@ namespace App\Modules\Producers\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Requests\AssignRuteroToRouteRequest;
+use App\Modules\Producers\Requests\MergeRoutesRequest;
+use App\Modules\Producers\Requests\MoveRouteProducersRequest;
+use App\Modules\Producers\Requests\SplitRouteRequest;
 use App\Modules\Producers\Requests\StoreRouteCollectionRequest;
 use App\Modules\Producers\Requests\StoreRouteRequest;
 use App\Modules\Producers\Requests\UpdateRouteRequest;
@@ -52,11 +55,18 @@ class RouteController extends Controller
     {
         $this->ensureRouteAccess($route);
 
-        $route->load(['company', 'plant', 'rutero']);
+        $route->load(['company', 'plant', 'rutero', 'activeAssignments.producer']);
 
         return Inertia::render('Producers/Routes/Show', [
             'route' => $route,
             'availableRuteros' => $this->availableRuteros($route),
+            'otherRoutes' => $this->routeService->accessibleQuery(request()->user())
+                ->where('active', true)
+                ->where('routes.id', '!=', $route->id)
+                ->where('company_id', $route->company_id)
+                ->where('plant_id', $route->plant_id)
+                ->orderBy('name')
+                ->get(['id', 'code', 'name']),
         ]);
     }
 
@@ -123,6 +133,63 @@ class RouteController extends Controller
 
         return redirect()->route('routes.show', $route)
             ->with('success', 'Rutero desasignado de la ruta.');
+    }
+
+    public function moveProducers(MoveRouteProducersRequest $request, Route $route)
+    {
+        $this->ensureRouteAccess($route);
+        $target = Route::query()->findOrFail($request->integer('target_route_id'));
+        $this->ensureRouteAccess($target);
+
+        try {
+            $moved = $this->routeService->moveProducers(
+                $route,
+                $target,
+                $request->validated('producer_ids'),
+                $request->user(),
+                $request->validated('reason'),
+            );
+        } catch (\RuntimeException $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
+
+        return back()->with('success', "{$moved} productores trasladados a {$target->name}.");
+    }
+
+    public function split(SplitRouteRequest $request, Route $route)
+    {
+        $this->ensureRouteAccess($route);
+
+        try {
+            $newRoute = $this->routeService->split(
+                $route,
+                $request->validated('name'),
+                $request->validated('producer_ids'),
+                $request->user(),
+                $request->validated('reason'),
+            );
+        } catch (\RuntimeException $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
+
+        return redirect()->route('routes.show', $newRoute)
+            ->with('success', 'Ruta separada correctamente. Ahora puede asignarle un rutero.');
+    }
+
+    public function merge(MergeRoutesRequest $request, Route $route)
+    {
+        $this->ensureRouteAccess($route);
+        $target = Route::query()->findOrFail($request->integer('target_route_id'));
+        $this->ensureRouteAccess($target);
+
+        try {
+            $moved = $this->routeService->merge($route, $target, $request->user(), $request->validated('reason'));
+        } catch (\RuntimeException $exception) {
+            return back()->with('error', $exception->getMessage());
+        }
+
+        return redirect()->route('routes.show', $target)
+            ->with('success', "Rutas unidas. {$moved} productores quedaron activos en {$target->name}.");
     }
 
     protected function availableRuteros(Route $route)

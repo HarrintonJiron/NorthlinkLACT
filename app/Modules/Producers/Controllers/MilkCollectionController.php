@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Modules\Producers\Models\MilkCollection;
 use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Requests\ListMilkCollectionsRequest;
+use App\Modules\Producers\Requests\ResolveMilkCollectionCorrectionRequest;
 use App\Modules\Producers\Requests\StoreMilkCollectionRequest;
 use App\Modules\Producers\Services\MilkCollectionService;
 use Illuminate\Database\Eloquent\Builder;
@@ -46,6 +47,8 @@ class MilkCollectionController extends Controller
 
         $routes = Route::query()
             ->where('active', true)
+            ->withCount(['activeAssignments as scheduled_producers_count' => fn ($query) => $query
+                ->whereHas('producer', fn ($producer) => $producer->where('active', true))])
             ->whereExists(fn ($routeAccess) => $routeAccess
                 ->selectRaw('1')
                 ->from('company_user')
@@ -57,10 +60,37 @@ class MilkCollectionController extends Controller
             ->orderBy('name')
             ->get(['id', 'code', 'name']);
 
+        $progressDate = $filters['date_to'] ?? now()->toDateString();
+        $visitsByRoute = $this->visibleCollections()
+            ->whereDate('collection_date', $progressDate)
+            ->selectRaw('route_id, COUNT(DISTINCT producer_id) as visits, COALESCE(SUM(liters), 0) as liters')
+            ->groupBy('route_id')
+            ->get()
+            ->keyBy('route_id');
+
+        $routeProgress = $routes->map(function (Route $route) use ($visitsByRoute): array {
+            $scheduled = (int) $route->scheduled_producers_count;
+            $visits = (int) ($visitsByRoute->get($route->id)?->visits ?? 0);
+
+            return [
+                'id' => $route->id,
+                'code' => $route->code,
+                'name' => $route->name,
+                'scheduled' => $scheduled,
+                'visited' => $visits,
+                'pending' => max(0, $scheduled - $visits),
+                'liters' => number_format((float) ($visitsByRoute->get($route->id)?->liters ?? 0), 2, '.', ''),
+                'percent' => $scheduled > 0 ? min(100, (int) round(($visits / $scheduled) * 100)) : 0,
+                'completed' => $scheduled > 0 && $visits >= $scheduled,
+            ];
+        })->values();
+
         return Inertia::render('Producers/Collections/Index', [
             'collections' => $collections,
             'filters' => $filters,
             'routes' => $routes,
+            'routeProgress' => $routeProgress,
+            'progressDate' => $progressDate,
             'summary' => [
                 'total_records' => (int) ($summary?->total_records ?? 0),
                 'total_liters' => number_format((float) ($summary?->total_liters ?? 0), 2, '.', ''),
@@ -93,11 +123,24 @@ class MilkCollectionController extends Controller
     {
         abort_unless($this->visibleCollections()->whereKey($collection->id)->exists(), 404);
 
-        $collection->load(['producer', 'route', 'company', 'plant', 'collectedBy', 'verifiedBy']);
+        $collection->load(['producer', 'route', 'company', 'plant', 'collectedBy', 'verifiedBy', 'device', 'correctionRequestedBy', 'correctionResolvedBy']);
 
         return Inertia::render('Producers/Collections/Show', [
             'collection' => $collection,
         ]);
+    }
+
+    public function resolveCorrection(ResolveMilkCollectionCorrectionRequest $request, MilkCollection $collection)
+    {
+        abort_unless($this->visibleCollections()->whereKey($collection->id)->exists(), 404);
+
+        try {
+            $this->collectionService->resolveCorrection($collection, $request->validated(), $request->user());
+        } catch (\RuntimeException $exception) {
+            return back()->withErrors(['correction' => $exception->getMessage()]);
+        }
+
+        return back()->with('success', 'Acopio corregido y solicitud cerrada con trazabilidad.');
     }
 
     private function visibleCollections(): Builder

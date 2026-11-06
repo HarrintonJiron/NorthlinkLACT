@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Device;
+use App\Models\RouteRun;
 use App\Models\User;
 use App\Modules\Finanzas\Models\FinanceTransaction;
 use App\Modules\Inventory\Models\InventoryMovement;
@@ -9,6 +11,7 @@ use App\Modules\Inventory\Models\InventoryProduct;
 use App\Modules\Producers\Models\MilkCollection;
 use App\Modules\Producers\Models\Producer;
 use App\Modules\Producers\Models\ProducerPaymentBatch;
+use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Services\RouteService;
 use App\Modules\Production\Models\ProductDispatch;
 use App\Modules\Production\Models\ProductionBatch;
@@ -28,6 +31,8 @@ class OfficialReportService
             'production' => $this->production($fromDate, $toDate),
             'payment-sheets' => $this->paymentSheets($fromDate, $toDate),
             'producers' => $this->producers(),
+            'routes' => $this->routes($user),
+            'sumni' => $this->devices($user),
             'dispatches' => $this->dispatches($fromDate, $toDate),
             default => $this->summary($module),
         } + ['from' => $fromDate->toDateString(), 'to' => $toDate->toDateString()];
@@ -39,8 +44,8 @@ class OfficialReportService
         $records = MilkCollection::query()->with(['producer:id,code,full_name', 'route:id,code,name'])
             ->whereIn('route_id', $routeIds)->whereBetween('collection_date', [$from, $to])->orderBy('collection_date')->limit(5000)->get();
 
-        return ['title' => 'Reporte oficial de acopio', 'columns' => ['Fecha', 'Productor', 'Ruta', 'Litros', 'Densidad', 'Estado'],
-            'rows' => $records->map(fn ($r) => [$r->collection_date->format('d/m/Y'), $r->producer?->full_name, $r->route?->code, number_format((float) $r->liters, 2), $r->density ?? $r->temperature ?? '—', $r->sync_status])->all(),
+        return ['title' => 'Reporte oficial de acopio', 'columns' => ['Fecha', 'Productor', 'Ruta', 'Litros', 'Densidad', 'Estado', 'Corrección', 'Observaciones'],
+            'rows' => $records->map(fn ($r) => [$r->collection_date->format('d/m/Y'), $r->producer?->full_name, $r->route?->code, number_format((float) $r->liters, 2), $r->density ?? $r->temperature ?? '—', $r->sync_status, $r->correction_status ?? '—', $r->notes ?? '—'])->all(),
             'totals' => ['Registros' => $records->count(), 'Litros' => number_format((float) $records->sum('liters'), 2)]];
     }
 
@@ -84,8 +89,39 @@ class OfficialReportService
     {
         $records = Producer::query()->with('activeAssignment.route')->orderBy('full_name')->limit(5000)->get();
 
-        return ['title' => 'Catálogo oficial de productores', 'columns' => ['Código', 'Nombre', 'Cédula', 'Teléfono', 'Comunidad', 'Ruta', 'Estado'],
-            'rows' => $records->map(fn ($r) => [$r->code, $r->full_name, $r->identity_number, $r->phone, $r->community, $r->activeAssignment?->route?->code, $r->active ? 'Activo' : 'Inactivo'])->all(), 'totals' => ['Productores' => $records->count()]];
+        return ['title' => 'Catálogo oficial de productores', 'columns' => ['Código', 'Nombre', 'Cédula', 'Teléfono', 'Comunidad', 'Ruta', 'Pago', 'Banco', 'Cuenta', 'Precio preferencial', 'Estado'],
+            'rows' => $records->map(fn ($r) => [$r->code, $r->full_name, $r->identity_number, $r->phone, $r->community, $r->activeAssignment?->route?->code, $r->payment_method, $r->bank_name, $this->maskAccount($r->bank_account_number), $r->preferred_price_per_liter, $r->active ? 'Activo' : 'Inactivo'])->all(), 'totals' => ['Productores' => $records->count()]];
+    }
+
+    private function routes(User $user): array
+    {
+        $records = app(RouteService::class)->accessibleQuery($user)
+            ->with(['rutero', 'activeAssignments'])
+            ->orderBy('name')
+            ->get();
+
+        return ['title' => 'Catálogo y cobertura de rutas', 'columns' => ['Código', 'Ruta', 'Propietario', 'Rutero', 'Placa', 'Productores', 'Estado'],
+            'rows' => $records->map(fn (Route $route) => [$route->code, $route->name, $route->rutero?->owner_name, $route->rutero?->driver_name, $route->rutero?->vehicle_plate, $route->activeAssignments->count(), $route->active ? 'Activa' : 'Inactiva'])->all(),
+            'totals' => ['Rutas' => $records->count(), 'Productores asignados' => $records->sum(fn (Route $route) => $route->activeAssignments->count())]];
+    }
+
+    private function devices(User $user): array
+    {
+        abort_unless($user->is_admin, 403);
+        $records = Device::query()->with('user:id,username')->withCount(['routeRuns', 'milkCollections'])->orderBy('name')->get();
+
+        return ['title' => 'Control de dispositivos SUNMI', 'columns' => ['Equipo', 'UUID', 'Plataforma', 'Cuenta actual', 'Estado', 'Última conexión', 'Jornadas', 'Acopios'],
+            'rows' => $records->map(fn (Device $device) => [$device->name, $device->device_uuid, $device->platform, $device->user?->username, $device->active ? 'Activo' : 'Bloqueado', $device->last_seen_at?->format('d/m/Y H:i'), $device->route_runs_count, $device->milk_collections_count])->all(),
+            'totals' => ['Equipos' => $records->count(), 'Activos' => $records->where('active', true)->count(), 'Jornadas' => RouteRun::query()->count()]];
+    }
+
+    private function maskAccount(?string $account): string
+    {
+        if (blank($account)) {
+            return '—';
+        }
+
+        return '•••• '.mb_substr($account, -4);
     }
 
     private function dispatches(Carbon $from, Carbon $to): array

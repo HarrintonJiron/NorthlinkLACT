@@ -50,6 +50,9 @@ class MilkCollection extends Model
         'correction_reason',
         'correction_requested_at',
         'correction_requested_by',
+        'correction_resolved_at',
+        'correction_resolved_by',
+        'correction_resolution_notes',
     ];
 
     protected function casts(): array
@@ -65,6 +68,7 @@ class MilkCollection extends Model
             'fat_percentage' => 'decimal:2',
             'synced_at' => 'datetime',
             'correction_requested_at' => 'datetime',
+            'correction_resolved_at' => 'datetime',
         ];
     }
 
@@ -111,6 +115,11 @@ class MilkCollection extends Model
     public function correctionRequestedBy()
     {
         return $this->belongsTo(User::class, 'correction_requested_by');
+    }
+
+    public function correctionResolvedBy()
+    {
+        return $this->belongsTo(User::class, 'correction_resolved_by');
     }
 
     public function scopeForRouteAndDate($query, $routeId, $date)

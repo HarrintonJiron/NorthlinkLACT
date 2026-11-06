@@ -21,7 +21,12 @@ const form = useForm({
   longitude: props.producer.longitude || '',
   active: props.producer.active ?? true,
   route_id: props.producer.active_assignment?.route_id || '',
-  payment_method: props.producer.active_assignment?.payment_method || 'cash',
+  payment_method: props.producer.payment_method || 'cash',
+  bank_name: props.producer.bank_name || '',
+  bank_account_number: props.producer.bank_account_number || '',
+  bank_account_holder: props.producer.bank_account_holder || '',
+  preferred_price_per_liter: props.producer.preferred_price_per_liter || '',
+  payment_notes: props.producer.payment_notes || '',
 })
 
 const validateIdentityNumber = (value) => {
@@ -233,6 +238,19 @@ const submit = () => {
             </select>
           </div>
         </div>
+
+        <template v-if="form.payment_method === 'transfer'">
+          <div><label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Banco *</label><input v-model="form.bank_name" required class="w-full rounded-xl border-none bg-[#F5F5F7] px-3 py-2.5 text-sm" /></div>
+          <div><label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Número de cuenta *</label><input v-model="form.bank_account_number" required autocomplete="off" class="w-full rounded-xl border-none bg-[#F5F5F7] px-3 py-2.5 text-sm" /></div>
+          <div class="md:col-span-2"><label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Titular de la cuenta *</label><input v-model="form.bank_account_holder" required class="w-full rounded-xl border-none bg-[#F5F5F7] px-3 py-2.5 text-sm" /></div>
+        </template>
+
+        <div>
+          <label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Precio preferencial por litro</label>
+          <input v-model="form.preferred_price_per_liter" type="number" min="0" step="0.0001" placeholder="Vacío usa el precio semanal" class="w-full rounded-xl border-none bg-[#F5F5F7] px-3 py-2.5 text-sm" />
+          <p class="mt-1 text-xs text-[#8E8E93]">Se aplica automáticamente salvo que la semana tenga un ajuste específico.</p>
+        </div>
+        <div><label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">Notas de pago</label><textarea v-model="form.payment_notes" rows="2" class="w-full rounded-xl border-none bg-[#F5F5F7] px-3 py-2.5 text-sm" /></div>
 
         <!-- Estado -->
         <div class="md:col-span-2 mt-2">

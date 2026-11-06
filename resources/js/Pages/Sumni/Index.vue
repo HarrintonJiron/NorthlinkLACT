@@ -1,8 +1,8 @@
 <script setup>
 import { computed, ref } from 'vue'
 import FieldAppShell from '../../Components/FieldAppShell.vue'
-import { Link } from '@inertiajs/vue3'
-import { Search, MapPin, User, Truck, Droplets, UserCog } from '@lucide/vue'
+import { Link, router } from '@inertiajs/vue3'
+import { Search, MapPin, User, Truck, Droplets, UserCog, Smartphone, ShieldOff } from '@lucide/vue'
 
 const props = defineProps({
   today: String,
@@ -10,6 +10,8 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  devices: { type: Array, default: () => [] },
+  canManageDevices: Boolean,
 })
 
 const searchQuery = ref('')
@@ -28,6 +30,11 @@ const filteredRoutes = computed(() => {
 })
 
 const visibleRoutes = computed(() => filteredRoutes.value.slice(0, maxVisibleItems))
+const toggleDevice = (device) => {
+  if (confirm(`${device.active ? 'Desactivar' : 'Activar'} ${device.name || 'este dispositivo'}?`)) {
+    router.patch(`/sumni/devices/${device.id}/toggle`, {}, { preserveScroll: true })
+  }
+}
 </script>
 
 <template>
@@ -93,7 +100,11 @@ const visibleRoutes = computed(() => filteredRoutes.value.slice(0, maxVisibleIte
                   <Droplets class="w-3 h-3" />
                   {{ route.today_visits }} hoy · {{ route.today_liters }} L
                 </p>
+                <p class="mt-1 text-xs font-semibold" :class="route.completed ? 'text-emerald-700' : 'text-amber-700'">{{ route.completed ? 'Ruta terminada' : `${route.pending_visits} pendientes` }}</p>
               </div>
+            </div>
+            <div class="mt-3 h-2 overflow-hidden rounded-full bg-[#E7EEE9]">
+              <div class="h-full rounded-full transition-all" :class="route.completed ? 'bg-emerald-600' : 'bg-amber-500'" :style="{ width: `${route.progress_percent}%` }" />
             </div>
           </Link>
         </div>
@@ -101,6 +112,24 @@ const visibleRoutes = computed(() => filteredRoutes.value.slice(0, maxVisibleIte
           {{ searchQuery ? 'No hay rutas que coincidan.' : 'No hay rutas activas para acopio.' }}
         </p>
       </div>
+
+      <section v-if="canManageDevices" class="mt-6 overflow-hidden rounded-2xl border border-[#DCE5DF] bg-white shadow-sm sm:rounded-[28px]">
+        <div class="border-b border-[#E3EAE6] p-4">
+          <h2 class="flex items-center gap-2 font-bold text-[#17221C]"><Smartphone class="h-5 w-5 text-[#176B45]" /> Equipos SUNMI</h2>
+          <p class="mt-1 text-xs text-[#688075]">Las cuentas pueden rotar entre equipos. La ruta depende del usuario y la jornada, no queda amarrada al aparato.</p>
+        </div>
+        <div v-if="devices.length" class="max-h-96 divide-y divide-[#E3EAE6] overflow-y-auto">
+          <div v-for="device in devices" :key="device.id" class="flex flex-wrap items-center justify-between gap-3 p-4">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2"><p class="truncate font-bold text-[#17221C]">{{ device.name || 'SUNMI sin nombre' }}</p><span class="rounded-full px-2 py-0.5 text-[11px] font-bold" :class="device.active ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'">{{ device.active ? 'Activo' : 'Bloqueado' }}</span></div>
+              <p class="mt-1 text-xs text-[#688075]">Cuenta actual: {{ device.user?.username || 'Sin cuenta' }} · Última conexión: {{ device.last_seen_at || 'Nunca' }}</p>
+              <p class="text-xs text-[#8E8E93]">{{ device.milk_collections_count }} acopios · {{ device.route_runs_count }} jornadas</p>
+            </div>
+            <button type="button" class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold" :class="device.active ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-700'" @click="toggleDevice(device)"><ShieldOff class="h-4 w-4" /> {{ device.active ? 'Desactivar' : 'Activar' }}</button>
+          </div>
+        </div>
+        <p v-else class="p-6 text-center text-sm text-[#8E8E93]">Aún no hay equipos registrados.</p>
+      </section>
     </div>
   </FieldAppShell>
 </template>

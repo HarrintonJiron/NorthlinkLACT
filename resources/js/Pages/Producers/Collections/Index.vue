@@ -10,6 +10,8 @@ const props = defineProps({
   filters: { type: Object, default: () => ({}) },
   routes: { type: Array, default: () => [] },
   summary: { type: Object, required: true },
+  routeProgress: { type: Array, default: () => [] },
+  progressDate: String,
 })
 
 const form = reactive({
@@ -86,6 +88,21 @@ const collectionDensity = (collection) => collection.density ?? collection.tempe
           <div class="flex items-center justify-between"><span class="text-sm font-medium" :class="summary.conflict_records > 0 ? 'text-rose-700' : 'text-slate-500'">Conflictos</span><AlertTriangle class="size-5" :class="summary.conflict_records > 0 ? 'text-rose-600' : 'text-slate-400'" /></div>
           <p class="mt-3 text-3xl font-bold" :class="summary.conflict_records > 0 ? 'text-rose-800' : 'text-slate-950'">{{ summary.conflict_records }}</p>
         </article>
+      </section>
+
+      <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div><h2 class="font-bold text-slate-950">Avance por ruta</h2><p class="text-xs text-slate-500">Estado operativo del {{ formatDate(progressDate) }}</p></div>
+          <span class="text-xs font-semibold text-slate-500">{{ routeProgress.filter((route) => route.completed).length }} de {{ routeProgress.length }} terminadas</span>
+        </div>
+        <div v-if="routeProgress.length" class="mt-4 grid max-h-72 gap-3 overflow-y-auto md:grid-cols-2 xl:grid-cols-3">
+          <article v-for="route in routeProgress" :key="route.id" class="rounded-xl border border-slate-200 p-3">
+            <div class="flex items-start justify-between gap-2"><div><p class="text-xs font-semibold text-slate-400">{{ route.code }}</p><p class="font-bold text-slate-900">{{ route.name }}</p></div><span class="rounded-full px-2 py-1 text-xs font-bold" :class="route.completed ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'">{{ route.completed ? 'Terminada' : `${route.pending} faltan` }}</span></div>
+            <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100"><div class="h-full rounded-full" :class="route.completed ? 'bg-emerald-600' : 'bg-amber-500'" :style="{ width: `${route.percent}%` }" /></div>
+            <p class="mt-2 text-xs text-slate-500">{{ route.visited }}/{{ route.scheduled }} productores · {{ Number(route.liters).toLocaleString('es-NI') }} L</p>
+          </article>
+        </div>
+        <p v-else class="mt-4 text-sm text-slate-500">No hay rutas activas visibles.</p>
       </section>
 
       <section class="rounded-2xl border border-slate-200 bg-white shadow-sm">

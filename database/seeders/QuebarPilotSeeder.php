@@ -10,6 +10,7 @@ use App\Modules\Producers\Models\ProducerRouteAssignment;
 use App\Modules\Producers\Models\Route;
 use App\Modules\Ruteros\Models\Rutero;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -27,27 +28,26 @@ class QuebarPilotSeeder extends Seeder
         }
 
         DB::transaction(function () use ($routes, $company, $plant, $adminId): void {
-            foreach ($routes as $routeIndex => $sourceRoute) {
+            foreach ($routes as $sourceRoute) {
                 $route = Route::query()->create([
                     'company_id' => $company->id,
                     'plant_id' => $plant->id,
                     'code' => $sourceRoute['code'],
                     'name' => $sourceRoute['name'],
-                    'description' => 'Ruta oficial para piloto SUNMI. Fuente: formato de acopio 31 julio-6 agosto 2026.',
+                    'description' => 'Ruta operativa QUEBAR. Fuente más reciente recibida: planillas del 23 al 29 de octubre de 2026.',
                     'active' => true,
                 ]);
 
-                $routeNumber = $routeIndex + 1;
                 Rutero::query()->create([
                     'route_id' => $route->id,
-                    'owner_name' => sprintf('Rutero Quebar %02d', $routeNumber),
-                    'owner_identity_number' => sprintf('PILOTO-%02d', $routeNumber),
-                    'owner_phone' => sprintf('8600-%04d', $routeNumber),
-                    'vehicle_description' => 'Vehículo de acopio por confirmar',
-                    'vehicle_plate' => sprintf('PIL-%02d', $routeNumber),
-                    'driver_name' => sprintf('Rutero Quebar %02d', $routeNumber),
-                    'driver_identity_number' => sprintf('RUTERO-%02d', $routeNumber),
-                    'driver_phone' => sprintf('8600-%04d', $routeNumber),
+                    'owner_name' => 'Por confirmar',
+                    'owner_identity_number' => null,
+                    'owner_phone' => null,
+                    'vehicle_description' => 'Por confirmar',
+                    'vehicle_plate' => 'PEND-'.$sourceRoute['code'],
+                    'driver_name' => 'Por confirmar',
+                    'driver_identity_number' => null,
+                    'driver_phone' => null,
                     'active' => true,
                 ]);
 
@@ -56,6 +56,14 @@ class QuebarPilotSeeder extends Seeder
                         'code' => sprintf('%s-%03d', $sourceRoute['code'], $producerIndex + 1),
                         'full_name' => $sourceProducer['name'],
                         'identity_number' => $sourceProducer['identity'],
+                        'phone' => $sourceProducer['phone'],
+                        'payment_method' => $sourceProducer['payment_method'],
+                        'bank_name' => $sourceProducer['bank_name'],
+                        'bank_account_number' => $sourceProducer['bank_account_number'],
+                        'bank_account_holder' => $sourceProducer['bank_account_holder'],
+                        'payment_notes' => $sourceProducer['payment_method'] === 'transfer'
+                            ? 'Cuenta bancaria pendiente de completar; el archivo fuente solo indica depósito bancario.'
+                            : null,
                         'community' => $sourceRoute['name'],
                         'municipality' => 'Waslala',
                         'department' => 'RACCN',
@@ -73,13 +81,14 @@ class QuebarPilotSeeder extends Seeder
         });
 
         $this->call(SunmiRuteroDemoSeeder::class);
-        $this->command?->info('Piloto QUEBAR cargado: 17 rutas, 617 productores y 17 cuentas SUNMI.');
+        $producerCount = collect($routes)->sum(fn (array $route): int => count($route['producers']));
+        $this->command?->info("Datos QUEBAR cargados: {$routes->count()} rutas, {$producerCount} productores y 17 cuentas SUNMI.");
     }
 
     /**
-     * @return array<int, array{code: string, name: string, producers: array<int, array{name: string, identity: ?string}>}>
+     * @return Collection<int, array{code: string, name: string, producers: array<int, array{name: string, identity: ?string, phone: ?string, payment_method: string, bank_name: ?string, bank_account_number: ?string, bank_account_holder: ?string}>}>
      */
-    private function sourceRoutes(): array
+    private function sourceRoutes(): Collection
     {
         $routes = json_decode(
             (string) file_get_contents(database_path('data/quebar_pilot_routes.json')),
@@ -87,10 +96,10 @@ class QuebarPilotSeeder extends Seeder
             flags: JSON_THROW_ON_ERROR,
         );
 
-        if (count($routes) !== 17) {
-            throw new RuntimeException('La fuente del piloto debe contener exactamente 17 rutas.');
+        if (count($routes) < 17) {
+            throw new RuntimeException('La fuente operativa debe contener al menos 17 rutas.');
         }
 
-        return $routes;
+        return collect($routes);
     }
 }

@@ -40,16 +40,16 @@ class QuebarPilotSeederTest extends TestCase
             ->expectsOutputToContain('Reinicio completado')
             ->assertSuccessful();
 
-        $this->assertSame(17, Route::query()->count());
-        $this->assertSame(617, Producer::query()->count());
-        $this->assertSame(617, ProducerRouteAssignment::query()->count());
-        $this->assertSame(17, Rutero::query()->count());
+        $this->assertSame(18, Route::query()->count());
+        $this->assertSame(527, Producer::query()->count());
+        $this->assertSame(527, ProducerRouteAssignment::query()->count());
+        $this->assertSame(18, Rutero::query()->count());
         $this->assertSame(17, User::query()->where('username', 'like', 'rutero%')->count());
         $this->assertSame(34, RouteOperatorAssignment::query()->count());
 
         $this->assertDatabaseHas('routes', ['code' => 'QBR-01', 'name' => 'Dipina']);
-        $this->assertDatabaseHas('routes', ['code' => 'QBR-17', 'name' => 'Los Mangos']);
-        $this->assertDatabaseHas('producers', ['code' => 'QBR-01-001', 'full_name' => 'Miguel Ramirez']);
+        $this->assertDatabaseHas('routes', ['code' => 'QBR-18', 'name' => 'Palestina']);
+        $this->assertDatabaseHas('producers', ['payment_method' => 'transfer']);
         $this->assertDatabaseMissing('routes', ['code' => 'TEST-OLD']);
         $this->assertDatabaseMissing('producers', ['code' => 'TEST-PRODUCER']);
     }
@@ -62,9 +62,9 @@ class QuebarPilotSeederTest extends TestCase
             flags: JSON_THROW_ON_ERROR,
         );
 
-        $this->assertCount(17, $source);
-        $this->assertSame(617, collect($source)->sum(fn (array $route): int => count($route['producers'])));
-        $this->assertCount(17, collect($source)->pluck('code')->unique());
+        $this->assertCount(18, $source);
+        $this->assertSame(527, collect($source)->sum(fn (array $route): int => count($route['producers'])));
+        $this->assertCount(18, collect($source)->pluck('code')->unique());
 
         foreach ($source as $route) {
             $names = collect($route['producers'])
@@ -100,7 +100,7 @@ class QuebarPilotSeederTest extends TestCase
             ->assertOk()
             ->assertJsonPath('routes.0.code', 'QBR-01')
             ->assertJsonPath('routes.0.name', 'Dipina')
-            ->assertJsonCount(41, 'routes.0.producers');
+            ->assertJsonCount(32, 'routes.0.producers');
     }
 
     public function test_bethel_kubaly_can_be_shared_with_every_rutero_without_replacing_primary_routes(): void

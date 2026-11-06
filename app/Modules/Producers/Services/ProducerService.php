@@ -235,7 +235,10 @@ class ProducerService
             $densityPrice = $adjustment?->density_price !== null
                 ? (float) $adjustment->density_price
                 : null;
-            $appliedPrice = $densityPrice ?? $price;
+            $preferredPrice = $producer->preferred_price_per_liter !== null
+                ? (float) $producer->preferred_price_per_liter
+                : null;
+            $appliedPrice = $densityPrice ?? $preferredPrice ?? $price;
             $advance = $adjustment ? (float) $adjustment->advance_amount : 0.0;
             $gross = round($weekLiters * $appliedPrice, 2);
             $amount = round($gross - $advance, 2);
@@ -262,6 +265,7 @@ class ProducerService
                 'days' => $daysCollected,
                 'liters' => $weekLiters,
                 'base_price' => $price,
+                'preferred_price' => $preferredPrice,
                 'density_price' => $densityPrice,
                 'price' => $appliedPrice,
                 'advance_amount' => $advance,

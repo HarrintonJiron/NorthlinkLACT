@@ -22,6 +22,12 @@ class Producer extends Model
         'full_name',
         'identity_number',
         'phone',
+        'payment_method',
+        'bank_name',
+        'bank_account_number',
+        'bank_account_holder',
+        'preferred_price_per_liter',
+        'payment_notes',
         'address',
         'community',
         'municipality',
@@ -37,6 +43,8 @@ class Producer extends Model
             'latitude' => 'decimal:8',
             'longitude' => 'decimal:8',
             'active' => 'boolean',
+            'bank_account_number' => 'encrypted',
+            'preferred_price_per_liter' => 'decimal:4',
         ];
     }
 

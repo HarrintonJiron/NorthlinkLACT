@@ -90,7 +90,7 @@ class SunmiRuteroDemoSeeder extends Seeder
                         ],
                         [
                             'assigned_by' => User::query()->where('is_admin', true)->value('id') ?? $user->id,
-                            'vehicle_plate' => $route->rutero?->vehicle_plate,
+                            'vehicle_plate' => 'PIL-'.$suffix,
                             'is_shared_test' => false,
                         ],
                     );

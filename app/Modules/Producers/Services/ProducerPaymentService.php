@@ -204,8 +204,8 @@ class ProducerPaymentService
     {
         return DB::transaction(function () use ($batch, $user) {
             $locked = ProducerPaymentBatch::query()->lockForUpdate()->findOrFail($batch->id);
-            if ($locked->status !== ProducerPaymentBatch::STATUS_CLOSED) {
-                throw ValidationException::withMessages(['batch' => 'La planilla ya fue pagada.']);
+            if ($locked->status !== ProducerPaymentBatch::STATUS_APPROVED) {
+                throw ValidationException::withMessages(['batch' => 'La planilla debe estar aprobada antes de registrarse como pagada.']);
             }
 
             $transaction = $this->finances->createTransaction([
@@ -220,6 +220,42 @@ class ProducerPaymentService
 
             $locked->update(['status' => ProducerPaymentBatch::STATUS_PAID, 'paid_by' => $user->id, 'paid_at' => now(), 'finance_transaction_id' => $transaction->id]);
             $this->audit($locked, $user, 'paid', 'Planilla semanal marcada como pagada');
+
+            return $locked->refresh();
+        });
+    }
+
+    public function transition(ProducerPaymentBatch $batch, string $targetStatus, User $user): ProducerPaymentBatch
+    {
+        return DB::transaction(function () use ($batch, $targetStatus, $user): ProducerPaymentBatch {
+            $locked = ProducerPaymentBatch::query()->lockForUpdate()->findOrFail($batch->id);
+            $allowed = [
+                ProducerPaymentBatch::STATUS_CLOSED => ProducerPaymentBatch::STATUS_REVIEWED,
+                ProducerPaymentBatch::STATUS_REVIEWED => ProducerPaymentBatch::STATUS_APPROVED,
+            ];
+
+            if (($allowed[$locked->status] ?? null) !== $targetStatus) {
+                throw ValidationException::withMessages([
+                    'batch' => 'La transición solicitada no corresponde al estado actual de la planilla.',
+                ]);
+            }
+
+            $attributes = ['status' => $targetStatus];
+            if ($targetStatus === ProducerPaymentBatch::STATUS_REVIEWED) {
+                $attributes += ['reviewed_by' => $user->id, 'reviewed_at' => now()];
+            } else {
+                $attributes += ['approved_by' => $user->id, 'approved_at' => now()];
+            }
+
+            $locked->update($attributes);
+            $this->audit(
+                $locked,
+                $user,
+                $targetStatus,
+                $targetStatus === ProducerPaymentBatch::STATUS_REVIEWED
+                    ? 'Planilla semanal revisada'
+                    : 'Planilla semanal aprobada para pago',
+            );
 
             return $locked->refresh();
         });

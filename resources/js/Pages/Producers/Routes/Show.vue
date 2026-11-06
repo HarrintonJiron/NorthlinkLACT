@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import AppShell from '../../../Components/AppShell.vue'
 import StatusBadge from '../../../Components/StatusBadge.vue'
 import { useForm, Link, router } from '@inertiajs/vue3'
-import { ArrowLeft, MapPin, Hash, Check, Power, Plus, Droplets, Truck, UserCog } from '@lucide/vue'
+import { ArrowLeft, MapPin, Hash, Check, Power, Plus, Droplets, Truck, UserCog, UsersRound, Merge, Split } from '@lucide/vue'
 
 const props = defineProps({
   route: Object,
@@ -11,6 +11,7 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  otherRoutes: { type: Array, default: () => [] },
 })
 
 const form = useForm({
@@ -23,6 +24,26 @@ const currentRuteroId = computed(() =>
 
 const selectedRuteroId = ref(currentRuteroId.value)
 const savingRutero = ref(false)
+const selectedProducerIds = ref([])
+const bulkForm = useForm({ target_route_id: '', producer_ids: [], reason: '' })
+const splitForm = useForm({ name: '', producer_ids: [], reason: '' })
+const mergeForm = useForm({ target_route_id: '', reason: '' })
+
+const activeProducers = computed(() => (props.route.active_assignments || []).map((assignment) => assignment.producer).filter(Boolean).sort((a, b) => a.full_name.localeCompare(b.full_name)))
+const allSelected = computed(() => activeProducers.value.length > 0 && selectedProducerIds.value.length === activeProducers.value.length)
+const toggleAll = () => { selectedProducerIds.value = allSelected.value ? [] : activeProducers.value.map((producer) => producer.id) }
+const moveSelected = () => {
+  bulkForm.producer_ids = [...selectedProducerIds.value]
+  bulkForm.post(`/routes/${props.route.id}/move-producers`, { preserveScroll: true, onSuccess: () => { selectedProducerIds.value = []; bulkForm.reset() } })
+}
+const splitSelected = () => {
+  splitForm.producer_ids = [...selectedProducerIds.value]
+  splitForm.post(`/routes/${props.route.id}/split`)
+}
+const mergeRoute = () => {
+  if (!confirm('La ruta actual quedará inactiva y sus productores pasarán a la ruta seleccionada. ¿Continuar?')) return
+  mergeForm.post(`/routes/${props.route.id}/merge`)
+}
 
 watch(currentRuteroId, (value) => {
   selectedRuteroId.value = value
@@ -191,6 +212,46 @@ const applyRuteroSelection = () => {
         </button>
       </div>
     </form>
+
+    <section class="mb-6 rounded-2xl border border-[#E5E5E5] bg-white p-6 shadow-sm">
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div><h3 class="flex items-center gap-2 font-semibold text-[#1D1D1F]"><UsersRound class="h-5 w-5 text-[#007AFF]" /> Productores de la ruta</h3><p class="mt-1 text-sm text-[#8E8E93]">Seleccione productores para trasladarlos o crear una ruta separada. El historial de acopio no cambia.</p></div>
+        <button v-if="activeProducers.length" type="button" class="rounded-xl bg-[#F5F5F7] px-3 py-2 text-xs font-bold text-[#1D1D1F]" @click="toggleAll">{{ allSelected ? 'Quitar selección' : 'Seleccionar todos' }}</button>
+      </div>
+
+      <div v-if="activeProducers.length" class="mt-4 grid max-h-72 gap-2 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3">
+        <label v-for="producer in activeProducers" :key="producer.id" class="flex cursor-pointer items-center gap-3 rounded-xl border border-[#E5E5E5] p-3 hover:bg-[#F5F5F7]">
+          <input v-model="selectedProducerIds" type="checkbox" :value="producer.id" class="rounded text-[#007AFF]" />
+          <span class="min-w-0"><span class="block truncate text-sm font-semibold text-[#1D1D1F]">{{ producer.full_name }}</span><span class="block text-xs text-[#8E8E93]">{{ producer.code }} · {{ producer.phone || 'Sin teléfono' }}</span></span>
+        </label>
+      </div>
+      <p v-else class="mt-4 rounded-xl bg-[#F5F5F7] p-4 text-sm text-[#8E8E93]">La ruta no tiene productores activos.</p>
+
+      <div v-if="selectedProducerIds.length" class="mt-5 grid gap-4 border-t border-[#E5E5E5] pt-5 lg:grid-cols-2">
+        <form class="rounded-2xl bg-[#F5F5F7] p-4" @submit.prevent="moveSelected">
+          <h4 class="font-bold text-[#1D1D1F]">Trasladar {{ selectedProducerIds.length }} productores</h4>
+          <select v-model="bulkForm.target_route_id" required class="mt-3 w-full rounded-xl border-none bg-white px-3 py-2.5 text-sm"><option value="">Ruta de destino</option><option v-for="item in otherRoutes" :key="item.id" :value="item.id">{{ item.code }} — {{ item.name }}</option></select>
+          <textarea v-model="bulkForm.reason" required minlength="5" rows="2" placeholder="Motivo del traslado" class="mt-3 w-full rounded-xl border-none bg-white px-3 py-2.5 text-sm" />
+          <button :disabled="bulkForm.processing" class="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#007AFF] px-4 py-2 text-sm font-bold text-white"><Merge class="h-4 w-4" /> Trasladar</button>
+        </form>
+        <form class="rounded-2xl bg-[#F5F5F7] p-4" @submit.prevent="splitSelected">
+          <h4 class="font-bold text-[#1D1D1F]">Crear ruta separada</h4>
+          <input v-model="splitForm.name" required placeholder="Nombre de la nueva ruta" class="mt-3 w-full rounded-xl border-none bg-white px-3 py-2.5 text-sm" />
+          <textarea v-model="splitForm.reason" required minlength="5" rows="2" placeholder="Motivo de la separación" class="mt-3 w-full rounded-xl border-none bg-white px-3 py-2.5 text-sm" />
+          <button :disabled="splitForm.processing" class="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#176B45] px-4 py-2 text-sm font-bold text-white"><Split class="h-4 w-4" /> Separar ruta</button>
+        </form>
+      </div>
+    </section>
+
+    <section v-if="otherRoutes.length" class="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-5">
+      <h3 class="font-bold text-rose-900">Unir toda esta ruta con otra</h3>
+      <p class="mt-1 text-sm text-rose-800">Moverá todos los productores activos y desactivará esta ruta. Los acopios históricos conservarán su ruta original.</p>
+      <form class="mt-4 flex flex-col gap-3 lg:flex-row" @submit.prevent="mergeRoute">
+        <select v-model="mergeForm.target_route_id" required class="min-w-0 flex-1 rounded-xl border-rose-200 bg-white px-3 py-2.5 text-sm"><option value="">Seleccione ruta de destino</option><option v-for="item in otherRoutes" :key="item.id" :value="item.id">{{ item.code }} — {{ item.name }}</option></select>
+        <input v-model="mergeForm.reason" required minlength="5" placeholder="Motivo de la unión" class="min-w-0 flex-1 rounded-xl border-rose-200 bg-white px-3 py-2.5 text-sm" />
+        <button :disabled="mergeForm.processing" class="inline-flex items-center justify-center gap-2 rounded-xl bg-rose-700 px-4 py-2.5 text-sm font-bold text-white"><Merge class="h-4 w-4" /> Unir rutas</button>
+      </form>
+    </section>
 
     <div class="bg-white rounded-2xl border border-[#E5E5E5] p-6 shadow-sm">
       <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">

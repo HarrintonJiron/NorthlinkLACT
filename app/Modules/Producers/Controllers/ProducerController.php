@@ -13,6 +13,7 @@ use App\Modules\Producers\Requests\CloseProducerPaymentBatchRequest;
 use App\Modules\Producers\Requests\ReviseClosedPaymentBatchRequest;
 use App\Modules\Producers\Requests\StoreProducerRequest;
 use App\Modules\Producers\Requests\StoreProducerWeekAdjustmentRequest;
+use App\Modules\Producers\Requests\TransitionProducerPaymentBatchRequest;
 use App\Modules\Producers\Requests\UpdateProducerRequest;
 use App\Modules\Producers\Requests\UpdateWeeklyMilkPriceRequest;
 use App\Modules\Producers\Services\ProducerPaymentService;
@@ -75,6 +76,21 @@ class ProducerController extends Controller
         return back()->with('success', 'Planilla pagada y movimiento financiero generado.');
     }
 
+    public function transitionPaymentSheet(TransitionProducerPaymentBatchRequest $request, ProducerPaymentBatch $batch)
+    {
+        $updated = $this->producerPaymentService->transition(
+            $batch,
+            $request->validated('status'),
+            $request->user(),
+        );
+
+        $message = $updated->status === ProducerPaymentBatch::STATUS_REVIEWED
+            ? 'Planilla revisada. Ahora requiere aprobación antes del pago.'
+            : 'Planilla aprobada y lista para registrar el pago.';
+
+        return back()->with('success', $message);
+    }
+
     public function updateWeeklyMilkPrice(UpdateWeeklyMilkPriceRequest $request)
     {
         $this->producerPaymentService->setWeeklyPrice(
@@ -129,7 +145,7 @@ class ProducerController extends Controller
 
     public function store(StoreProducerRequest $request)
     {
-        $data = $request->safe()->except(['route_id', 'payment_method']);
+        $data = $request->safe()->except(['route_id']);
 
         if (blank($data['code'] ?? null)) {
             $data['code'] = $this->producerService->nextCode();
@@ -173,7 +189,7 @@ class ProducerController extends Controller
 
     public function update(UpdateProducerRequest $request, Producer $producer)
     {
-        $data = $request->safe()->except(['route_id', 'payment_method']);
+        $data = $request->safe()->except(['route_id']);
 
         if (blank($data['code'] ?? null)) {
             unset($data['code']);

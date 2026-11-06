@@ -2,6 +2,7 @@
 
 namespace App\Modules\Producers\Services;
 
+use App\Models\RouteOperatorAssignment;
 use App\Models\User;
 use App\Modules\Admin\Models\Company;
 use App\Modules\Admin\Models\Plant;
@@ -9,6 +10,7 @@ use App\Modules\Audit\Models\AuditEvent;
 use App\Modules\Producers\Models\MilkCollection;
 use App\Modules\Producers\Models\MilkPrice;
 use App\Modules\Producers\Models\Producer;
+use App\Modules\Producers\Models\ProducerRouteAssignment;
 use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Requests\StoreRouteRequest;
 use Illuminate\Database\Eloquent\Builder;
@@ -168,6 +170,150 @@ class RouteService
         return $this->update($route, [
             'active' => ! $route->active,
         ]);
+    }
+
+    public function moveProducers(Route $source, Route $target, array $producerIds, User $user, string $reason): int
+    {
+        $this->ensureCompatibleRoutes($source, $target);
+
+        return DB::transaction(function () use ($source, $target, $producerIds, $user, $reason): int {
+            $assignments = ProducerRouteAssignment::query()
+                ->where('route_id', $source->id)
+                ->whereNull('ended_at')
+                ->whereIn('producer_id', $producerIds)
+                ->lockForUpdate()
+                ->get();
+
+            if ($assignments->count() !== count(array_unique($producerIds))) {
+                throw new \RuntimeException('Uno o más productores ya no pertenecen a la ruta de origen. Actualice la página e inténtelo nuevamente.');
+            }
+
+            foreach ($assignments as $assignment) {
+                $assignment->update(['ended_at' => now()->toDateString()]);
+
+                $existing = ProducerRouteAssignment::query()
+                    ->where('producer_id', $assignment->producer_id)
+                    ->where('route_id', $target->id)
+                    ->whereDate('assigned_at', now()->toDateString())
+                    ->first();
+
+                if ($existing) {
+                    $existing->update(['ended_at' => null, 'assigned_by' => $user->id]);
+                } else {
+                    ProducerRouteAssignment::query()->create([
+                        'producer_id' => $assignment->producer_id,
+                        'route_id' => $target->id,
+                        'assigned_at' => now()->toDateString(),
+                        'assigned_by' => $user->id,
+                    ]);
+                }
+            }
+
+            AuditEvent::query()->create([
+                'user_id' => $user->id,
+                'company_id' => $source->company_id,
+                'plant_id' => $source->plant_id,
+                'entity_type' => Route::class,
+                'entity_id' => $source->id,
+                'action' => 'producers_transferred',
+                'description' => "Productores trasladados de {$source->name} a {$target->name}",
+                'old_values' => ['route_id' => $source->id, 'producer_ids' => $assignments->pluck('producer_id')->all()],
+                'new_values' => ['route_id' => $target->id, 'reason' => $reason],
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+
+            return $assignments->count();
+        });
+    }
+
+    public function split(Route $source, string $name, array $producerIds, User $user, string $reason): Route
+    {
+        return DB::transaction(function () use ($source, $name, $producerIds, $user, $reason): Route {
+            $route = Route::query()->create([
+                'company_id' => $source->company_id,
+                'plant_id' => $source->plant_id,
+                'code' => $this->generateCode(),
+                'name' => $name,
+                'description' => "Separada de {$source->code} - {$source->name}. Motivo: {$reason}",
+                'active' => true,
+            ]);
+
+            $this->moveProducers($source, $route, $producerIds, $user, $reason);
+            $this->auditCreate($route, $user);
+
+            return $route;
+        });
+    }
+
+    public function merge(Route $source, Route $target, User $user, string $reason): int
+    {
+        $this->ensureCompatibleRoutes($source, $target);
+
+        return DB::transaction(function () use ($source, $target, $user, $reason): int {
+            $producerIds = $source->activeAssignments()->pluck('producer_id')->all();
+            $moved = $producerIds === [] ? 0 : $this->moveProducers($source, $target, $producerIds, $user, $reason);
+
+            if (! $target->rutero()->exists() && $source->rutero()->exists()) {
+                $source->rutero()->update(['route_id' => $target->id]);
+            } else {
+                $source->rutero()->update(['route_id' => null]);
+            }
+
+            RouteOperatorAssignment::query()
+                ->where('route_id', $source->id)
+                ->whereDate('assigned_date', '>=', now()->toDateString())
+                ->get()
+                ->each(function (RouteOperatorAssignment $assignment) use ($target): void {
+                    RouteOperatorAssignment::query()->updateOrCreate(
+                        [
+                            'route_id' => $target->id,
+                            'user_id' => $assignment->user_id,
+                            'assigned_date' => $assignment->assigned_date,
+                        ],
+                        [
+                            'assigned_by' => $assignment->assigned_by,
+                            'vehicle_plate' => $assignment->vehicle_plate,
+                            'is_shared_test' => $assignment->is_shared_test,
+                        ],
+                    );
+                    $assignment->delete();
+                });
+
+            $oldValues = $source->getAttributes();
+            $source->update([
+                'active' => false,
+                'description' => trim(($source->description ? $source->description."\n" : '')."Unida a {$target->code} - {$target->name}. Motivo: {$reason}"),
+            ]);
+            $this->auditUpdate($source, $oldValues, $source->getAttributes(), $user);
+
+            AuditEvent::query()->create([
+                'user_id' => $user->id,
+                'company_id' => $target->company_id,
+                'plant_id' => $target->plant_id,
+                'entity_type' => Route::class,
+                'entity_id' => $target->id,
+                'action' => 'routes_merged',
+                'description' => "Ruta {$source->name} unida a {$target->name}",
+                'old_values' => ['source_route_id' => $source->id],
+                'new_values' => ['target_route_id' => $target->id, 'producers_moved' => $moved, 'reason' => $reason],
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+
+            return $moved;
+        });
+    }
+
+    private function ensureCompatibleRoutes(Route $source, Route $target): void
+    {
+        if ($source->is($target) || ! $target->active) {
+            throw new \RuntimeException('Seleccione una ruta de destino activa y diferente.');
+        }
+
+        if ($source->company_id !== $target->company_id || $source->plant_id !== $target->plant_id) {
+            throw new \RuntimeException('Solo se pueden reorganizar rutas de la misma empresa y planta.');
+        }
     }
 
     protected function generateCode(): string

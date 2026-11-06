@@ -46,6 +46,8 @@ class SumniController extends Controller
                     ->count();
 
                 $collections = $todayByRoute->get($route->id, collect());
+                $visits = $collections->count();
+                $progress = $clients > 0 ? min(100, (int) round(($visits / $clients) * 100)) : 0;
 
                 return [
                     'id' => $route->id,
@@ -58,7 +60,10 @@ class SumniController extends Controller
                     'vehicle_description' => $route->rutero?->vehicle_description,
                     'vehicle_plate' => $route->rutero?->vehicle_plate,
                     'clients' => $clients,
-                    'today_visits' => $collections->count(),
+                    'today_visits' => $visits,
+                    'pending_visits' => max(0, $clients - $visits),
+                    'progress_percent' => $progress,
+                    'completed' => $clients > 0 && $visits >= $clients,
                     'today_liters' => round((float) $collections->sum('liters'), 2),
                 ];
             })
@@ -67,6 +72,14 @@ class SumniController extends Controller
         return Inertia::render('Sumni/Index', [
             'today' => $today,
             'routes' => $routes,
+            'devices' => request()->user()?->is_admin
+                ? Device::query()
+                    ->with('user:id,name,username,active')
+                    ->withCount(['routeRuns', 'milkCollections'])
+                    ->orderByDesc('last_seen_at')
+                    ->get()
+                : [],
+            'canManageDevices' => (bool) request()->user()?->is_admin,
         ]);
     }
 
@@ -218,13 +231,19 @@ class SumniController extends Controller
             ->where('device_uuid', $validated['device_uuid'])
             ->first();
 
+        if ($device && ! $device->active) {
+            return response()->json([
+                'message' => 'Este dispositivo fue desactivado desde la plataforma administrativa.',
+            ], 403);
+        }
+
         Device::query()->updateOrCreate(
             ['device_uuid' => $validated['device_uuid']],
             [
                 'user_id' => $user->id,
                 'name' => $validated['device_name'] ?? 'Firefox SUNMI',
                 'platform' => $validated['platform'] ?? 'firefox-android',
-                'active' => true,
+                'active' => $device?->active ?? true,
                 'last_seen_at' => now(),
             ],
         );

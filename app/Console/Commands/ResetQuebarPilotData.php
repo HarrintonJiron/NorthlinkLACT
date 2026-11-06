@@ -19,7 +19,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 #[Signature('acopio:reset-pilot {--confirm= : Escriba REINICIAR-ACOPIO para autorizar la limpieza}')]
-#[Description('Reinicia únicamente los datos operativos de acopio y carga el piloto oficial de 17 rutas QUEBAR')]
+#[Description('Reinicia únicamente los datos operativos de acopio y carga la fuente operativa más reciente de QUEBAR')]
 class ResetQuebarPilotData extends Command
 {
     public function handle(): int
@@ -63,7 +63,11 @@ class ResetQuebarPilotData extends Command
         });
 
         $this->newLine();
-        $this->info('Reinicio completado: 17 rutas, 617 productores y asignaciones para hoy y mañana.');
+        $this->info(sprintf(
+            'Reinicio completado: %d rutas, %d productores y asignaciones SUNMI para hoy y mañana.',
+            Route::query()->count(),
+            Producer::query()->count(),
+        ));
 
         return self::SUCCESS;
     }

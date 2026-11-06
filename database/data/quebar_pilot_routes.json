@@ -2,2570 +2,5396 @@
   {
     "code": "QBR-01",
     "name": "Dipina",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Miguel Ramirez",
-        "identity": null
+        "name": "Adela Zamorán",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Julio Cesar Miranda Castro",
-        "identity": null
-      },
-      {
-        "name": "Moises Gonzalez",
-        "identity": null
-      },
-      {
-        "name": "Darwin Gonzalez",
-        "identity": null
-      },
-      {
-        "name": "Byron Cruz",
-        "identity": null
-      },
-      {
-        "name": "Genara Mairena",
-        "identity": null
-      },
-      {
-        "name": "Erminia Soza",
-        "identity": null
-      },
-      {
-        "name": "Salvador Laguna Morales",
-        "identity": null
-      },
-      {
-        "name": "Rodrigo Videa",
-        "identity": null
-      },
-      {
-        "name": "Adela Zamoran",
-        "identity": null
-      },
-      {
-        "name": "Nemesio Salinas",
-        "identity": null
-      },
-      {
-        "name": "Jairo Blandin",
-        "identity": null
-      },
-      {
-        "name": "Meyklin López",
-        "identity": null
-      },
-      {
-        "name": "Franklin Lopez Lopez",
-        "identity": null
-      },
-      {
-        "name": "Sergio Lopez",
-        "identity": null
-      },
-      {
-        "name": "Jose del Carmen Gonzalez",
-        "identity": null
-      },
-      {
-        "name": "Levi Lopez",
-        "identity": null
-      },
-      {
-        "name": "Wilber Lopez",
-        "identity": null
-      },
-      {
-        "name": "Nery Geovany Fajardo Salgado",
-        "identity": "454-250586-0001R"
-      },
-      {
-        "name": "Orlando Reyes",
-        "identity": null
-      },
-      {
-        "name": "Abel Blandin",
-        "identity": null
-      },
-      {
-        "name": "Jader Castillo",
-        "identity": null
-      },
-      {
-        "name": "Rigo Mendoza",
-        "identity": null
-      },
-      {
-        "name": "Yeyson Valdivia",
-        "identity": null
-      },
-      {
-        "name": "Eddy Gutierrez",
-        "identity": null
-      },
-      {
-        "name": "Deysi Padilla",
-        "identity": null
-      },
-      {
-        "name": "Jessica Rivera",
-        "identity": null
-      },
-      {
-        "name": "Reynaldo",
-        "identity": null
-      },
-      {
-        "name": "Magnoa López Garcia",
-        "identity": null
-      },
-      {
-        "name": "Alfonso Cruz",
-        "identity": null
-      },
-      {
-        "name": "Julio Mendoza",
-        "identity": null
-      },
-      {
-        "name": "Cristina",
-        "identity": null
-      },
-      {
-        "name": "Luis Blandon",
-        "identity": null
-      },
-      {
-        "name": "Janier Rivera",
-        "identity": null
-      },
-      {
-        "name": "Nelly Soza",
-        "identity": null
-      },
-      {
-        "name": "Larry Rivera",
-        "identity": null
-      },
-      {
-        "name": "Maritza",
-        "identity": null
+        "name": "Augusto lopez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Benigno Valles",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Agusto Lopez",
-        "identity": null
+        "name": "Byron Cruz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Cristina",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Darwin Gonzalez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Eddy Gutiérrez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Franklin López López",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Genara Mairena",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Gilber Valdivia",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jader Castillo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Janier Rivera",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jesica Rivera",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "José del Carmen González",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Julio Mendoza",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Larry Rivera",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Luis Blandon",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Meyklin López",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Miguel Ramirez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Moises Gonzalez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Nelly Soza",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Nemesio Salinas",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Nery Geovany Fajardo Salgado",
+        "identity": "454-250586-0001R",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Orlando Reyes",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Reynaldo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Rigo Mendoza",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Rodrigo Videa",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Salvador Laguna Morales",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Sergio López",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Vicente Cruz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Victorino Barrera",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Ector Mendez",
-        "identity": null
+        "name": "Yeyson Valdivia",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-02",
     "name": "San Lucas",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
+        "name": "Adner Lopez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
         "name": "Amada Montenegro",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Armando Sanchez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Carlos Centeno",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Catalino Sanchez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Darling Montenegro",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Edwin Adonis Hernandez Treminio",
-        "identity": null
+        "name": "Edwin Hernandez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Enrique Mairena",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ernestos Mairena",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Hector Pereira",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jarvin Herrera",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Jesus Zelaya",
-        "identity": null
+        "name": "Jesús Zelaya",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jose Maria Sanchez Aleman",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jose Raul Lopez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Juan Pablo Diaz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Mario Lopez",
-        "identity": null
+        "name": "Maritza M",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Noel Chavarría",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Omar Pereira",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Oscar López",
-        "identity": null
+        "name": "Sandoval",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Santana Zelaya",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "William Espinalez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "William Lopez",
-        "identity": null
-      },
-      {
-        "name": "Ronald",
-        "identity": null
-      },
-      {
-        "name": "Itamar",
-        "identity": null
+        "name": "Zenelia Itzamar Garcia Videa",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-03",
-    "name": "Yaoska",
+    "name": "Yahoska",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Alejandro Sanchez",
-        "identity": null
+        "name": "Alejandro Sánchez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ana Julia Figueroa Olivas",
-        "identity": null
-      },
-      {
-        "name": "Antonio Rayo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Carlos Espinoza",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Claudio Jose Mendoza Tellez",
-        "identity": null
+        "name": "Claudio José Mendoza Téllez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Edgar Xavier Rugama Zuniga",
-        "identity": null
+        "name": "Edgar Xavier Rugama Zúniga",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Edgard Rivera",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Enrrique Mendoza",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Esperanza Rivera",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Etsania Castillo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Feliciano Reyes",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Fernando Valdez Quiroz",
-        "identity": null
+        "name": "Felipe Martínez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "German Valdez",
-        "identity": null
+        "name": "Fernando Valdéz Quiróz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "German Valdéz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Guadalupe Picado Laguna",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Jilma Maria Pineda",
-        "identity": null
+        "name": "Jilma María Pineda",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Josè Inés Flores",
-        "identity": null
+        "name": "Leonardo Lemus",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Leoncia Tercero",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "LeonidasGarcía",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Lewis Montenegro",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Luís Ervin Ramírez Gutiérrez",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Manuel Tinoco",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Martha Lorena Castro",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Martin Montiel",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Martin Rayo Castillo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Melkin Gonzales",
-        "identity": null
+        "name": "Melkin González",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Mision Cristiana/Alvaro Antonio",
-        "identity": null
+        "name": "Misión Cristiana / Álvaro Antonio",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Moises Moreno",
-        "identity": null
+        "name": "Modesto Orozco",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Oscar Escoto # 1",
-        "identity": null
-      },
-      {
-        "name": "Oscar Escoto # 2",
-        "identity": null
-      },
-      {
-        "name": "Patricia Fabiola Ferrufino Garcia",
-        "identity": null
+        "name": "Pedro Orozco",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Petronila Espinoza",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Ramon Blandon Rugama",
-        "identity": null
+        "name": "Ramón Blandón Rugama",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Saul Moreno",
-        "identity": null
+        "name": "Ramón Castro",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Reyna Castro",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Trino Rivas Solano",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Uriel Sànchez",
-        "identity": null
+        "name": "Uriel Sánchez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Wosvaldo de Jesus Vega Trujillo",
-        "identity": null
+        "name": "Wosvaldo de Jesús Vega Trujillo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Yerlin Castro",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Zoila Flores",
-        "identity": null
-      },
-      {
-        "name": "Patricia Fabiola Ferrufino Garcia # 2",
-        "identity": null
-      },
-      {
-        "name": "Luís Ramirez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-04",
     "name": "Kubaly",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Abisai Perez Tinoco",
-        "identity": null
+        "name": "Abraham Perez Tinoco",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Abraham Perez Tinoco",
-        "identity": "454-010692-0000M"
+        "name": "Abraham Tinoco",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Antonio Lopez Acevedo",
-        "identity": "289-040571-0000G"
+        "identity": "289-040571-0000G",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Audiel Eliezer Pineda Arauz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Audy Irene Flores Maltez",
-        "identity": "441-051280-0004D"
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Carmen Ernesto Tinoco Arauz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Deyling Martinez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Elmer Pineda",
-        "identity": null
+        "name": "Esther Calderón",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Evaristo Luciano Ramirez G",
-        "identity": null
-      },
-      {
-        "name": "Evers Alejandro Tinoco Armas",
-        "identity": "089-261071-0003M"
-      },
-      {
-        "name": "Geovany Benavidez",
-        "identity": "454-160395-0003M"
+        "identity": "089-261071-0003M",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Isaac Tinoco Armas",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jenny Gutierrez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jimmy Benavidez",
-        "identity": null
-      },
-      {
-        "name": "Jonnys Tinoco Armas",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "José Domingo Espinoza Zelaya",
-        "identity": "454-240993-0005G"
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jose Luis Arauz Montenegro",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Josue Perez Tinoco",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Juan Carlos Tinoco Armas",
-        "identity": null
-      },
-      {
-        "name": "Jubelki Jesus Martinez Rivera",
-        "identity": null
-      },
-      {
-        "name": "Kairo Lanzas",
-        "identity": "454-181193-0004F"
-      },
-      {
-        "name": "Maria Eudocia Tinoco Montenegro",
-        "identity": null
-      },
-      {
-        "name": "Maria Martinez",
-        "identity": null
-      },
-      {
-        "name": "Marlene Maltez",
-        "identity": null
-      },
-      {
-        "name": "Mauro Armas Moreno",
-        "identity": null
-      },
-      {
-        "name": "Mayra Ofelia Lopez Cerros",
-        "identity": null
-      },
-      {
-        "name": "Meyling Anabetsi Espinoza Martinez",
-        "identity": "289-050275-0000S"
-      },
-      {
-        "name": "Nelson Martinez",
-        "identity": null
-      },
-      {
-        "name": "Pedro Espinoza",
-        "identity": null
-      },
-      {
-        "name": "Pedro Luis Pineda Diaz",
-        "identity": null
-      },
-      {
-        "name": "Santa Maria Urrutia Rivera",
-        "identity": null
-      },
-      {
-        "name": "Santos Arauz Zelaya",
-        "identity": null
-      },
-      {
-        "name": "Santos Javier Palma Valdivia",
-        "identity": null
-      },
-      {
-        "name": "Victoria Martinez",
-        "identity": "285-021162-0001W"
-      },
-      {
-        "name": "Lewis Montenegro",
-        "identity": null
-      },
-      {
-        "name": "Jesner Briones",
-        "identity": null
-      },
-      {
-        "name": "Janeth Arauz",
-        "identity": null
-      },
-      {
-        "name": "Francisco Salgado",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Juana Baquedano",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jubelki Jesus Martinez Rivera",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Maria Eudocia Tinoco Montenegro",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Maria Martinez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Marlene Maltez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Mauro Armas Moreno",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Mayra Ofelia Lopez Cerros",
+        "identity": "289-050275-0000S",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Meyling Anabetsi Espinoza Martinez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Pedro Luis Pineda Diaz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Santa Maria Urrutia Rivera",
+        "identity": "285-021162-0001W",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Santos Arauz Zelaya",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Santos Javier Palma Valdivia",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Victoria Martinez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-05",
     "name": "Bethel Kubaly",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
+        "name": "Abner Lazo Rayo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
         "name": "Alba Nubia Calderón Palma",
-        "identity": null
-      },
-      {
-        "name": "Carlos Aráuz/Claudia A Vega B",
-        "identity": null
-      },
-      {
-        "name": "Darwin Antonio Herrera Sanchez",
-        "identity": null
-      },
-      {
-        "name": "Hector García",
-        "identity": null
-      },
-      {
-        "name": "Henry Ponce",
-        "identity": null
-      },
-      {
-        "name": "Jackson Montenegro",
-        "identity": null
-      },
-      {
-        "name": "Jader Ramirez",
-        "identity": null
-      },
-      {
-        "name": "Jimmy Gonzalez",
-        "identity": null
-      },
-      {
-        "name": "Johny Jose Rugama Fajardo",
-        "identity": null
-      },
-      {
-        "name": "Jonny Alfredo Gonzalez Castro",
-        "identity": null
-      },
-      {
-        "name": "Jorge Luis Rivera Aguirre",
-        "identity": null
-      },
-      {
-        "name": "Jose Maria Ramirez Gutierres",
-        "identity": null
-      },
-      {
-        "name": "Katherin Pineda",
-        "identity": null
-      },
-      {
-        "name": "Maria de la Concepcion Acuña Castellon",
-        "identity": null
-      },
-      {
-        "name": "Mariano Garcia",
-        "identity": null
-      },
-      {
-        "name": "Miriam Martinez",
-        "identity": null
-      },
-      {
-        "name": "Nuria Blandon",
-        "identity": null
-      },
-      {
-        "name": "Otto Nixon Gonzalez Montenegro",
-        "identity": null
-      },
-      {
-        "name": "Ricardo Ponce",
-        "identity": null
-      },
-      {
-        "name": "Simon Espinoza /Jeffrey M Espinoiza F",
-        "identity": null
-      },
-      {
-        "name": "Teodora Herrera",
-        "identity": null
-      },
-      {
-        "name": "Abener Lazo Rayo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Amado Lazo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Carlos Aráuz/Claudia A Vega B",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Héctor García",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Henry Ponce",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jackson Montenegro",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jader Ramírez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jimmy González",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Johnny José Rugama Fajardo",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jonny Alfredo González Castro",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "José María Ramírez Gutiérrez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Katherin Pineda",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Mariano García",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Miriam Martínez",
+        "identity": "454-240993-0005G",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Nuria Blandón",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Otto Nixon González Montenegro",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Ricardo Ponce",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Simón Espinoza /Jeffrey M Espinoza F",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Teodora Herrera",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-06",
     "name": "Santa María Kubaly",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Alicia del Carmen Palma Valdivia",
-        "identity": "164-100765-0004V"
+        "name": "Adrián Barrera",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Amado Lazo Rayo",
-        "identity": "454-291089-0008N"
-      },
-      {
-        "name": "Ana Celia Mendoza Luna",
-        "identity": "454-291179-0003E"
+        "identity": "454-291089-0008N",
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Andres Palma",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Andres Torrez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Antonia Rizo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Antonio Rocha",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ariel Torrez Arauz",
-        "identity": "454-190482-0001T"
-      },
-      {
-        "name": "Berman Palma",
-        "identity": null
-      },
-      {
-        "name": "Camila Palma Cruz/",
-        "identity": "089-180767-0000T"
-      },
-      {
-        "name": "Denis Martìnez",
-        "identity": null
-      },
-      {
-        "name": "Dionisio Palma Valdivia",
-        "identity": "454-091087-0002K"
-      },
-      {
-        "name": "Dominga Luna",
-        "identity": null
-      },
-      {
-        "name": "Eddy García",
-        "identity": null
-      },
-      {
-        "name": "Elmer Espinoza Caliz",
-        "identity": "454-080187-0002Y"
-      },
-      {
-        "name": "Felix Pedro Blandon Zeledón",
-        "identity": "441-290667-0001J"
-      },
-      {
-        "name": "Francisco Blandon Zeledon",
-        "identity": "441-020574-0004J"
-      },
-      {
-        "name": "Francisco Cruz",
-        "identity": null
-      },
-      {
-        "name": "Francisco Margarito Blandon M",
-        "identity": null
-      },
-      {
-        "name": "Francisco Olivas",
-        "identity": null
-      },
-      {
-        "name": "Freddy Jose Garcia Molina",
-        "identity": "454-170885-0003B"
-      },
-      {
-        "name": "Fredys José Garcia",
-        "identity": null
-      },
-      {
-        "name": "Isaac Rizo",
-        "identity": null
-      },
-      {
-        "name": "Isabel Palma Valdivia",
-        "identity": "454-161183-0003E"
-      },
-      {
-        "name": "Jaime Montenegro Torrez",
-        "identity": "454-130407-1004D"
-      },
-      {
-        "name": "Joaquìn Cruz",
-        "identity": null
-      },
-      {
-        "name": "Johny Mondragon",
-        "identity": null
-      },
-      {
-        "name": "Josefa Diaz",
-        "identity": null
-      },
-      {
-        "name": "Lino Moran",
-        "identity": "164-120672-0002D"
-      },
-      {
-        "name": "Luis Montenegro",
-        "identity": null
-      },
-      {
-        "name": "Marbely Torrez Arauz",
-        "identity": null
-      },
-      {
-        "name": "Marcos Javier Blandon",
-        "identity": "454-090390-0001W"
-      },
-      {
-        "name": "Noel Guevara Diaz",
-        "identity": null
-      },
-      {
-        "name": "Norman Mendoza",
-        "identity": "454-080690-0000N"
-      },
-      {
-        "name": "Pastora Cruz",
-        "identity": null
-      },
-      {
-        "name": "Payo Montenegro",
-        "identity": "164-090849-0001J"
-      },
-      {
-        "name": "Porfirio Sequeira Molinares",
-        "identity": null
-      },
-      {
-        "name": "Ramiro Espinoza Ruvi",
-        "identity": "446-170265-0000D"
-      },
-      {
-        "name": "Rusbel Caliz",
-        "identity": "289-100352-0002M"
-      },
-      {
-        "name": "Santamaria Mondragon Chevez",
-        "identity": null
-      },
-      {
-        "name": "Santos Epifania Diaz",
-        "identity": "491-150573-0002K"
-      },
-      {
-        "name": "Sarai Arauz Zelaya",
-        "identity": "327-080452-0002A"
-      },
-      {
-        "name": "Sotero Espinales",
-        "identity": "246-130586-1001K"
-      },
-      {
-        "name": "Tomas Garcia",
-        "identity": null
-      },
-      {
-        "name": "Valentina Diaz Galindo",
-        "identity": null
-      },
-      {
-        "name": "Vilma Damaris Martinez Palma",
-        "identity": "164-171256-0000N"
-      },
-      {
-        "name": "Naun Gonzales",
-        "identity": "164-070597-1000K"
+        "identity": "454-190482-0001T",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Candido Mendoza",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "David Flores",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Denis Martìnez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Dionisio Palma Valdivia",
+        "identity": "454-091087-0002K",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Dominga Luna",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Elmer Espinoza Caliz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Felix Pedro Blandon Zeledón",
+        "identity": "454-080187-0002Y",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Francisco Blandon Zeledon",
+        "identity": "441-290667-0001J",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Francisco Margarito Blandon Montenegro",
+        "identity": "441-020574-0004J",
+        "payment_method": "transfer",
+        "source_payment_label": "Depósito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Freddy Jose Garcia Molina",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Fredys José Garcia",
+        "identity": "454-170885-0003B",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Isaac Rizo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Isabel Palma Valdivia",
+        "identity": "454-161183-0003E",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jerónimo Hernández",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Joaquìn Cruz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "José Pérez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "José Santo Cali",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Josefa Díaz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Keny Roberto Montenegro Gonzalez",
-        "identity": null
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Depósito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Maria Maldonado",
-        "identity": null
+        "name": "Lino Morán",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Depósito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Elias Martinez",
-        "identity": null
+        "name": "Luis Montenegro",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Elias",
-        "identity": null
+        "name": "Marbely Torrez Arauz",
+        "identity": "454-090390-0001W",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Marcos Javier Blandon Montenegro",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Naun González",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Noel Guevara Diaz",
+        "identity": "454-080690-0000N",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Norman Mendoza",
+        "identity": "164-090849-0001J",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Pastora Cruz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Payo Montenegro",
+        "identity": "289-100352-0002M",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Ramiro Espinoza Ruvi",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Rusbel Caliz",
+        "identity": "491-150573-0002K",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Santamaria Mondragon Chevez",
+        "identity": "327-080452-0002A",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Santos Epifania Diaz",
+        "identity": "246-130586-1001K",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Sarai Arauz Zelaya",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Sotero Espinales",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Tomas Garcia",
+        "identity": "164-171256-0000N",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Valentina Diaz Galindo",
+        "identity": "164-070597-1000K",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Vilma Damaris Martinez Palma",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Vilma Palma",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-07",
     "name": "Las Quebradas",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
         "name": "Adela Figueroa",
-        "identity": null
-      },
-      {
-        "name": "Alejandro Rosales",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Alvaro Chavarria",
-        "identity": null
-      },
-      {
-        "name": "Arnulfo Maldonado",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Byron Chavarria",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Carlos Hernandez",
-        "identity": null
+        "name": "Carlos Hernández",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "David González",
-        "identity": null
+        "name": "Cecilio Aráuz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Danilo Centeno Pérez",
+        "identity": "449-010175-0005Q",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Denis Antonio Rizo Olivas",
+        "identity": "241-020182-0007P",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Eddy Rosales",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Eduardo Herrera",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Elias Castillo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Eliesser Jarquin Blandon",
+        "identity": "610-100590-0006F",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Elvin Vallejo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Evenor González",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Extor David González Rozales",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Fidencio García",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Francisco Jose Arceda",
+        "identity": "441-230172-0009U",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Guillermo Velásquez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Horacio Castro Roque",
+        "identity": "610-240773-0000D",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jarvin Zelaya",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Javier Centeno",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Joel Salgado",
-        "identity": null
-      },
-      {
-        "name": "Jose Hernandez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jose Maria Centeno",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Luis Ovando",
-        "identity": null
+        "name": "Jose Maria Gonzalez Castillo",
+        "identity": "454-310583-0000U",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Marcelino Perez",
-        "identity": null
+        "name": "José Rosales",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Marcial Torrez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Nelson Herrera",
-        "identity": null
+        "name": "Nelson Antonio Herrera Martinez",
+        "identity": "441-010405-1008R",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Noel Gonzalez",
-        "identity": null
+        "name": "Nestor Alejandro Rosales Rodriguez",
+        "identity": "241-260280-0004F",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Porfirio Ramon Solano Pérez",
+        "identity": "361-310864-0003D",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ramiro Robleto",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ramon Lazo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Rene Castillo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Rene Rocha",
-        "identity": null
+        "name": "René Rocha",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Roger Rizo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Ronaldo Centeno Saenz",
+        "identity": "449-240471-0000B",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ruben Canteno",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Santos Herrera",
-        "identity": null
+        "name": "Santos Simeon Herrera",
+        "identity": "244-180340-0000K",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Sergio Montenegro",
-        "identity": null
-      },
-      {
-        "name": "Teodoro Torrez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Tomas Rosales",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Vicente Centeno",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Wilmer Loza Molina",
-        "identity": null
-      },
-      {
-        "name": "Wilmer Mendoza",
-        "identity": null
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Depósito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Yenner Gusman",
-        "identity": null
-      },
-      {
-        "name": "German Escalante",
-        "identity": null
-      },
-      {
-        "name": "William Cruz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-08",
     "name": "Waslalita El Naranjo",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
         "name": "Abel Orozco",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Adan Centeno",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Amalec Esmirna Espinoza Velasquez",
-        "identity": "454-281084-0002S"
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Amilkar Salinas",
-        "identity": null
+        "name": "Armando Rivera",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Depósito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Aracely Salinas Aguirre",
-        "identity": "454-100999-1003D"
-      },
-      {
-        "name": "Armando Castro",
-        "identity": null
-      },
-      {
-        "name": "Bismar Flores",
-        "identity": null
+        "name": "Arnulfo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Cecilio de Jesus Cruz Palma",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Cristobal Alvarado",
-        "identity": "164-221163-0000E"
+        "name": "Cristóbal Alvarado",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Darling Uriel Duarte Rivera",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Denis Arancibia",
-        "identity": "246-060294-0007B"
-      },
-      {
-        "name": "Deysi Flores",
-        "identity": null
-      },
-      {
-        "name": "Duglas Zeas",
-        "identity": null
-      },
-      {
-        "name": "Fidel Urbina",
-        "identity": null
+        "name": "Esmelda Aguirrez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Hollman Martinez Quiroz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Israel de Jesus Centeno Zeledón",
-        "identity": "454-040378-0000A"
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Javier Hernandez",
-        "identity": "454-220890-0001H"
-      },
-      {
-        "name": "Jhelsin Enrique Garcia López",
-        "identity": null
+        "name": "Jarol Sánchez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jilmer Orozco",
-        "identity": "454-180901-1002C"
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jose Lanzas",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "José Luis Centeno Perez",
-        "identity": null
-      },
-      {
-        "name": "Jose Maria Cordoba",
-        "identity": "449-110381-0005S"
-      },
-      {
-        "name": "Juan Carlos Moreno Cardenas",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Juan Davila Ortiz",
-        "identity": "492-160877-0006G"
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Juan Matute Guido",
-        "identity": "454-150570-0001G"
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Juan Pablo Hernandez Gomez",
-        "identity": "246-110769-0000X"
-      },
-      {
-        "name": "Julio Gonzales",
-        "identity": "454-231285-0002P"
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Kenia Gonzalez Centeno",
-        "identity": null
-      },
-      {
-        "name": "Leodan Rodriguez",
-        "identity": "454-271198-1001G"
-      },
-      {
-        "name": "Lucrecia Perez",
-        "identity": null
-      },
-      {
-        "name": "Manuel Siles",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Marcial Otoniel Navarrete Garmendia",
-        "identity": null
-      },
-      {
-        "name": "Mario Orozco",
-        "identity": "454-080895-0003C"
-      },
-      {
-        "name": "Mavin Duarte",
-        "identity": null
-      },
-      {
-        "name": "Melvin Cruz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Michael Danilo Tercero Blandón",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Nasario Dävila Dávila",
-        "identity": "454-151004-1000J"
-      },
-      {
-        "name": "Nelvin Vargas",
-        "identity": "454-221047-0000D"
-      },
-      {
-        "name": "Pedro Antonio Bargas Olivas",
-        "identity": null
+        "name": "Nasario Dávila Dávila",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Rafael Enrrique Mejía Salina",
-        "identity": "488-181048-0000F"
-      },
-      {
-        "name": "Ramon Cordero",
-        "identity": "492-260977-0001E"
-      },
-      {
-        "name": "Rosendo Arauz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Samuel Asencio",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Teresa Maradiaga",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Tomas Pineda",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Toribia Rivera",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Uriel Paez",
-        "identity": null
-      },
-      {
-        "name": "Wilmon Sànchez",
-        "identity": null
-      },
-      {
-        "name": "Yelson Rivas",
-        "identity": null
-      },
-      {
-        "name": "Francisco Gonzalez",
-        "identity": null
+        "name": "Yesica Matute",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Yobani Centeno",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-09",
     "name": "Piedras Bolas",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Alexis López",
-        "identity": null
-      },
-      {
-        "name": "Aminadac Orozco",
-        "identity": null
-      },
-      {
         "name": "Angel Palma",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Armando Mendoza",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Byron Rivera",
-        "identity": null
+        "name": "Bayron Rivera",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Depósito",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Carlos Gonzàlez",
-        "identity": null
-      },
-      {
-        "name": "Eddy Murillo",
-        "identity": null
-      },
-      {
-        "name": "Enrique Zeledon",
-        "identity": null
-      },
-      {
-        "name": "Erling Chevez",
-        "identity": null
-      },
-      {
-        "name": "Ezequiel Martinez",
-        "identity": null
-      },
-      {
-        "name": "Filadelfo Gomez",
-        "identity": null
-      },
-      {
-        "name": "Francisco Rivas",
-        "identity": null
-      },
-      {
-        "name": "Jaime Zelaya",
-        "identity": null
-      },
-      {
-        "name": "Janet Molina",
-        "identity": null
-      },
-      {
-        "name": "Jasmina Flores",
-        "identity": null
-      },
-      {
-        "name": "Jose Tinoco",
-        "identity": null
-      },
-      {
-        "name": "Juan Carlos Rivera",
-        "identity": null
-      },
-      {
-        "name": "Juan Martìnez",
-        "identity": null
-      },
-      {
-        "name": "Manuel Matey",
-        "identity": null
-      },
-      {
-        "name": "Marcos Rodriguez",
-        "identity": null
-      },
-      {
-        "name": "Mauricio Aguinaga",
-        "identity": null
-      },
-      {
-        "name": "Medardo Flores",
-        "identity": null
-      },
-      {
-        "name": "Moncho Maradiaga",
-        "identity": null
-      },
-      {
-        "name": "Narcizo Salgado",
-        "identity": null
-      },
-      {
-        "name": "Ofelia Solano",
-        "identity": null
-      },
-      {
-        "name": "Omar Barahona",
-        "identity": null
-      },
-      {
-        "name": "Jarvin Zelaya",
-        "identity": null
-      },
-      {
-        "name": "Pedro Cruz",
-        "identity": null
-      },
-      {
-        "name": "Rene Chavarria",
-        "identity": null
-      },
-      {
-        "name": "Ricardo Chevez",
-        "identity": null
-      },
-      {
-        "name": "Ronald Gonzalez",
-        "identity": null
-      },
-      {
-        "name": "Rufo Loza",
-        "identity": null
-      },
-      {
-        "name": "Sandra Centeno",
-        "identity": null
-      },
-      {
-        "name": "Saturnio Rodriguez",
-        "identity": null
-      },
-      {
-        "name": "Teofilo Castro",
-        "identity": null
-      },
-      {
-        "name": "Urbelinda Ocampo",
-        "identity": null
-      },
-      {
-        "name": "Uriel Chavarria",
-        "identity": null
-      },
-      {
-        "name": "Vicente Chevez",
-        "identity": null
-      },
-      {
-        "name": "Wilder Cruz",
-        "identity": null
-      },
-      {
-        "name": "Wilmer Arauz",
-        "identity": null
-      },
-      {
-        "name": "Wilmer Rodriguez",
-        "identity": null
-      },
-      {
-        "name": "Yender Lòpez",
-        "identity": null
+        "name": "Bismark Flores",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Danilo Olivas",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Adrian Valdivia",
-        "identity": null
+        "name": "Denis Arancibia",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Rafael Molina",
-        "identity": null
+        "name": "Deysis Flores",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Eddy Murillo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Enrique Zeledon",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Fidel Urbina",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Filadelfo Gomez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Francisco Rivas",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Gabriel Molina",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jader Gonzalez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jader Mendoza",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Carlos Mairena",
-        "identity": null
+        "name": "Jaime Zelaya",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Julio Gonzalez",
-        "identity": null
+        "name": "Janet Molina",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "wilmer Gonzalez",
-        "identity": null
+        "name": "Julio gonzalez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Lucrecia Pérez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Manuel Siles",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Marcos Rodriguez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Mauricio Aguinaga",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Melvin Cruz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Miguel Angel Rayo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Moncho Maradiaga",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Narciso Salgado",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Nelvin Vargas",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Omar Barahona",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Pedro Vargas",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Rene Chavarria",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Ricardo Chevez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Ronald Gonzalez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Rufo Loza",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Sandra Centeno",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Saturnio Rodriguez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Teofilo Castro",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Urbelinda Ocampo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Uriel Chavarria",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Wilmer Arauz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Wilmer Rodriguez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-10",
     "name": "Sofana",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Abrahan Rodriguez",
-        "identity": null
-      },
-      {
         "name": "Alfonzo Muñoz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Ariel Rayo Humberto Montenegro",
-        "identity": null
-      },
-      {
-        "name": "Arnoldo Rayo",
-        "identity": null
-      },
-      {
-        "name": "Basilio del Socorro Zeledon Castro",
-        "identity": null
-      },
-      {
-        "name": "Byron Zamoran",
-        "identity": null
+        "name": "Byron Zamorán",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Cresencio Barrera / Dominga Lopez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Daniel Hernandez",
-        "identity": null
-      },
-      {
-        "name": "David Mendez",
-        "identity": null
-      },
-      {
-        "name": "Elder Hernandez",
-        "identity": null
+        "name": "David Méndez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Erick Guzman",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Felix Octavio",
-        "identity": null
-      },
-      {
-        "name": "Freddy Arauz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jaime Jarquin # 1",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Javier Barrera",
-        "identity": null
-      },
-      {
-        "name": "Joaquin Treminio",
-        "identity": null
-      },
-      {
-        "name": "Juan Carlos Gonzalez",
-        "identity": null
+        "name": "Juan Carlos González",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Juan Garcia",
-        "identity": null
-      },
-      {
-        "name": "Kelvin Sadiel Lizano Jarquin",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Lidia",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Manyel Lopez Figueroa",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Marcos Montenegro",
-        "identity": null
-      },
-      {
-        "name": "Matilde",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Miguel Angel Gonzalez",
-        "identity": null
-      },
-      {
-        "name": "Moises Reyes",
-        "identity": null
-      },
-      {
-        "name": "Natanael Zeledon",
-        "identity": null
-      },
-      {
-        "name": "Neli Velazque",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Noel Ramos",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Oscar Gonzalez",
-        "identity": null
-      },
-      {
-        "name": "Pedro Pablo Diaz",
-        "identity": null
-      },
-      {
-        "name": "Roger Miranda",
-        "identity": null
-      },
-      {
-        "name": "Rosa Tercero",
-        "identity": null
+        "name": "Reyna Paula Jarquin",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ruth Zamora",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Sandra Mairena",
-        "identity": null
+        "name": "Salvadora Centeno",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Santiago Figerora",
-        "identity": null
-      },
-      {
-        "name": "Walter Zamoran",
-        "identity": null
-      },
-      {
-        "name": "Yeyson Hunter",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Virgilio Miranda",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Walter Zamoran",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-11",
     "name": "Central #2",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
+        "name": "Andrea Ramírez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
         "name": "Bernarda Castillo F",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Bolivar Montenegro",
-        "identity": null
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Daniel Ramos",
-        "identity": null
-      },
-      {
-        "name": "Donald Davila",
-        "identity": null
-      },
-      {
-        "name": "Dora Masis",
-        "identity": null
-      },
-      {
-        "name": "Eduardo Polanco",
-        "identity": null
-      },
-      {
-        "name": "Elias Ochoa",
-        "identity": null
-      },
-      {
-        "name": "Evert Masis",
-        "identity": null
+        "name": "Donald Dávila",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Francisco Jarquin",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Francisco Torrez",
-        "identity": null
+        "name": "Francisco Tórrez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Henry Jarquin",
-        "identity": null
+        "name": "Henry Jarquín",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Henry Tyson Telleria",
-        "identity": null
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Israel Torrez",
-        "identity": null
+        "name": "Israel Tórrez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Jharinton Martinez",
-        "identity": null
+        "name": "Jharinton Martínez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jocsan Uriel Lanzas Dávila",
-        "identity": null
-      },
-      {
-        "name": "Jose Noel García Roquez",
-        "identity": null
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jose Zeas",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Kesley America Lanzas Dávila",
-        "identity": null
+        "name": "Kesley América Lanzas Dávila/ Osvaldo A",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Lucio Mercado",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Luis Itzael Torrez",
-        "identity": null
+        "name": "Luis Itzael Tórrez",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Luis Ramirez",
-        "identity": null
+        "name": "Luis Ramirez /Merary Sarai López C",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Miguel Torrez",
-        "identity": null
+        "name": "Miguel Angel Tórrez Tinoco",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Pedro Urbina",
-        "identity": null
-      },
-      {
-        "name": "Rigoberto Davila",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-12",
     "name": "El Chilamate",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Alex Moreno",
-        "identity": null
+        "name": "Alexis Pineda",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "America Sofia Zeledon",
-        "identity": null
+        "name": "Allan Eliézer Moreno Cruz",
+        "identity": "246-070388-0007E",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Bernabe Alexis Benavidez",
-        "identity": null
+        "name": "América Sofia Zeledón/ Felix José Zeledón",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Bismar Gutierrez",
-        "identity": null
+        "name": "Bernabé Alexis Benavidez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Clemente Rodriguez",
-        "identity": null
+        "name": "Bismar Gutiérrez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Clemente Rodríguez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Denis Aguirre",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Eddy Montenegro",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ever Tórrez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Jaime Lopez Martinez",
-        "identity": null
+        "name": "Jaime López Martínez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Juan Pablo Herrera",
-        "identity": null
-      },
-      {
-        "name": "Melkin López",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Pablo Antonio Rugama",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Petronila",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Reynaldo Lagos",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Rolando Altamirano",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Trinidad del Señor Herrera",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Vidal Aguirre",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Wendy Arcadia Lopez Agurcia",
-        "identity": null
+        "name": "Wendy Arcadia López Agurcia",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "William Gutierrez",
-        "identity": null
-      },
-      {
-        "name": "Reyna Paula J",
-        "identity": null
+        "name": "William Gutiérrez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-13",
     "name": "San Rafael Kum",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Abismael Evers Castro López",
-        "identity": null
+        "name": "Alexánder Rugama",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Alexander Rugama",
-        "identity": null
-      },
-      {
-        "name": "Ana Navarro",
-        "identity": null
-      },
-      {
-        "name": "Antonia Lopez",
-        "identity": null
+        "name": "Antonia López",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Carlos Mercados",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Cesar Rayo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Cristóbal Mercado",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Dayvin Lanzas",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Denis Suarez",
-        "identity": null
-      },
-      {
-        "name": "Elias Rugama",
-        "identity": null
-      },
-      {
-        "name": "Erick Tinoco",
-        "identity": null
-      },
-      {
-        "name": "Erling Ariel Garcia Espinoza",
-        "identity": null
-      },
-      {
-        "name": "Escarleth Salgado",
-        "identity": null
-      },
-      {
-        "name": "Fidel Rayo",
-        "identity": null
-      },
-      {
-        "name": "Isaac Torrez Morales /Daniel Torrez",
-        "identity": null
-      },
-      {
-        "name": "José López",
-        "identity": null
-      },
-      {
-        "name": "Marcia Gomez",
-        "identity": null
-      },
-      {
-        "name": "Omar Baltodano",
-        "identity": null
-      },
-      {
-        "name": "Reynaldo Jarquin",
-        "identity": null
-      },
-      {
-        "name": "Sadan Rayo",
-        "identity": null
-      },
-      {
-        "name": "Santos Rugama",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Dixon Sequeyra",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Erick Tinoco",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Erling Ariel García Espinoza",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Fidel Rayo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Isaac Tórrez Morales /Daniel Tórrez",
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "José López",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Marcia Gámez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Omar Baltodano",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Reynaldo Jarquin",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Sadan Rayo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Santos Rugama",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-14",
     "name": "La Tumba",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Agustin Lopez",
-        "identity": null
+        "name": "Agustin López Sánchez",
+        "identity": "442-280862-0002Q",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Alex Ramos",
-        "identity": null
+        "name": "Albert Adelia Zamorán Guzmán",
+        "identity": "454-090579-0002V",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Angela Oneyda Castro Montenegro",
-        "identity": "441-270176-0003A"
-      },
-      {
-        "name": "Antonio Arauz",
-        "identity": null
+        "identity": "441-270176-0003A",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Aydalina Amaya",
-        "identity": null
+        "identity": "454-191177-0001R",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Bilma Amador Mejias",
-        "identity": "241-271285-1000D"
+        "name": "Blanca Milvia Ruiz Rivera",
+        "identity": "492-170577-0002K",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Carmenza Urbina F",
-        "identity": null
+        "name": "Cástulo Barrera Muñóz",
+        "identity": "454-221059-0000N",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Castulo Barrera Muñoz",
-        "identity": "454-221059-0000N"
-      },
-      {
-        "name": "Constantino Lopez",
-        "identity": null
-      },
-      {
-        "name": "Daniel Manzanares",
-        "identity": null
-      },
-      {
-        "name": "Deyvin Arteta",
-        "identity": null
+        "name": "Constantino López Sánchez",
+        "identity": "454-120430-0000K",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Doris Montenegro Rayo",
-        "identity": "454-161069-0002X"
+        "identity": "454-161069-0002X",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Edelia Zamoran",
-        "identity": null
+        "name": "Enrique Mendoza Lúquez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Enrique Mendoza Luquez",
-        "identity": "449-180171-0006A"
+        "name": "Ermenegilda Justina Rivera Ubeda",
+        "identity": "246-130460-1000t",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Ervin Tenorio",
-        "identity": null
+        "name": "Felipe Martínez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Felipe Martinez",
-        "identity": null
+        "name": "Florencio González Rodríguez",
+        "identity": "454-290446-0000L",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Florencio Gonzalez Rodriguez",
-        "identity": "444-290446-0000L"
+        "name": "Gerónimo Montoya",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Gabriel Gonzalez",
-        "identity": null
+        "name": "Henrry Tórrez Acosta",
+        "identity": "450-040984-0000M",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Geronimo Montoya",
-        "identity": null
+        "name": "Jader Saul Zamorán Guzmán",
+        "identity": "454-010788-0002S",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Ignacio Gonzalez López",
-        "identity": "454-310754-0000Q"
+        "name": "Jerman Vargas Tórres",
+        "identity": "449-190469-0000B",
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Jader Saul Zamoran Guzman",
-        "identity": "454-010788-0002S"
+        "name": "Jeyding Zamorán Guzmán",
+        "identity": "454-190492-0002Q",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "German Vargas",
-        "identity": null
+        "name": "Jimmy Vargas Zamorán",
+        "identity": "454-110505-1003Q",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Jeyding Zamoran Guzman",
-        "identity": "454-190492-0002Q"
+        "name": "Jorvin Saul Zamorán Guzmán",
+        "identity": "454-180394-0000T",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Jorling Roque",
-        "identity": null
+        "name": "José Adonis Montoya",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Jorvin Saul Zamoran Guzman",
-        "identity": "454-180394-0000T"
+        "name": "José Angel Flores Gómez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "José Adonis Montoya Zeledón/",
-        "identity": "454-010600-1001A"
+        "name": "José Eldibrando Tinoco Rayo",
+        "identity": "442-250990-0002N",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Jose Angel Flores Gomez",
-        "identity": "443-080174-0002D"
+        "name": "Juan Figueroa Olivas",
+        "identity": "454-140574-0002J",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Jose Eldibrando Tinoco Rayo",
-        "identity": "442-250990-0002N"
+        "name": "Juana Sánchez",
+        "identity": "442-251165-0000K",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Juan Figueroa",
-        "identity": null
+        "name": "Maximino Aráuz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Juana Sanchez",
-        "identity": "442-251165-0000K"
+        "name": "Medardo González Ochoa",
+        "identity": "454-200587-0001A",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Leonidas García",
-        "identity": null
+        "name": "Odalis del Carmen Rodríguez Castro",
+        "identity": "441-130671-0004F",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Melvin Juren Lanza Davila",
-        "identity": null
-      },
-      {
-        "name": "Manuel Tinoco",
-        "identity": null
-      },
-      {
-        "name": "Martha Lorena Castro López",
-        "identity": "454-051184-0003A"
-      },
-      {
-        "name": "Maximino Arauz",
-        "identity": null
-      },
-      {
-        "name": "Medardo Gonzalez Ochoa",
-        "identity": "454-200587-0001A"
-      },
-      {
-        "name": "Milder Castro",
-        "identity": null
-      },
-      {
-        "name": "Nilvia Ruiz",
-        "identity": null
-      },
-      {
-        "name": "Odalis del Carmen Rodriguez Castro",
-        "identity": "441-130671-0004F"
-      },
-      {
-        "name": "Paulo Maldonado",
-        "identity": null
-      },
-      {
-        "name": "Pedro Ramon Castro",
-        "identity": null
+        "name": "Pedro Ramón Castro Rivera",
+        "identity": "243-020852-0000A",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Rafael Figueroa Guido",
-        "identity": "441-240277-0001S"
-      },
-      {
-        "name": "Ramon Castro",
-        "identity": null
+        "identity": "441-240277-0001S",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Reyna Azucena Castro López",
-        "identity": "454-251189-0002Q"
-      },
-      {
-        "name": "Rigoberto Maldonado",
-        "identity": null
-      },
-      {
-        "name": "Rodolfo Gonzalez Ochoa",
-        "identity": null
+        "identity": "454-251189-0002Q",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Roger Paz",
-        "identity": "454-140778-0000X"
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Ruben Danilo Maldonado Gonzalez",
-        "identity": null
+        "name": "Rubén Danilo Maldonado Gonzáles",
+        "identity": "454-261190-0004P",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Samuel García",
-        "identity": "454-261190-0004P"
+        "name": "Samuel García Cardoza",
+        "identity": "453-081285-0000M",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Santiago Arauz",
-        "identity": null
+        "name": "Santiago Aráuz Ochoa",
+        "identity": "441-250554-0005T",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Yerlin Castro",
-        "identity": null
+        "name": "Soveyda Ocampo",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Sobeyda Ocampo",
-        "identity": null
-      },
-      {
-        "name": "Helvin Hernandez",
-        "identity": null
+        "name": "Yorlin Roque Siles",
+        "identity": "454-181089-0002T",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-15",
-    "name": "Kiawas",
+    "name": "El Kiawas",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Alexi Lopez",
-        "identity": null
-      },
-      {
-        "name": "Alexis Rugama",
-        "identity": null
-      },
-      {
         "name": "Alfredo Duarte",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Alvaro Hernandez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Angel Varga",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ariel Hernandez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Enots Arauz Espinoza",
-        "identity": null
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Erasmo Sunsin",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ervin Zeledon",
-        "identity": null
-      },
-      {
-        "name": "Faustino Lira",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Genaro Alvarez Molinarez",
-        "identity": null
-      },
-      {
-        "name": "Gilber Castillo",
-        "identity": null
+        "identity": "453-090870-0000U",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Gloria Alvisuga",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jaime Ruiz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jeffrey Maudiel Espinoza Funes",
-        "identity": null
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Juana Hernandez",
-        "identity": null
+        "name": "Juana Hernandez Huerta",
+        "identity": "443-220453-0005V",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Maynor Castillo",
-        "identity": null
+        "name": "Marcos Blandón",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Miriam Rugama",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Oscar Enrique Cruz Arauz",
-        "identity": null
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Oscar Fonseca",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Osling Blandon",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Pedro Palacio",
-        "identity": null
+        "name": "Pedro Palacios Martinez",
+        "identity": "452-240873-0000T",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Roberto Rayo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Roberto Ruiz",
-        "identity": null
-      },
-      {
-        "name": "Roger Oporta",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Santiago Rayo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Santo Castellon",
-        "identity": null
+        "name": "Santos Castellon Gutierrez",
+        "identity": "452-011160-0004N",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Santos Gumercindo Palacios Hernandez",
-        "identity": null
-      },
-      {
-        "name": "Santos Palacios Tinoco",
-        "identity": null
-      },
-      {
-        "name": "Socorro Cantarero",
-        "identity": null
-      },
-      {
-        "name": "Marcos Aviles",
-        "identity": null
-      },
-      {
-        "name": "Maria Loaysiga",
-        "identity": null
-      },
-      {
-        "name": "Jose Ramon Montenegro",
-        "identity": null
-      },
-      {
-        "name": "Reyna Coronado",
-        "identity": null
-      },
-      {
-        "name": "Javier Zeledon",
-        "identity": null
-      },
-      {
-        "name": "Rosario Diaz",
-        "identity": null
-      },
-      {
-        "name": "Oracio Valdez",
-        "identity": null
+        "name": "Sukre Alexis Lopez Rugama",
+        "identity": "454-190792-0000H",
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-16",
     "name": "Las Barandas",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Alexander Perez",
-        "identity": null
+        "name": "Abel Barrera",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Alfonso Zamora",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Anacelia Castillo",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Andres Centeno",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Angel Figueroa",
-        "identity": null
-      },
-      {
-        "name": "Antonia Martìnez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Argentina Arostegui Palacio",
-        "identity": null
-      },
-      {
-        "name": "Arlen Gonzalez",
-        "identity": null
-      },
-      {
-        "name": "Aydalina Martinez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Bladimir Martinez",
-        "identity": null
-      },
-      {
-        "name": "Byron Castro Montenegro",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Byron Mendoza",
-        "identity": null
-      },
-      {
-        "name": "Byron Ochoa",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Byron Toruño Martínez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Calistro Ubilla",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Carla Somoza",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Carlos Castro",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Consuelo Oporta",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "David Pineda",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Denis Velasquez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Elsa Montenegro",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Engel Josue Castro",
-        "identity": null
+        "identity": null,
+        "payment_method": "transfer",
+        "source_payment_label": "Deposito Bancario",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Enrique Vanegas",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Esnayder Martinez",
-        "identity": null
+        "name": "Estela Olivas",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Evaristo Lopez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Feliciano Jarquin",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Freddy Figueroa",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Gadiel Espinoza",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ilda Fuentes",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Isidro Gonzalez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ivan Martinez",
-        "identity": null
-      },
-      {
-        "name": "Jader Muñoz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Javier Zamora",
-        "identity": null
-      },
-      {
-        "name": "Jefrin Perez",
-        "identity": null
-      },
-      {
-        "name": "Jehu Antonio Gonzalez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "José Aristides",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "José Centeno",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jose Ivan Talavera",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jose Martin Castil",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Jose Roda",
-        "identity": null
-      },
-      {
-        "name": "Josue Fuentes",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Leyner Martinez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Luis Blandon",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Luis Montenegro",
-        "identity": null
-      },
-      {
-        "name": "Luisa Arauz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Marcos Molina",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Mario Blandón",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Mario Castro",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Mario Valdivia",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Matha Castil Blanco",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Melkin Martinez",
-        "identity": null
-      },
-      {
-        "name": "Jelsin Garcia",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Melvin Caballero",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Misael Martinez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Moises Fonseca",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Norvin Ortega",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Olga Flores",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Pedro Gonzalez",
-        "identity": null
+        "name": "Paula Solórzano",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Petrona Zamora",
-        "identity": null
-      },
-      {
-        "name": "René López",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Reyna Díaz",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Ricardo Figueroa",
-        "identity": null
-      },
-      {
-        "name": "Ricardo Fuentes",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Rolando Jose Duarte",
-        "identity": null
-      },
-      {
-        "name": "Rosibel Lopez",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Salatiel Arosteguí",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Sergio Peralta",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Sheyling Dayana Guzman",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Silvio Flores",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Vicente Pauth",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Walter Ochoa",
-        "identity": null
+        "name": "Walther Ochoa",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Wilmer Gutierrez",
-        "identity": null
+        "name": "Wilfredo Lopez Muñoz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   },
   {
     "code": "QBR-17",
     "name": "Los Mangos",
+    "source_period": "23-29 octubre 2026",
     "producers": [
       {
-        "name": "Ruperto Chavarria Arauz",
-        "identity": null
-      },
-      {
-        "name": "Ebal Chavarria Borges",
-        "identity": null
-      },
-      {
-        "name": "Francisco Javier Salgado Aguirre",
-        "identity": null
-      },
-      {
-        "name": "Elvin Salgado Castillo",
-        "identity": null
+        "name": "Alcidez Aráuz Valle",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Dania Centeno",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Eddy Blancher",
-        "identity": null
+        "name": "Ebal Chavarria Borges",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Luis Orozco",
-        "identity": null
+        "name": "Elvin Salgado Castillo.",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Oscar Ugarte",
-        "identity": null
-      },
-      {
-        "name": "Lester Zelaya",
-        "identity": null
-      },
-      {
-        "name": "Victor Orozco",
-        "identity": null
+        "name": "Francisco Javier Salgado Aguirre",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Inmer Chavarria",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Alcidez Arauz Valle",
-        "identity": null
+        "name": "Lester Zelaya",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Luis Orozco",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
         "name": "Moises Salgado",
-        "identity": null
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       },
       {
-        "name": "Arlen Siles",
-        "identity": null
+        "name": "Oscar Ugarte",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Ruperto Chavarría Aráuz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      }
+    ]
+  },
+  {
+    "code": "QBR-18",
+    "name": "Palestina",
+    "source_period": "23-29 octubre 2026",
+    "producers": [
+      {
+        "name": "Bayron Jarquín",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Carlos Ampié",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Concepción Castellón",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Erling Pineda",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Ernesto Jarquín",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Esling Bermudez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Eugenio Ampié",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Fidelina Ortega",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Francisco Espinoza",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Fredis Valdéz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Isidro Méndez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Jeremias González",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Joel Alvarez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Julio Mejía",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Luis Olivas",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Marcial Castellón",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Marisela Solorzano",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Maycol Aráuz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Noel López",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Noel Solorzano",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Olivia Solorzano",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Omar Aráuz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Omar Urbina",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Pedro Manzanarez",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Rafael Soza",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Reynaldo Cruz",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Reynaldo Solórzano",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Tomás Soza",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
+      },
+      {
+        "name": "Wilber Pereira",
+        "identity": null,
+        "payment_method": "cash",
+        "source_payment_label": "Efectivo",
+        "phone": null,
+        "bank_name": null,
+        "bank_account_number": null,
+        "bank_account_holder": null
       }
     ]
   }
