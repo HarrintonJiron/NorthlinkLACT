@@ -7,6 +7,7 @@ use App\Modules\Admin\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
+use ZipArchive;
 
 class ModuleReportTest extends TestCase
 {
@@ -28,10 +29,21 @@ class ModuleReportTest extends TestCase
     public function test_official_report_can_be_exported_to_excel_compatible_workbook(): void
     {
         $this->authenticate();
-        $response = $this->get('/module-reports/inventory.xls?from=2026-01-01&to=2026-12-31');
-        $response->assertOk()->assertHeader('Content-Type', 'application/vnd.ms-excel; charset=UTF-8');
-        $this->assertStringContainsString('<Workbook', $response->getContent());
-        $this->assertStringContainsString('Kardex oficial de inventario', $response->getContent());
+        $response = $this->get('/module-reports/inventory.xlsx?from=2026-01-01&to=2026-12-31');
+        $response->assertOk()->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->assertStringStartsWith('PK', $response->getContent());
+
+        $path = tempnam(sys_get_temp_dir(), 'report-test-');
+        file_put_contents($path, $response->getContent());
+        $archive = new ZipArchive;
+        $this->assertTrue($archive->open($path) === true);
+        $this->assertNotFalse($archive->getFromName('xl/tables/table1.xml'));
+        $sheet = $archive->getFromName('xl/worksheets/sheet1.xml');
+        $this->assertIsString($sheet);
+        $this->assertStringContainsString('Kardex oficial de inventario', $sheet);
+        $this->assertStringContainsString('<autoFilter', $sheet);
+        $archive->close();
+        unlink($path);
     }
 
     public function test_guests_cannot_open_module_progress_pdf(): void

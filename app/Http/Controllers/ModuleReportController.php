@@ -14,6 +14,7 @@ use App\Modules\Producers\Models\Producer;
 use App\Modules\Producers\Services\RouteService;
 use App\Modules\Production\Models\ProductionBatch;
 use App\Modules\Ruteros\Models\Rutero;
+use App\Services\ExcelReportService;
 use App\Services\OfficialReportService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Response;
@@ -124,7 +125,7 @@ class ModuleReportController extends Controller
             ->stream($filename);
     }
 
-    public function excel(string $module, OfficialReportService $reports): Response
+    public function excel(string $module, OfficialReportService $reports, ExcelReportService $excel): Response
     {
         $report = $this->modules[$module] ?? null;
         if (! $report || $module === 'payroll') {
@@ -135,11 +136,11 @@ class ModuleReportController extends Controller
         abort_unless($this->canAccess($user, $module), 403);
         $filters = request()->validate(['from' => ['nullable', 'date'], 'to' => ['nullable', 'date', 'after_or_equal:from']]);
         $data = $reports->build($module, $user, $filters['from'] ?? null, $filters['to'] ?? null);
-        $xml = view('excel.report', compact('data'))->render();
+        $workbook = $excel->build($data);
 
-        return response("\xEF\xBB\xBF".$xml, 200, [
-            'Content-Type' => 'application/vnd.ms-excel; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="'.str($module)->replace('-', '_').'_northlink_quebar.xls"',
+        return response($workbook, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="'.str($module)->replace('-', '_').'_northlink_quebar.xlsx"',
         ]);
     }
 

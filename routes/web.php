@@ -48,7 +48,7 @@ Route::middleware(['auth', 'user.active'])->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
     Route::get('/module-reports/{module}.pdf', ModuleReportController::class)
         ->name('module-reports.show');
-    Route::get('/module-reports/{module}.xls', [ModuleReportController::class, 'excel'])
+    Route::get('/module-reports/{module}.xlsx', [ModuleReportController::class, 'excel'])
         ->name('module-reports.excel');
 
     Route::prefix('admin')->name('admin.')->group(function () {

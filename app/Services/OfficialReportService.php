@@ -78,11 +78,32 @@ class OfficialReportService
 
     private function paymentSheets(Carbon $from, Carbon $to): array
     {
-        $records = ProducerPaymentBatch::query()->whereBetween('week_end', [$from, $to])->orderBy('week_end')->get();
+        $records = ProducerPaymentBatch::query()
+            ->with(['items.producer:id,payment_method,bank_name,bank_account_number'])
+            ->whereBetween('week_end', [$from, $to])
+            ->orderBy('week_end')
+            ->get();
+        $items = $records->flatMap(fn (ProducerPaymentBatch $batch) => $batch->items->map(fn ($item): array => [
+            $batch->code,
+            $batch->week_start->format('d/m/Y'),
+            $batch->week_end->format('d/m/Y'),
+            $batch->status,
+            $item->route_code,
+            $item->producer_code,
+            $item->producer_name,
+            (float) $item->liters,
+            (float) $item->price_per_liter,
+            (float) $item->gross_amount,
+            (float) $item->advance_amount,
+            (float) $item->net_amount,
+            $item->producer?->payment_method === 'transfer' ? 'Transferencia' : 'Efectivo',
+            $item->producer?->bank_name ?: '—',
+            $this->maskAccount($item->producer?->bank_account_number),
+        ]))->values();
 
-        return ['title' => 'Cierre de planillas de productores', 'columns' => ['Código', 'Semana inicial', 'Semana final', 'Estado', 'Productores', 'Litros', 'Bruto C$', 'Adelantos C$', 'Neto C$'],
-            'rows' => $records->map(fn ($r) => [$r->code, $r->week_start->format('d/m/Y'), $r->week_end->format('d/m/Y'), $r->status, $r->producer_count, $r->total_liters, $r->gross_amount, $r->advance_amount, $r->net_amount])->all(),
-            'totals' => ['Planillas' => $records->count(), 'Neto pagable' => 'C$ '.number_format((float) $records->sum('net_amount'), 2)]];
+        return ['title' => 'Planilla detallada de pago a productores', 'columns' => ['Planilla', 'Semana inicial', 'Semana final', 'Estado', 'Ruta', 'Código productor', 'Productor', 'Litros', 'Precio C$/L', 'Bruto C$', 'Adelanto C$', 'Neto C$', 'Forma de pago', 'Banco', 'Cuenta'],
+            'rows' => $items->all(),
+            'totals' => ['Planillas' => $records->count(), 'Productores pagados' => $items->count(), 'Litros' => (float) $records->sum('total_liters'), 'Bruto C$' => (float) $records->sum('gross_amount'), 'Adelantos C$' => (float) $records->sum('advance_amount'), 'Neto pagable C$' => (float) $records->sum('net_amount')]];
     }
 
     private function producers(): array
@@ -96,12 +117,28 @@ class OfficialReportService
     private function routes(User $user): array
     {
         $records = app(RouteService::class)->accessibleQuery($user)
-            ->with(['rutero', 'activeAssignments'])
+            ->with(['rutero', 'activeAssignments.producer'])
             ->orderBy('name')
             ->get();
+        $rows = $records->flatMap(fn (Route $route) => $route->activeAssignments
+            ->filter(fn ($assignment): bool => (bool) $assignment->producer)
+            ->map(fn ($assignment): array => [
+                $route->code,
+                $route->name,
+                $route->rutero?->driver_name ?: 'Por confirmar',
+                $route->rutero?->driver_phone ?: '—',
+                $route->rutero?->vehicle_plate ?: '—',
+                $assignment->producer->code,
+                $assignment->producer->full_name,
+                $assignment->producer->identity_number ?: '—',
+                $assignment->producer->phone ?: '—',
+                $assignment->producer->community ?: '—',
+                $assignment->producer->payment_method === 'transfer' ? 'Transferencia' : 'Efectivo',
+                $route->active ? 'Activa' : 'Inactiva',
+            ]))->values();
 
-        return ['title' => 'Catálogo y cobertura de rutas', 'columns' => ['Código', 'Ruta', 'Propietario', 'Rutero', 'Placa', 'Productores', 'Estado'],
-            'rows' => $records->map(fn (Route $route) => [$route->code, $route->name, $route->rutero?->owner_name, $route->rutero?->driver_name, $route->rutero?->vehicle_plate, $route->activeAssignments->count(), $route->active ? 'Activa' : 'Inactiva'])->all(),
+        return ['title' => 'Rutas y productores asignados', 'columns' => ['Código ruta', 'Ruta', 'Rutero', 'Teléfono rutero', 'Placa', 'Código productor', 'Productor', 'Cédula', 'Teléfono productor', 'Comunidad', 'Forma de pago', 'Estado ruta'],
+            'rows' => $rows->all(),
             'totals' => ['Rutas' => $records->count(), 'Productores asignados' => $records->sum(fn (Route $route) => $route->activeAssignments->count())]];
     }
 
