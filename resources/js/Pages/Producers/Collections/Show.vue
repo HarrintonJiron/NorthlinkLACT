@@ -1,7 +1,7 @@
 <script setup>
 import AppShell from '../../../Components/AppShell.vue'
 import { Link, useForm } from '@inertiajs/vue3'
-import { ArrowLeft, CheckCircle2, MapPin, Milk, Smartphone, UserRound } from '@lucide/vue'
+import { ArrowLeft, CheckCircle2, MapPin, Milk, Printer, Smartphone, UserRound } from '@lucide/vue'
 
 const props = defineProps({ collection: Object })
 
@@ -33,6 +33,7 @@ const statusLabel = (status) => ({ requested: 'Corrección solicitada', resolved
         <span class="rounded-full px-3 py-1.5 text-sm font-bold" :class="collection.correction_status === 'requested' ? 'bg-rose-100 text-rose-700' : collection.correction_status === 'resolved' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'">
           {{ statusLabel(collection.correction_status) }}
         </span>
+        <a :href="`/collections/${collection.id}/receipt`" target="_blank" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-bold text-white hover:bg-slate-800"><Printer class="size-4" /> Imprimir recibo</a>
       </div>
 
       <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">

@@ -61,7 +61,7 @@ const submit = () => {
           <Link href="/collections" class="mb-3 inline-flex items-center gap-2 text-sm font-semibold text-emerald-700 hover:text-emerald-900"><ArrowLeft class="size-4" /> Volver a recolecciones</Link>
           <p class="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-700">Carga administrativa</p>
           <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-950">Ingreso masivo semanal</h1>
-          <p class="mt-1 text-sm text-slate-600">Complete solamente las celdas nuevas. Los registros existentes permanecen protegidos.</p>
+          <p class="mt-1 text-sm text-slate-600">Complete las celdas nuevas de la semana de pago, de viernes a jueves. Los registros existentes permanecen protegidos.</p>
         </div>
         <button type="button" :disabled="form.processing || !filledEntries.length" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 font-bold text-white shadow-sm transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50" @click="submit">
           <Save class="size-5" /> {{ form.processing ? 'Guardando…' : `Guardar ${filledEntries.length} registros` }}
@@ -78,7 +78,7 @@ const submit = () => {
           </label>
           <div class="flex items-center justify-center gap-2">
             <button type="button" class="grid size-11 place-items-center rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50" title="Semana anterior" @click="moveWeek(-7)"><ChevronLeft class="size-5" /></button>
-            <label class="text-sm font-semibold text-slate-700">Semana que inicia
+            <label class="text-sm font-semibold text-slate-700">Semana de pago (viernes a jueves)
               <span class="relative mt-1 block"><CalendarDays class="absolute left-3 top-3.5 size-4 text-slate-400" /><input v-model="weekStart" type="date" class="min-h-11 rounded-xl border border-slate-300 pl-10 pr-3 text-slate-900 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100" @change="reload"></span>
             </label>
             <button type="button" class="mt-6 grid size-11 place-items-center rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50" title="Semana siguiente" @click="moveWeek(7)"><ChevronRight class="size-5" /></button>

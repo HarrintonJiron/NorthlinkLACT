@@ -95,6 +95,7 @@ Route::middleware(['auth', 'user.active'])->group(function () {
         Route::get('/create', [MilkCollectionController::class, 'create'])->name('create');
         Route::post('/', [MilkCollectionController::class, 'store'])->name('store');
         Route::patch('/{collection}/correction', [MilkCollectionController::class, 'resolveCorrection'])->name('correction.resolve');
+        Route::get('/{collection}/receipt', [MilkCollectionController::class, 'receipt'])->name('receipt');
         Route::get('/{collection}', [MilkCollectionController::class, 'show'])->name('show');
     });
 

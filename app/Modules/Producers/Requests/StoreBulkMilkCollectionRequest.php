@@ -3,6 +3,7 @@
 namespace App\Modules\Producers\Requests;
 
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -33,8 +34,8 @@ class StoreBulkMilkCollectionRequest extends FormRequest
                     return;
                 }
 
-                $weekStart = CarbonImmutable::parse($this->string('week_start')->toString())->startOfWeek();
-                $weekEnd = $weekStart->endOfWeek();
+                $weekStart = CarbonImmutable::parse($this->string('week_start')->toString())->startOfWeek(CarbonInterface::FRIDAY);
+                $weekEnd = $weekStart->addDays(6);
                 $seen = [];
 
                 foreach ($this->array('entries') as $index => $entry) {

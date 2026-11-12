@@ -130,6 +130,17 @@ class MilkCollectionController extends Controller
         ]);
     }
 
+    public function receipt(MilkCollection $collection)
+    {
+        abort_unless($this->visibleCollections()->whereKey($collection->id)->exists(), 404);
+
+        $collection->load(['producer', 'route', 'company', 'plant', 'collectedBy']);
+
+        return view('producers.collection-receipt', [
+            'collection' => $collection,
+        ]);
+    }
+
     public function resolveCorrection(ResolveMilkCollectionCorrectionRequest $request, MilkCollection $collection)
     {
         abort_unless($this->visibleCollections()->whereKey($collection->id)->exists(), 404);

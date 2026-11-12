@@ -9,6 +9,7 @@ use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Requests\StoreBulkMilkCollectionRequest;
 use App\Modules\Producers\Services\MilkCollectionService;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,8 +29,8 @@ class BulkMilkCollectionController extends Controller
             'route_id' => ['nullable', 'integer'],
             'week_start' => ['nullable', 'date_format:Y-m-d'],
         ]);
-        $weekStart = CarbonImmutable::parse($validated['week_start'] ?? now())->startOfWeek();
-        $weekEnd = $weekStart->endOfWeek();
+        $weekStart = CarbonImmutable::parse($validated['week_start'] ?? now())->startOfWeek(CarbonInterface::FRIDAY);
+        $weekEnd = $weekStart->addDays(6);
         $routesQuery = $this->visibleRoutes($request);
         $routes = (clone $routesQuery)->orderBy('name')->get(['id', 'code', 'name']);
         $route = isset($validated['route_id'])
