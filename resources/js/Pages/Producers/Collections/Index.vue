@@ -1,7 +1,7 @@
 <script setup>
 import { computed, reactive } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
-import { AlertTriangle, CalendarDays, ChevronLeft, ChevronRight, CloudCheck, Droplets, Plus, RotateCcw, Search, Smartphone, Users } from '@lucide/vue'
+import { AlertTriangle, CalendarDays, ChevronLeft, ChevronRight, CloudCheck, Droplets, Grid3X3, Plus, RotateCcw, Search, Smartphone, Users } from '@lucide/vue'
 import AppShell from '../../../Components/AppShell.vue'
 import EmptyState from '../../../Components/EmptyState.vue'
 
@@ -65,9 +65,10 @@ const collectionDensity = (collection) => collection.density ?? collection.tempe
           <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-950">Acopio de leche</h1>
           <p class="mt-1 max-w-2xl text-sm text-slate-600">Consulta lo recibido en planta, identifica el origen y vigila la sincronización de los ruteros.</p>
         </div>
-        <Link href="/collections/create" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-2.5 font-semibold text-white shadow-sm transition hover:bg-emerald-800">
-          <Plus class="size-5" /> Registrar acopio
-        </Link>
+        <div class="flex flex-wrap gap-2">
+          <Link href="/collections/bulk" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-emerald-700 bg-white px-5 py-2.5 font-semibold text-emerald-800 shadow-sm transition hover:bg-emerald-50"><Grid3X3 class="size-5" /> Ingreso masivo</Link>
+          <Link href="/collections/create" class="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-2.5 font-semibold text-white shadow-sm transition hover:bg-emerald-800"><Plus class="size-5" /> Registrar acopio</Link>
+        </div>
       </header>
 
       <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

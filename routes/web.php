@@ -28,6 +28,7 @@ use App\Modules\Personnel\Controllers\PayrollExportController;
 use App\Modules\Personnel\Controllers\SettlementController;
 use App\Modules\Personnel\Controllers\TaxPolicyController;
 use App\Modules\Personnel\Controllers\VacationController;
+use App\Modules\Producers\Controllers\BulkMilkCollectionController;
 use App\Modules\Producers\Controllers\MilkCollectionController;
 use App\Modules\Producers\Controllers\ProducerController;
 use App\Modules\Producers\Controllers\RouteController;
@@ -89,6 +90,8 @@ Route::middleware(['auth', 'user.active'])->group(function () {
 
     Route::prefix('collections')->name('collections.')->middleware('module.permission:collections')->group(function () {
         Route::get('/', [MilkCollectionController::class, 'index'])->name('index');
+        Route::get('/bulk', [BulkMilkCollectionController::class, 'index'])->name('bulk.index');
+        Route::post('/bulk', [BulkMilkCollectionController::class, 'store'])->name('bulk.store');
         Route::get('/create', [MilkCollectionController::class, 'create'])->name('create');
         Route::post('/', [MilkCollectionController::class, 'store'])->name('store');
         Route::patch('/{collection}/correction', [MilkCollectionController::class, 'resolveCorrection'])->name('correction.resolve');
