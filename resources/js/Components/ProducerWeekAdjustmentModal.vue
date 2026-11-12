@@ -27,6 +27,7 @@ const emit = defineEmits(['close'])
 
 const form = useForm({
   week_end: '',
+  preferred_price_per_liter: '',
   density_price: '',
   advance_amount: '',
   notes: '',
@@ -39,6 +40,7 @@ watch(
     if (!visible || !props.producer) return
 
     form.week_end = props.weekEnd
+    form.preferred_price_per_liter = props.producer.preferred_price != null ? String(props.producer.preferred_price) : ''
     form.density_price = props.producer.density_price != null ? String(props.producer.density_price) : ''
     form.advance_amount = props.producer.advance_amount ? String(props.producer.advance_amount) : ''
     form.notes = props.producer.notes || ''
@@ -50,8 +52,10 @@ watch(
 const liters = computed(() => Number(props.producer?.liters || 0))
 const basePrice = computed(() => Number(props.basePrice || 0))
 const appliedPrice = computed(() => {
-  const value = parseFloat(form.density_price)
-  return Number.isFinite(value) ? value : basePrice.value
+  const penaltyPrice = parseFloat(form.density_price)
+  if (Number.isFinite(penaltyPrice)) return penaltyPrice
+  const preferredPrice = parseFloat(form.preferred_price_per_liter)
+  return Number.isFinite(preferredPrice) ? preferredPrice : basePrice.value
 })
 const advance = computed(() => {
   const value = parseFloat(form.advance_amount)
@@ -117,7 +121,28 @@ const close = () => emit('close')
 
         <div>
           <label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">
-            Penalización (C$ / L)
+            Precio personalizado fijo para este productor (C$ / L)
+          </label>
+          <div class="relative">
+            <DollarSign class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8E8E93]" />
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              v-model="form.preferred_price_per_liter"
+              :placeholder="String(basePrice)"
+              class="pl-10 w-full bg-[#F5F5F7] border-none rounded-xl focus:outline-none focus:ring-2 focus:ring-[#007AFF]/50 py-2.5 px-3 text-sm text-[#1D1D1F]"
+            />
+          </div>
+          <p class="text-xs text-[#8E8E93] mt-1">
+            Se aplicará automáticamente a todo su acopio actual y futuro. Déjalo vacío para usar el precio general de la semana.
+          </p>
+          <p v-if="form.errors.preferred_price_per_liter" class="text-xs text-[#FF3B30] mt-1">{{ form.errors.preferred_price_per_liter }}</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-[#1D1D1F] mb-1.5">
+            Precio penalizado solamente para esta semana (C$ / L)
           </label>
           <div class="relative">
             <DollarSign class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8E8E93]" />
@@ -131,7 +156,7 @@ const close = () => emit('close')
             />
           </div>
           <p class="text-xs text-[#8E8E93] mt-1">
-            Aplica a toda la producción de la semana. Déjalo vacío para usar el precio base.
+            Tiene prioridad sobre el precio personalizado durante esta semana. Déjalo vacío si no existe penalización.
           </p>
           <p v-if="form.errors.density_price" class="text-xs text-[#FF3B30] mt-1">{{ form.errors.density_price }}</p>
         </div>

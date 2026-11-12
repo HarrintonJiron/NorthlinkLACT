@@ -237,6 +237,12 @@ class ProducerController extends Controller
         if (ProducerPaymentBatch::query()->whereDate('week_end', $weekEnd)->exists()) {
             return back()->withErrors(['week_end' => 'La semana está cerrada y sus ajustes ya no pueden modificarse.']);
         }
+        $preferredPrice = $request->validated('preferred_price_per_liter');
+        $producer->update([
+            'preferred_price_per_liter' => $preferredPrice === null || $preferredPrice === ''
+                ? null
+                : (float) $preferredPrice,
+        ]);
         $densityPrice = $request->validated('density_price');
         $advance = (float) ($request->validated('advance_amount') ?? 0);
         $notes = $request->validated('notes');

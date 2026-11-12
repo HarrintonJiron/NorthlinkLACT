@@ -529,4 +529,36 @@ class ProducerModuleTest extends TestCase
                 ->where('report.rows.0.amount', 100)
             );
     }
+
+    public function test_week_adjustment_can_set_a_permanent_custom_producer_price(): void
+    {
+        $this->createPrice(20);
+        $route = $this->createRoute();
+        $producer = $this->createProducer($route, ['full_name' => 'Precio Especial']);
+        $this->collectMilk($producer, 10, now()->toDateString());
+        $weekEnd = app(ProducerService::class)->currentPayThursday()->toDateString();
+
+        $this->put('/producers/'.$producer->id.'/week-adjustment', [
+            'week_end' => $weekEnd,
+            'preferred_price_per_liter' => 23.50,
+            'density_price' => null,
+            'advance_amount' => 0,
+            'notes' => 'Precio especial autorizado',
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $this->assertDatabaseHas('producers', [
+            'id' => $producer->id,
+            'preferred_price_per_liter' => 23.50,
+        ]);
+
+        $this->get('/producers?week='.$weekEnd)
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('report.rows.0.preferred_price', 23.5)
+                ->where('report.rows.0.density_price', null)
+                ->where('report.rows.0.price', 23.5)
+                ->where('report.rows.0.gross_amount', 235)
+                ->where('report.rows.0.amount', 235)
+            );
+    }
 }
