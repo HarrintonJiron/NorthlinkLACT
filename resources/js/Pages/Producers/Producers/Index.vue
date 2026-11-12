@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import AppShell from '../../../Components/AppShell.vue'
 import { router, useForm } from '@inertiajs/vue3'
-import { Search, Printer, Pencil, Eye, LockKeyhole, BadgeCheck } from '@lucide/vue'
+import { Search, Printer, Pencil, Eye, LockKeyhole, BadgeCheck, LockOpen } from '@lucide/vue'
 import ProducerModal from '../../../Components/ProducerModal.vue'
 import ProducerWeekAdjustmentModal from '../../../Components/ProducerWeekAdjustmentModal.vue'
 import ProducerWeekDetailModal from '../../../Components/ProducerWeekDetailModal.vue'
@@ -69,6 +69,7 @@ const closedPriceForm = useForm({
   price_per_liter: props.report.price || '',
   reason: '',
 })
+const reopenForm = useForm({ reason: '' })
 
 watch(
   () => [props.report.week?.end, props.report.price],
@@ -186,6 +187,21 @@ const reviseClosedPrice = () => {
   })
 }
 
+const reopenPaymentSheet = () => {
+  const reason = window.prompt('Indique el motivo de la reapertura (mínimo 5 caracteres):')
+  if (!reason) return
+  if (reason.trim().length < 5) {
+    window.alert('El motivo debe tener al menos 5 caracteres.')
+    return
+  }
+  if (!window.confirm('¿Reabrir esta planilla? Los acopios quedarán editables y deberá cerrarla y revisarla nuevamente.')) return
+  reopenForm.reason = reason.trim()
+  reopenForm.patch(`/payment-sheets/${props.paymentBatch.id}/reopen`, {
+    preserveScroll: true,
+    onSuccess: () => { reopenForm.reason = '' },
+  })
+}
+
 const openCreateModal = () => {
   showCreateModal.value = true
 }
@@ -239,6 +255,7 @@ const printReport = () => {
         <div><p class="font-display text-lg font-bold text-slate-950">Planillas semanales de productores</p><p class="mt-1 text-sm text-slate-600">Revisa litros, precio aplicado, adelantos y total de pago antes del cierre formal.</p></div>
         <div class="flex flex-wrap gap-2">
           <span v-if="paymentBatch" class="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-bold" :class="paymentBatch.status === 'paid' ? 'text-emerald-700' : 'text-violet-700'"><BadgeCheck class="size-4" />{{ paymentBatchStatus }} · {{ paymentBatch.code }}</span>
+          <button v-if="paymentBatch && ['closed', 'reviewed'].includes(paymentBatch.status)" :disabled="reopenForm.processing" class="inline-flex min-h-10 items-center gap-2 rounded-xl border border-orange-300 bg-white px-4 text-sm font-bold text-orange-800 hover:bg-orange-50 disabled:opacity-50" @click="reopenPaymentSheet"><LockOpen class="size-4" />{{ reopenForm.processing ? 'Reabriendo…' : 'Reabrir para corregir' }}</button>
           <button v-if="!paymentBatch" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-violet-700 px-4 text-sm font-bold text-white" @click="closePaymentSheet"><LockKeyhole class="size-4" />Cerrar planilla</button>
           <button v-else-if="paymentBatch.status === 'closed'" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-blue-700 px-4 text-sm font-bold text-white" @click="transitionPaymentSheet('reviewed')"><BadgeCheck class="size-4" />Marcar revisada</button>
           <button v-else-if="paymentBatch.status === 'reviewed'" class="inline-flex min-h-10 items-center gap-2 rounded-xl bg-violet-700 px-4 text-sm font-bold text-white" @click="transitionPaymentSheet('approved')"><BadgeCheck class="size-4" />Aprobar pago</button>

@@ -10,6 +10,7 @@ use App\Modules\Producers\Models\ProducerRouteAssignment;
 use App\Modules\Producers\Models\ProducerWeekAdjustment;
 use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Requests\CloseProducerPaymentBatchRequest;
+use App\Modules\Producers\Requests\ReopenProducerPaymentBatchRequest;
 use App\Modules\Producers\Requests\ReviseClosedPaymentBatchRequest;
 use App\Modules\Producers\Requests\StoreProducerRequest;
 use App\Modules\Producers\Requests\StoreProducerWeekAdjustmentRequest;
@@ -113,6 +114,17 @@ class ProducerController extends Controller
         );
 
         return back()->with('success', 'Precio corregido. La planilla y los tickets fueron recalculados con trazabilidad.');
+    }
+
+    public function reopenPaymentSheet(ReopenProducerPaymentBatchRequest $request, ProducerPaymentBatch $batch)
+    {
+        $this->producerPaymentService->reopen(
+            $batch,
+            $request->validated('reason'),
+            $request->user(),
+        );
+
+        return back()->with('success', 'Planilla reabierta. Ya puedes corregir acopios, precios y ajustes antes de cerrarla nuevamente.');
     }
 
     public function paymentTicket(ProducerPaymentBatch $batch, Producer $producer)

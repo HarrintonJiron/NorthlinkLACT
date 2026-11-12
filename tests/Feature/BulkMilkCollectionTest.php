@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Modules\Audit\Models\AuditEvent;
 use App\Modules\Producers\Models\MilkCollection;
 use App\Modules\Producers\Models\ProducerPaymentBatch;
 use App\Modules\Producers\Models\ProducerPaymentItem;
@@ -110,5 +111,45 @@ class BulkMilkCollectionTest extends TestCase
         ])->assertSessionHasErrors('entries.0.date');
 
         $this->assertSame(0, MilkCollection::query()->count());
+    }
+
+    public function test_admin_can_reopen_a_reviewed_sheet_and_then_enter_missing_collections(): void
+    {
+        $route = $this->createRoute();
+        $producer = $this->createProducer($route);
+        $weekStart = now()->startOfWeek();
+        $batch = ProducerPaymentBatch::query()->create([
+            'code' => 'PAY-REOPEN', 'week_start' => $weekStart, 'week_end' => $weekStart->copy()->endOfWeek(),
+            'status' => ProducerPaymentBatch::STATUS_REVIEWED, 'producer_count' => 1, 'total_liters' => 0,
+            'gross_amount' => 0, 'advance_amount' => 0, 'net_amount' => 0,
+            'closed_by' => $this->user->id, 'closed_at' => now(),
+            'reviewed_by' => $this->user->id, 'reviewed_at' => now(),
+        ]);
+        ProducerPaymentItem::query()->create([
+            'batch_id' => $batch->id, 'producer_id' => $producer->id, 'route_id' => $route->id,
+            'producer_code' => $producer->code, 'producer_name' => $producer->full_name, 'route_code' => $route->code,
+            'liters' => 0, 'price_per_liter' => 0, 'gross_amount' => 0, 'advance_amount' => 0,
+            'net_amount' => 0, 'daily_liters' => [],
+        ]);
+
+        $this->patch(route('payment-sheets.reopen', $batch), [
+            'reason' => 'Faltan acopios de campo',
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $this->assertDatabaseMissing('producer_payment_batches', ['id' => $batch->id]);
+        $this->assertDatabaseHas('audit_events', [
+            'entity_type' => ProducerPaymentBatch::class,
+            'entity_id' => $batch->id,
+            'action' => 'reopened',
+        ]);
+
+        $this->post(route('collections.bulk.store'), [
+            'route_id' => $route->id,
+            'week_start' => $weekStart->toDateString(),
+            'entries' => [['producer_id' => $producer->id, 'date' => now()->toDateString(), 'liters' => '15']],
+        ])->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('milk_collections', ['producer_id' => $producer->id, 'liters' => 15]);
+        $this->assertSame('Faltan acopios de campo', AuditEvent::query()->where('action', 'reopened')->firstOrFail()->new_values['reason']);
     }
 }

@@ -261,6 +261,45 @@ class ProducerPaymentService
         });
     }
 
+    public function reopen(ProducerPaymentBatch $batch, string $reason, User $user): void
+    {
+        DB::transaction(function () use ($batch, $reason, $user): void {
+            $locked = ProducerPaymentBatch::query()->with('items')->lockForUpdate()->findOrFail($batch->id);
+
+            if (! in_array($locked->status, [
+                ProducerPaymentBatch::STATUS_CLOSED,
+                ProducerPaymentBatch::STATUS_REVIEWED,
+            ], true)) {
+                throw ValidationException::withMessages([
+                    'batch' => 'Solo se puede reabrir una planilla cerrada o revisada. Una planilla aprobada o pagada requiere un ajuste financiero.',
+                ]);
+            }
+
+            $snapshot = $locked->toArray();
+            $snapshot['items'] = $locked->items->toArray();
+
+            AuditEvent::query()->create([
+                'user_id' => $user->id,
+                'entity_type' => ProducerPaymentBatch::class,
+                'entity_id' => $locked->id,
+                'action' => 'reopened',
+                'description' => "Planilla reabierta para corrección. Motivo: {$reason}",
+                'old_values' => $snapshot,
+                'new_values' => [
+                    'status' => 'open',
+                    'reason' => $reason,
+                    'week_start' => $locked->week_start->toDateString(),
+                    'week_end' => $locked->week_end->toDateString(),
+                ],
+                'ip_address' => request()?->ip(),
+                'user_agent' => request()?->userAgent(),
+            ]);
+
+            $locked->items()->delete();
+            $locked->delete();
+        });
+    }
+
     private function audit(ProducerPaymentBatch $batch, User $user, string $action, string $description): void
     {
         AuditEvent::query()->create(['user_id' => $user->id, 'entity_type' => ProducerPaymentBatch::class, 'entity_id' => $batch->id, 'action' => $action, 'description' => $description, 'new_values' => $batch->fresh()->toArray(), 'ip_address' => request()?->ip(), 'user_agent' => request()?->userAgent()]);
