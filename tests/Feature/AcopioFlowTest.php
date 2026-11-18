@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Modules\Producers\Models\MilkCollection;
 use App\Modules\Producers\Models\Producer;
+use App\Modules\Producers\Models\Route;
 use App\Modules\Producers\Services\ProducerService;
 use App\Modules\Ruteros\Models\Rutero;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,7 +28,7 @@ class AcopioFlowTest extends TestCase
         $this->createPrice(20);
 
         $this->post('/routes', ['name' => 'Ruta Completa'])->assertRedirect();
-        $route = \App\Modules\Producers\Models\Route::query()->where('name', 'Ruta Completa')->firstOrFail();
+        $route = Route::query()->where('name', 'Ruta Completa')->firstOrFail();
 
         $this->post('/ruteros', [
             'owner_name' => 'Dueño Flujo',
@@ -92,7 +93,7 @@ class AcopioFlowTest extends TestCase
             );
     }
 
-    public function test_sumni_rejects_density_out_of_range_and_duplicate_identity(): void
+    public function test_sumni_rejects_temperature_out_of_range(): void
     {
         $route = $this->createRoute();
         $producer = $this->createProducer($route);
@@ -109,14 +110,6 @@ class AcopioFlowTest extends TestCase
             'liters' => 10,
             'temperature' => 51,
         ])->assertRedirect($url)->assertSessionHasErrors('temperature');
-
-        $this->createProducer($route, ['identity_number' => '441-88888-0008H']);
-
-        $this->from($url)->post($url.'/producers', [
-            'full_name' => 'Duplicado',
-            'identity_number' => '441-88888-0008H',
-            'phone' => '8888-0000',
-        ])->assertRedirect($url)->assertSessionHasErrors('identity_number');
     }
 
     public function test_route_can_swap_rutero_and_rejects_inactive(): void

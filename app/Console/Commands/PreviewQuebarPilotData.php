@@ -109,13 +109,13 @@ class PreviewQuebarPilotData extends Command
             $this->error($error);
         }
 
-        if (count($routes) < 17 || $errors !== [] || $identityConflicts !== [] || $duplicateNames !== []) {
+        if (count($routes) < 17 || $errors !== [] || $duplicateNames !== []) {
             $this->warn('La fuente no está aprobada para carga automática. Corrija o autorice explícitamente las excepciones.');
 
             return self::FAILURE;
         }
 
-        $this->info('La fuente cumple la estructura mínima para una carga controlada.');
+        $this->info('La fuente cumple la estructura mínima para una carga controlada. Los conflictos de cédula se conservarán como aparecen en las planillas.');
 
         return self::SUCCESS;
     }

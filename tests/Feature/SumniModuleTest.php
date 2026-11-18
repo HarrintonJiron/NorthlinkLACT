@@ -267,6 +267,24 @@ class SumniModuleTest extends TestCase
         ]);
     }
 
+    public function test_sumni_allows_a_new_producer_with_an_identity_used_by_another_route(): void
+    {
+        $origin = $this->createRoute(['name' => 'Ruta origen']);
+        $destination = $this->createRoute(['name' => 'Ruta destino']);
+        $this->createProducer($origin, ['identity_number' => '441-99999-0009Z']);
+
+        $this->post('/sumni/'.$destination->id.'/producers', [
+            'full_name' => 'Productor con cédula compartida',
+            'identity_number' => '441-99999-0009Z',
+            'phone' => '8777-1111',
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $this->assertDatabaseHas('producers', [
+            'full_name' => 'Productor con cédula compartida',
+            'identity_number' => '441-99999-0009Z',
+        ]);
+    }
+
     public function test_sumni_rejects_zero_negative_and_excessive_liters(): void
     {
         $route = $this->createRoute();

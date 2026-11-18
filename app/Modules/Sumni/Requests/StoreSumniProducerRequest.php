@@ -3,7 +3,6 @@
 namespace App\Modules\Sumni\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreSumniProducerRequest extends FormRequest
 {
@@ -20,7 +19,6 @@ class StoreSumniProducerRequest extends FormRequest
                 'nullable',
                 'string',
                 'regex:/^\d{3}-\d{5}-\d{4}[A-Za-z]?$/',
-                Rule::unique('producers', 'identity_number'),
             ],
             'phone' => 'required|string|max:20',
         ];
@@ -31,7 +29,6 @@ class StoreSumniProducerRequest extends FormRequest
         return [
             'full_name.required' => 'El nombre del cliente es obligatorio.',
             'identity_number.regex' => 'El formato de la cédula debe ser XXX-XXXXX-XXXX (ejemplo: 001-12345-0001A)',
-            'identity_number.unique' => 'Ya existe un productor con esa cédula.',
             'phone.required' => 'El teléfono es obligatorio.',
         ];
     }

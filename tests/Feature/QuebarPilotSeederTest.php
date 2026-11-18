@@ -41,8 +41,8 @@ class QuebarPilotSeederTest extends TestCase
             ->assertSuccessful();
 
         $this->assertSame(18, Route::query()->count());
-        $this->assertSame(527, Producer::query()->count());
-        $this->assertSame(527, ProducerRouteAssignment::query()->count());
+        $this->assertSame(524, Producer::query()->count());
+        $this->assertSame(524, ProducerRouteAssignment::query()->count());
         $this->assertSame(18, Rutero::query()->count());
         $this->assertSame(17, User::query()->where('username', 'like', 'rutero%')->count());
         $this->assertSame(34, RouteOperatorAssignment::query()->count());
@@ -50,6 +50,13 @@ class QuebarPilotSeederTest extends TestCase
         $this->assertDatabaseHas('routes', ['code' => 'QBR-01', 'name' => 'Dipina']);
         $this->assertDatabaseHas('routes', ['code' => 'QBR-18', 'name' => 'Palestina']);
         $this->assertDatabaseHas('producers', ['payment_method' => 'transfer']);
+        $this->assertDatabaseHas('producers', [
+            'full_name' => 'Audy Irene Flores Maltez',
+            'preferred_price_per_liter' => 16,
+        ]);
+        $this->assertDatabaseHas('ruteros', [
+            'owner_name' => 'Rigoberto Diaz Balmaseda',
+        ]);
         $this->assertDatabaseMissing('routes', ['code' => 'TEST-OLD']);
         $this->assertDatabaseMissing('producers', ['code' => 'TEST-PRODUCER']);
     }
@@ -63,7 +70,7 @@ class QuebarPilotSeederTest extends TestCase
         );
 
         $this->assertCount(18, $source);
-        $this->assertSame(527, collect($source)->sum(fn (array $route): int => count($route['producers'])));
+        $this->assertSame(524, collect($source)->sum(fn (array $route): int => count($route['producers'])));
         $this->assertCount(18, collect($source)->pluck('code')->unique());
 
         foreach ($source as $route) {
@@ -73,6 +80,25 @@ class QuebarPilotSeederTest extends TestCase
 
             $this->assertCount($names->count(), $names->unique(), "La ruta {$route['name']} contiene nombres duplicados.");
         }
+    }
+
+    public function test_source_preserves_identity_conflicts_from_the_latest_workbooks(): void
+    {
+        $source = json_decode(
+            (string) file_get_contents(database_path('data/quebar_pilot_routes.json')),
+            true,
+            flags: JSON_THROW_ON_ERROR,
+        );
+
+        $people = collect($source)
+            ->flatMap(fn (array $route): array => $route['producers'])
+            ->where('identity', '454-010692-0000M')
+            ->pluck('name')
+            ->sort()
+            ->values()
+            ->all();
+
+        $this->assertSame(['Abraham Perez Tinoco', 'Carlos Aráuz/Claudia A Vega B'], $people);
     }
 
     public function test_seeded_rutero_can_login_and_download_its_complete_route(): void
@@ -100,7 +126,7 @@ class QuebarPilotSeederTest extends TestCase
             ->assertOk()
             ->assertJsonPath('routes.0.code', 'QBR-01')
             ->assertJsonPath('routes.0.name', 'Dipina')
-            ->assertJsonCount(32, 'routes.0.producers');
+            ->assertJsonCount(30, 'routes.0.producers');
     }
 
     public function test_bethel_kubaly_can_be_shared_with_every_rutero_without_replacing_primary_routes(): void

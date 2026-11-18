@@ -329,7 +329,7 @@ class ProducerModuleTest extends TestCase
         Carbon::setTestNow();
     }
 
-    public function test_store_producer_requires_route_and_valid_unique_identity(): void
+    public function test_store_producer_requires_route_and_valid_identity_format_but_allows_a_repeated_identity(): void
     {
         $route = $this->createRoute();
         $this->createProducer($route, ['identity_number' => '001-12345-0001A']);
@@ -344,11 +344,16 @@ class ProducerModuleTest extends TestCase
             'route_id' => $route->id,
         ])->assertRedirect('/producers')->assertSessionHasErrors('identity_number');
 
-        $this->from('/producers')->post('/producers', [
+        $this->post('/producers', [
             'full_name' => 'Cédula repetida',
             'identity_number' => '001-12345-0001A',
             'route_id' => $route->id,
-        ])->assertRedirect('/producers')->assertSessionHasErrors('identity_number');
+        ])->assertRedirect(route('producers.index'))->assertSessionHas('success');
+
+        $this->assertDatabaseHas('producers', [
+            'full_name' => 'Cédula repetida',
+            'identity_number' => '001-12345-0001A',
+        ]);
     }
 
     public function test_store_producer_generates_code_and_assigns_route(): void

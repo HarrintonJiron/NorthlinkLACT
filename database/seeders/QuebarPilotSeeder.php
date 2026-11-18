@@ -34,13 +34,17 @@ class QuebarPilotSeeder extends Seeder
                     'plant_id' => $plant->id,
                     'code' => $sourceRoute['code'],
                     'name' => $sourceRoute['name'],
-                    'description' => 'Ruta operativa QUEBAR. Fuente más reciente recibida: planillas del 23 al 29 de octubre de 2026.',
+                    'description' => sprintf(
+                        'Ruta operativa QUEBAR. Fuente: %s (%s).',
+                        $sourceRoute['source_file'],
+                        $sourceRoute['source_period'],
+                    ),
                     'active' => true,
                 ]);
 
                 Rutero::query()->create([
                     'route_id' => $route->id,
-                    'owner_name' => 'Por confirmar',
+                    'owner_name' => $sourceRoute['owner_name'] ?: 'Por confirmar',
                     'owner_identity_number' => null,
                     'owner_phone' => null,
                     'vehicle_description' => 'Por confirmar',
@@ -61,6 +65,7 @@ class QuebarPilotSeeder extends Seeder
                         'bank_name' => $sourceProducer['bank_name'],
                         'bank_account_number' => $sourceProducer['bank_account_number'],
                         'bank_account_holder' => $sourceProducer['bank_account_holder'],
+                        'preferred_price_per_liter' => $sourceProducer['preferred_price_per_liter'],
                         'payment_notes' => $sourceProducer['payment_method'] === 'transfer'
                             ? 'Cuenta bancaria pendiente de completar; el archivo fuente solo indica depósito bancario.'
                             : null,
@@ -86,7 +91,7 @@ class QuebarPilotSeeder extends Seeder
     }
 
     /**
-     * @return Collection<int, array{code: string, name: string, producers: array<int, array{name: string, identity: ?string, phone: ?string, payment_method: string, bank_name: ?string, bank_account_number: ?string, bank_account_holder: ?string}>}>
+     * @return Collection<int, array{code: string, name: string, source_period: string, source_file: string, owner_name: ?string, producers: array<int, array{name: string, identity: ?string, phone: ?string, payment_method: string, bank_name: ?string, bank_account_number: ?string, bank_account_holder: ?string, preferred_price_per_liter: float|int}>}>
      */
     private function sourceRoutes(): Collection
     {

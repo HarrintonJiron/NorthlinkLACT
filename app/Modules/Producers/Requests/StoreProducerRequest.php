@@ -23,7 +23,6 @@ class StoreProducerRequest extends FormRequest
                 'nullable',
                 'string',
                 'regex:/^\d{3}-\d{5}-\d{4}[A-Za-z]?$/',
-                Rule::unique('producers', 'identity_number'),
             ],
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
@@ -47,7 +46,6 @@ class StoreProducerRequest extends FormRequest
     {
         return [
             'identity_number.regex' => 'El formato de la cédula debe ser XXX-XXXXX-XXXX (ejemplo: 001-12345-0001A)',
-            'identity_number.unique' => 'Ya existe un productor con esa cédula.',
             'latitude.between' => 'La latitud debe estar entre -90 y 90',
             'longitude.between' => 'La longitud debe estar entre -180 y 180',
             'route_id.required' => 'Cada cliente debe pertenecer a una ruta',
